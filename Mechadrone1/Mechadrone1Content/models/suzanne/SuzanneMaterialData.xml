@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfMaterialData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <MaterialData>
+        <Name>None__MonkeyColor</Name>
+        <CustomEffect>shaders\Phong.fx</CustomEffect>
+        <EffectParams>
+            <EffectParam>
+                <string>MatSpecColor</string>
+                <EffectParamCategory>OpaqueData</EffectParamCategory>
+                <string>Microsoft.Xna.Framework.Vector4, Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553</string>
+                <Vector4>
+                    <X>0.1</X>
+                    <Y>0.1</Y>
+                    <Z>0.1</Z>
+                    <W>20.0</W>
+                </Vector4>
+            </EffectParam>
+        </EffectParams>
+        <HandlingFlags>
+        </HandlingFlags>
+    </MaterialData>
+</ArrayOfMaterialData>

@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfMaterialData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <MaterialData>
+        <Name>SteppesShader</Name>
+        <CustomEffect>shaders\TerrainPhongShadow.fx</CustomEffect>
+        <EffectParams>
+            <EffectParam>
+                <string>Texture</string>
+                <EffectParamCategory>Texture</EffectParamCategory>
+                <string>System.String</string>
+                <string>terrain\stone_small_bumps_v2.png</string>
+            </EffectParam>
+            <EffectParam>
+                <string>TileLength</string>
+                <EffectParamCategory>OpaqueData</EffectParamCategory>
+                <string>System.Single</string>
+                <float>131</float>
+            </EffectParam>
+        </EffectParams>
+        <HandlingFlags>
+            RequiresShadowMap
+        </HandlingFlags>
+    </MaterialData>
+</ArrayOfMaterialData>

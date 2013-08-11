@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfMaterialData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <MaterialData>
+        <Name>blinn2</Name>
+        <CustomEffect>shaders\NormSpecSkinPhong.fx</CustomEffect>
+        <EffectParams>
+            <EffectParam>
+                <string>SpecMap</string>
+                <EffectParamCategory>Texture</EffectParamCategory>
+                <string>System.String</string>
+                <string>models\soldier\soldier_s3.tga</string>
+            </EffectParam>
+            <EffectParam>
+                <string>WeightsPerVert</string>
+                <EffectParamCategory>OpaqueData</EffectParamCategory>
+                <string>System.Int32</string>
+                <int>4</int>
+            </EffectParam>
+        </EffectParams>
+        <HandlingFlags>
+            RequiresSkeletalPose
+        </HandlingFlags>
+    </MaterialData>
+    <MaterialData>
+        <Name>gun_shader</Name>
+        <CustomEffect>shaders\NormSpecSkinPhong.fx</CustomEffect>
+        <EffectParams>
+            <EffectParam>
+                <string>SpecMap</string>
+                <EffectParamCategory>Texture</EffectParamCategory>
+                <string>System.String</string>
+                <string>models\soldier\gun_s2.tga</string>
+            </EffectParam>
+            <EffectParam>
+                <string>WeightsPerVert</string>
+                <EffectParamCategory>OpaqueData</EffectParamCategory>
+                <string>System.Int32</string>
+                <int>4</int>
+            </EffectParam>
+        </EffectParams>
+        <HandlingFlags>
+            RequiresSkeletalPose
+        </HandlingFlags>
+    </MaterialData>
+</ArrayOfMaterialData>

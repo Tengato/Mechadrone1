@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mechadrone1", "Mechadrone1\Mechadrone1\Mechadrone1.csproj", "{44E4EBA8-D4F9-474F-A351-FD6028A759BA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mechadrone1Content", "Mechadrone1\Mechadrone1Content\Mechadrone1Content.contentproj", "{1F7F8E85-99C2-40F0-9562-11C7A8E83EF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Skelemator", "Skelemator\Skelemator.csproj", "{C6A308A7-1781-4699-A993-B8C7643891AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkelematorPipeline", "SkelematorPipeline\SkelematorPipeline.csproj", "{3DC6E654-79CE-4258-A633-E0B24A6AA48A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manifracture", "Manifracture\Manifracture.csproj", "{D26A9930-6434-4A3B-B56F-C93C2710FDD1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{44E4EBA8-D4F9-474F-A351-FD6028A759BA}.Debug|x86.ActiveCfg = Debug|x86
+		{44E4EBA8-D4F9-474F-A351-FD6028A759BA}.Debug|x86.Build.0 = Debug|x86
+		{44E4EBA8-D4F9-474F-A351-FD6028A759BA}.Release|x86.ActiveCfg = Release|x86
+		{44E4EBA8-D4F9-474F-A351-FD6028A759BA}.Release|x86.Build.0 = Release|x86
+		{1F7F8E85-99C2-40F0-9562-11C7A8E83EF0}.Debug|x86.ActiveCfg = Debug|x86
+		{1F7F8E85-99C2-40F0-9562-11C7A8E83EF0}.Release|x86.ActiveCfg = Release|x86
+		{C6A308A7-1781-4699-A993-B8C7643891AF}.Debug|x86.ActiveCfg = Debug|x86
+		{C6A308A7-1781-4699-A993-B8C7643891AF}.Debug|x86.Build.0 = Debug|x86
+		{C6A308A7-1781-4699-A993-B8C7643891AF}.Release|x86.ActiveCfg = Release|x86
+		{C6A308A7-1781-4699-A993-B8C7643891AF}.Release|x86.Build.0 = Release|x86
+		{3DC6E654-79CE-4258-A633-E0B24A6AA48A}.Debug|x86.ActiveCfg = Debug|x86
+		{3DC6E654-79CE-4258-A633-E0B24A6AA48A}.Debug|x86.Build.0 = Debug|x86
+		{3DC6E654-79CE-4258-A633-E0B24A6AA48A}.Release|x86.ActiveCfg = Release|x86
+		{3DC6E654-79CE-4258-A633-E0B24A6AA48A}.Release|x86.Build.0 = Release|x86
+		{D26A9930-6434-4A3B-B56F-C93C2710FDD1}.Debug|x86.ActiveCfg = Debug|x86
+		{D26A9930-6434-4A3B-B56F-C93C2710FDD1}.Debug|x86.Build.0 = Debug|x86
+		{D26A9930-6434-4A3B-B56F-C93C2710FDD1}.Release|x86.ActiveCfg = Release|x86
+		{D26A9930-6434-4A3B-B56F-C93C2710FDD1}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

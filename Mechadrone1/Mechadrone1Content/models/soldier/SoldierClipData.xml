@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfClipData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <ClipData>
+        <SourceTake>Take 001</SourceTake>
+        <Alias>walkAndLook</Alias>
+        <FirstFrame>203</FirstFrame>
+        <LastFrame>443</LastFrame>
+        <Loopable>true</Loopable>
+    </ClipData>
+</ArrayOfClipData>

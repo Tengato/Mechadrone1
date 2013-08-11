@@ -1,0 +1,204 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Framework="Microsoft.Xna.Framework">
+    <Asset Type="Manifracture.Game1Manifest">
+        <TerrainAssetName>terrain\Steppes Heightmap</TerrainAssetName>
+        <GameObjects>
+            <Item>
+                <TypeFullName>Mechadrone1.Gameplay.GameObject, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                <Properties>
+                    <Item>
+                        <Key>Name</Key>
+                        <Value Type="string">Soldier</Value>
+                    </Item>
+                    <Item>
+                        <Key>VisualModel</Key>
+                        <Value Type="string">models\soldier\soldier_LOD0</Value>
+                    </Item>
+                    <Item>
+                        <Key>Position</Key>
+                        <Value Type="Framework:Vector3">-8 -0.4 -4.5</Value>
+                    </Item>
+                    <Item>
+                        <Key>Orientation</Key>
+                        <Value Type="Framework:Quaternion">0 0 0 1</Value>
+                    </Item>
+                    <Item>
+                        <Key>Scale</Key>
+                        <Value Type="float">1</Value>
+                    </Item>
+                    <Item>
+                        <Key>CastsShadow</Key>
+                        <Value Type="bool">true</Value>
+                    </Item>
+                </Properties>
+            </Item>
+            <Item>
+                <TypeFullName>Mechadrone1.Gameplay.Prefabs.OrbitingLightbulb, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                <Properties>
+                    <Item>
+                        <Key>Name</Key>
+                        <Value Type="string">Orbulon</Value>
+                    </Item>
+                    <Item>
+                        <Key>VisualModel</Key>
+                        <Value Type="string">models\lightbulb\Icosphere</Value>
+                    </Item>
+                    <Item>
+                        <Key>Position</Key>
+                        <Value Type="Framework:Vector3">8 2.0 -4.5</Value>
+                    </Item>
+                    <Item>
+                        <Key>Orientation</Key>
+                        <Value Type="Framework:Quaternion">0 0 0 1</Value>
+                    </Item>
+                    <Item>
+                        <Key>Scale</Key>
+                        <Value Type="float">1</Value>
+                    </Item>
+                    <Item>
+                        <Key>CastsShadow</Key>
+                        <Value Type="bool">true</Value>
+                    </Item>
+                    <Item>
+                        <Key>Color</Key>
+                        <Value Type="Framework:Color">FFDB7093</Value>
+                    </Item>
+                    <Item>
+                        <Key>Center</Key>
+                        <Value Type="Framework:Vector3">3 0 -4.5</Value>
+                    </Item>
+                </Properties>
+            </Item>
+            <Item>
+                <TypeFullName>Mechadrone1.Gameplay.Prefabs.FreeFlyer, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                <Properties>
+                    <Item>
+                        <Key>Name</Key>
+                        <Value Type="string">CameraTarget</Value>
+                    </Item>
+                    <Item>
+                        <Key>Position</Key>
+                        <Value Type="Framework:Vector3">-8 4.7 -10.5</Value>
+                    </Item>
+                    <Item>
+                        <Key>Orientation</Key>
+                        <Value Type="Framework:Quaternion">0 0 0 1</Value>
+                    </Item>
+                    <Item>
+                        <Key>Scale</Key>
+                        <Value Type="float">1</Value>
+                    </Item>
+                    <Item>
+                        <Key>CastsShadow</Key>
+                        <Value Type="bool">true</Value>
+                    </Item>
+                </Properties>
+            </Item>
+            <Item>
+                <TypeFullName>Mechadrone1.Gameplay.Prefabs.Bouncer, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                <Properties>
+                    <Item>
+                        <Key>Name</Key>
+                        <Value Type="string">Suzanne</Value>
+                    </Item>
+                    <Item>
+                        <Key>VisualModel</Key>
+                        <Value Type="string">models\suzanne\suzanne</Value>
+                    </Item>
+                    <Item>
+                        <Key>IsSimulationParticipant</Key>
+                        <Value Type="bool">true</Value>
+                    </Item>
+                    <Item>
+                        <Key>SimulationObjectTypeFullName</Key>
+                        <Value Type="string">BEPUphysics.Entities.Prefabs.Box, BEPUphysics, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31f6a8732a21de19</Value>
+                    </Item>
+                    <Item>
+                        <Key>SimulationObjectCtorParams</Key>
+                        <Value Type="System.Object[]">
+                            <Item Type="Framework:Vector3">0 0 0</Item>
+                            <Item Type="float">2</Item>
+                            <Item Type="float">2</Item>
+                            <Item Type="float">1.7</Item>
+                            <Item Type="float">3</Item>
+                        </Value>
+                    </Item>
+                    <Item>
+                        <Key>Position</Key>
+                        <Value Type="Framework:Vector3">-5 36.4 -40.5</Value>
+                    </Item>
+                    <Item>
+                        <Key>Orientation</Key>
+                        <Value Type="Framework:Quaternion">0 1 0 -4.371139E-08</Value>
+                    </Item>
+                    <Item>
+                        <Key>Scale</Key>
+                        <Value Type="float">1</Value>
+                    </Item>
+                    <Item>
+                        <Key>CastsShadow</Key>
+                        <Value Type="bool">true</Value>
+                    </Item>
+                </Properties>
+            </Item>
+            <Item>
+                <TypeFullName>Mechadrone1.Gameplay.Prefabs.Roller, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                <Properties>
+                    <Item>
+                        <Key>Name</Key>
+                        <Value Type="string">Ball</Value>
+                    </Item>
+                    <Item>
+                        <Key>VisualModel</Key>
+                        <Value Type="string">models\ball\ball</Value>
+                    </Item>
+                    <Item>
+                        <Key>IsSimulationParticipant</Key>
+                        <Value Type="bool">true</Value>
+                    </Item>
+                    <Item>
+                        <Key>SimulationObjectTypeFullName</Key>
+                        <Value Type="string">BEPUphysics.Entities.Prefabs.Sphere, BEPUphysics, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31f6a8732a21de19</Value>
+                    </Item>
+                    <Item>
+                        <Key>SimulationObjectCtorParams</Key>
+                        <Value Type="System.Object[]">
+                            <Item Type="Framework:Vector3">0 0 0</Item>
+                            <Item Type="float">1</Item>
+                            <Item Type="float">1</Item>
+                        </Value>
+                    </Item>
+                    <Item>
+                        <Key>Position</Key>
+                        <Value Type="Framework:Vector3">-15 36.4 -40.5</Value>
+                    </Item>
+                    <Item>
+                        <Key>Orientation</Key>
+                        <Value Type="Framework:Quaternion">0 0 0 1</Value>
+                    </Item>
+                    <Item>
+                        <Key>Scale</Key>
+                        <Value Type="float">1</Value>
+                    </Item>
+                    <Item>
+                        <Key>CastsShadow</Key>
+                        <Value Type="bool">true</Value>
+                    </Item>
+                </Properties>
+            </Item>
+        </GameObjects>
+        <Fog>
+            <StartDistance>170</StartDistance>
+            <EndDistance>966</EndDistance>
+            <Color>FF6495ED</Color>
+        </Fog>
+        <PlayerStartTransforms>1 0 0 0 0 1 0 0 0 0 1 0 -24 0 -12 1 1 0 0 0 0 1 0 0 0 0 1 0 -33 0 -12 1 1 0 0 0 0 1 0 0 0 0 1 0 -24 0 -28 1 1 0 0 0 0 1 0 0 0 0 1 0 -33 0 -23 1</PlayerStartTransforms>
+        <KeyLight>
+            <Ambient Type="Framework:Vector4">0 0 0 1</Ambient>
+            <Diffuse Type="Framework:Vector4">0.75 0.75 0.68 1</Diffuse>
+            <Specular Type="Framework:Vector4">0.75 0.75 0.68 1</Specular>
+            <Direction Type="Framework:Vector3">-2 -0.7 -0.6</Direction>
+            <Energy Type="float">1.8</Energy>
+        </KeyLight>
+    </Asset>
+</XnaContent>
