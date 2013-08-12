@@ -12,6 +12,7 @@ namespace Skelemator
     {
         public int VertexCountAlongXAxis;
         public int VertexCountAlongZAxis;
+        public int SectorSize;
         public VertexBuffer Vertices;
         public IndexBuffer Indices;
         public int TriangleCount;

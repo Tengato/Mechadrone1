@@ -453,11 +453,19 @@ namespace Mechadrone1.Rendering
             {
                 sceneModel.Substrate.Effect.CurrentTechnique.Passes[i].Apply();
 
-                int numDrawCalls = sceneModel.Substrate.TriangleCount / 1048575;
+                int numXSectors = (sceneModel.Substrate.VertexCountAlongXAxis - 1) / (sceneModel.Substrate.SectorSize - 1);
+                int numZSectors = (sceneModel.Substrate.VertexCountAlongZAxis - 1) / (sceneModel.Substrate.SectorSize - 1);
 
-                for (int j = 0; j < numDrawCalls; j++)
-                    gd.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, sceneModel.Substrate.VertexCount, j * 1048575 * 3,
-                        j == numDrawCalls ? sceneModel.Substrate.TriangleCount % 1048575 : 1048575);
+                int numVertices = (sceneModel.Substrate.SectorSize + 1) * (sceneModel.Substrate.SectorSize + 1);
+                int primitiveCount = 2 * sceneModel.Substrate.SectorSize * sceneModel.Substrate.SectorSize;
+
+                for (int j = 0; j < numXSectors; j++)
+                    for (int k = 0; k < numZSectors; k++)
+                    {
+                        int vertOffset = j * sceneModel.Substrate.SectorSize +
+                            k * sceneModel.Substrate.SectorSize * sceneModel.Substrate.VertexCountAlongXAxis;
+                        gd.DrawIndexedPrimitives(PrimitiveType.TriangleList, vertOffset, 0, numVertices, 0, primitiveCount);
+                    }
             }
 
             // Draw objects:

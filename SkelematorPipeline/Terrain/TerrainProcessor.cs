@@ -15,6 +15,8 @@ namespace SkelematorPipeline
     [ContentProcessor(DisplayName = "Skelemator Terrain Processor")]
     public class TerrainProcessor : ContentProcessor<byte[], TerrainContent>
     {
+        const int SECTOR_SIZE = 64;
+
         public int Width { get; set; }
         public int Height { get; set; }
         public float XZScale { get; set; }
@@ -38,12 +40,12 @@ namespace SkelematorPipeline
         {
             this.context = context;
 
-            if (Width < 1)
-                throw new InvalidContentException("Width property must be greater than 0.");
-            if (Height < 1)
-                throw new InvalidContentException("Height property must be greater than 0.");
+            if (Width < 1 && Width % SECTOR_SIZE == 1)
+                throw new InvalidContentException(String.Format("Width property must be an integer w = n * {0} + 1 where n: {1, 2, 3...}", SECTOR_SIZE));
+            if (Height < 1 && Height % SECTOR_SIZE == 1)
+                throw new InvalidContentException(String.Format("Height property must be an integer h = n * {0} + 1 where n: {1, 2, 3...}", SECTOR_SIZE));
             if (input.Length != Width * Height)
-                throw new InvalidContentException("Height and/or Width properties are incorrect.");
+                throw new InvalidContentException("The number of bytes in the heightmap is not equal to the product of the Height and Width properties.");
             if (XZScale <= 0.0f)
                 throw new InvalidContentException("XZScale property must be greater than 0.");
             if (YScale <= 0.0f)
@@ -59,6 +61,7 @@ namespace SkelematorPipeline
             outputTC = new TerrainContent();
             outputTC.VertexCountAlongXAxis = Width;
             outputTC.VertexCountAlongZAxis = Height;
+            outputTC.SectorSize = SECTOR_SIZE;
             outputTC.VertexBufferContent = new VertexBufferContent(Width * Height * vertexStride);
             outputTC.VertexBufferContent.VertexDeclaration.VertexElements.Add(vePosition0);
             outputTC.VertexBufferContent.VertexDeclaration.VertexElements.Add(veNormal0);
@@ -69,21 +72,21 @@ namespace SkelematorPipeline
 
             GeneratePositions(input);
             GenerateNormals();
-            InitializeIndicies();
+            InitializeIndices();
             CreateMaterial();
 
             return outputTC;
         }
 
 
-        private void InitializeIndicies()
+        private void InitializeIndices()
         {
-            int[] indices = new int[outputTC.TriangleCount * 3];
+            int[] indices = new int[SECTOR_SIZE * SECTOR_SIZE * 6];
 
             int i = 0;
-            for (int row = 0; row < Height - 1; row++)
+            for (int row = 0; row < SECTOR_SIZE; row++)
             {
-                for (int col = 0; col < Width - 1; col++)
+                for (int col = 0; col < SECTOR_SIZE; col++)
                 {
                     indices[i++] = row * Width + Width + col;
                     indices[i++] = row * Width + col;
@@ -102,7 +105,9 @@ namespace SkelematorPipeline
 
         private void GeneratePositions(byte[] heightData)
         {
-            const int PIXEL_RADIUS = 5;
+            const float STD_DEV = 1.7f;
+            const float STD_DEV_SQ = STD_DEV * STD_DEV;
+            int pixelRadius = (int)(Math.Ceiling(3.0f * STD_DEV));
 
             position = new Vector3[Width, Height];
 
@@ -126,16 +131,16 @@ namespace SkelematorPipeline
                     y = 0.0f;
 
                     // Apply smoothing:
-                    for (int i = -PIXEL_RADIUS; i <= PIXEL_RADIUS; i++)
+                    for (int i = -pixelRadius; i <= pixelRadius; i++)
                     {
-                        for (int j = -PIXEL_RADIUS; j <= PIXEL_RADIUS; j++)
+                        for (int j = -pixelRadius; j <= pixelRadius; j++)
                         {
                             sampleRow = Math.Min(Math.Max(row + i, 0), Height - 1);
                             sampleColumn = Math.Min(Math.Max(col + j, 0), Width - 1);
 
                             // Assuming std deviation is 1 pixel.
                             pixelDistSq = (float)(i * i + j * j);
-                            y += (float)(Math.Exp(-pixelDistSq / 2.0f)) / MathHelper.TwoPi * (float)(heightData[sampleColumn + sampleRow * Width]) * YScale;
+                            y += (float)(Math.Exp(-pixelDistSq / (2.0f * STD_DEV_SQ))) / (MathHelper.TwoPi * STD_DEV_SQ) * (float)(heightData[sampleColumn + sampleRow * Width]) * YScale;
                         }
                     }
 
@@ -199,7 +204,7 @@ namespace SkelematorPipeline
                     {
                         downStartRow = 0;   // *
                         downEndRow = 1;
-                    }
+                    } 
                     else if (row == Height - 1)
                     {
                         downStartRow = Height - 2;

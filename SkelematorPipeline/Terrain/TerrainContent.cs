@@ -11,6 +11,7 @@ namespace SkelematorPipeline
     {
         public int VertexCountAlongXAxis;
         public int VertexCountAlongZAxis;
+        public int SectorSize;
         public VertexBufferContent VertexBufferContent;
         public IndexCollection IndexCollection;
         public int TriangleCount;
