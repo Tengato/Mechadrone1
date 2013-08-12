@@ -1,3 +1,5 @@
+#define PROFILE
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Mechadrone1.StateManagement;
@@ -24,6 +26,11 @@ namespace Mechadrone1
             // Prime the ScreenManager with the first set of screens:
             screenMan.AddScreen(new BackgroundScreen(), null);
             screenMan.AddScreen(new MainMenuScreen(), null);
+
+            #if PROFILE
+                this.IsFixedTimeStep=false;
+                graphics.SynchronizeWithVerticalRetrace = false;
+            #endif
         }
 
         /// <summary>
