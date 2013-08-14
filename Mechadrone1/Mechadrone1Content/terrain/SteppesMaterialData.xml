@@ -5,16 +5,46 @@
         <CustomEffect>shaders\TerrainPhongShadow.fx</CustomEffect>
         <EffectParams>
             <EffectParam>
-                <string>Texture</string>
+                <string>Texture1</string>
                 <EffectParamCategory>Texture</EffectParamCategory>
                 <string>System.String</string>
-                <string>terrain\stone_small_bumps_v2.png</string>
+                <string>textures\Terrain Gravel.tga</string>
             </EffectParam>
             <EffectParam>
-                <string>TileLength</string>
+                <string>Texture2</string>
+                <EffectParamCategory>Texture</EffectParamCategory>
+                <string>System.String</string>
+                <string>textures\Terrain Grass.tga</string>
+            </EffectParam>
+            <EffectParam>
+                <string>Texture3</string>
+                <EffectParamCategory>Texture</EffectParamCategory>
+                <string>System.String</string>
+                <string>textures\Terrain Boulder.tga</string>
+            </EffectParam>
+            <EffectParam>
+                <string>TextureBlend</string>
+                <EffectParamCategory>Texture</EffectParamCategory>
+                <string>System.String</string>
+                <string>textures\Terrain Blend 01.tga</string>
+            </EffectParam>
+            <EffectParam>
+                <string>LargeTileLength</string>
                 <EffectParamCategory>OpaqueData</EffectParamCategory>
                 <string>System.Single</string>
-                <float>131</float>
+                <float>1024</float>
+            </EffectParam>
+            <EffectParam>
+                <string>MedTileLength</string>
+                <EffectParamCategory>OpaqueData</EffectParamCategory>
+                <string>System.Single</string>
+                <float>53</float>
+            </EffectParam>
+            <EffectParam>
+                <string>SmallTileLength</string>
+                <EffectParamCategory>OpaqueData</EffectParamCategory>
+                <string>System.Single</string>
+                <float>12</float>
             </EffectParam>
         </EffectParams>
         <HandlingFlags>
