@@ -23,6 +23,12 @@
                 <string>textures\Terrain Boulder.tga</string>
             </EffectParam>
             <EffectParam>
+                <string>Texture3Normal</string>
+                <EffectParamCategory>Texture</EffectParamCategory>
+                <string>System.String</string>
+                <string>textures\Terrain Boulder Normal.jpg</string>
+            </EffectParam>
+            <EffectParam>
                 <string>TextureBlend</string>
                 <EffectParamCategory>Texture</EffectParamCategory>
                 <string>System.String</string>
@@ -45,6 +51,15 @@
                 <EffectParamCategory>OpaqueData</EffectParamCategory>
                 <string>System.Single</string>
                 <float>12</float>
+            </EffectParam>
+            <EffectParam>
+                <string>LargeTexCoordOffset</string>
+                <EffectParamCategory>OpaqueData</EffectParamCategory>
+                <string>Microsoft.Xna.Framework.Vector2, Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553</string>
+                <Vector2>
+                    <X>512.0</X>
+                    <Y>512.0</Y>
+                </Vector2>
             </EffectParam>
         </EffectParams>
         <HandlingFlags>

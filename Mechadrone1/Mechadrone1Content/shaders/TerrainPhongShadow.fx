@@ -11,6 +11,7 @@ float InvShadowMapSize;
 float LargeTileLength;
 float MedTileLength;
 float SmallTileLength;
+float2 LargeTexCoordOffset;
 
 float4 MatSpecColor;
 
@@ -50,6 +51,17 @@ texture2D Texture3;
 sampler2D Texture3Sampler = sampler_state
 {
     Texture = <Texture3>;
+    MinFilter = LINEAR;
+    MagFilter = LINEAR;
+    MipFilter = LINEAR;
+    AddressU = WRAP;
+    AddressV = WRAP;
+};
+
+texture2D Texture3Normal;
+sampler2D Texture3NormalSampler = sampler_state
+{
+    Texture = <Texture3Normal>;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
     MipFilter = LINEAR;
@@ -134,9 +146,10 @@ void VertexProc(float3   position        : POSITION,
             out float2   medTexCoord     : TEXCOORD1,
             out float2   smallTexCoord   : TEXCOORD2,
             out float3   eyeDisplacement : TEXCOORD3,
-            out float4   shadowMapPos    : TEXCOORD4)
+            out float4   shadowMapPos    : TEXCOORD4,
+            out float3x3 tangentToWorld  : TEXCOORD5)    // Includes TEXCOORD6 and TEXCOORD7
 {
-    largeTexCoord = (position.xz  + float2(512.0f, 512.0f) )/ LargeTileLength;
+    largeTexCoord = (position.xz  + LargeTexCoordOffset) / LargeTileLength;
     medTexCoord = position.xz / MedTileLength;
     smallTexCoord = position.xz / SmallTileLength;
 
@@ -149,6 +162,16 @@ void VertexProc(float3   position        : POSITION,
 
     oNormal = mul(normal, (float3x3)WorldInvTranspose);
 
+    float zPlaneTheta = atan2(normal.y, normal.x) - PI_OVER_2;
+    float xPlaneTheta = atan2(normal.y, normal.z) - PI_OVER_2;
+
+    float3 tangent = float3(cos(zPlaneTheta), sin(zPlaneTheta), 0.0f);
+    float3 binormal = float3(0.0f, sin(xPlaneTheta), cos(xPlaneTheta));
+
+    tangentToWorld[0] = mul(tangent, (float3x3)WorldInvTranspose);
+    tangentToWorld[1] = mul(binormal, (float3x3)WorldInvTranspose);
+    tangentToWorld[2] = mul(normal, (float3x3)WorldInvTranspose);
+
     shadowMapPos = mul(float4(position, 1.0f), ShadowTransform);
 }
 
@@ -159,10 +182,20 @@ void PixelProc(float3   normal          : NORMAL,
                float2   smallTexCoord   : TEXCOORD2,
                float3   eyeDisplacement : TEXCOORD3,
                float4   shadowMapPos    : TEXCOORD4,
+               float3x3 tangentToWorld  : TEXCOORD5,
            out float4   oColor          : COLOR)
 {
     Material surfaceMat;
     surfaceMat.Specular = MatSpecColor;
+
+    tangentToWorld[0] = normalize(tangentToWorld[0]);
+    tangentToWorld[1] = normalize(tangentToWorld[1]);
+    tangentToWorld[2] = normalize(tangentToWorld[2]);
+
+    // Fetch and expand range-compressed normal
+    float3 normal3Tex = tex2D(Texture3NormalSampler, medTexCoord).xyz;
+    float3 normal3TanSpc = expandNormalTex(normal3Tex);
+    float3 normal3 = mul(normal3TanSpc, tangentToWorld);
 
     float4 tex1Diffuse = tex2D(Texture1Sampler, medTexCoord);
     float4 tex2Diffuse = tex2D(Texture2Sampler, medTexCoord);
@@ -173,7 +206,9 @@ void PixelProc(float3   normal          : NORMAL,
     texBlend.g = 0.0f;
 
     float4 overlayDiffuse = lerp(tex1Diffuse, tex3Diffuse, texBlend.b / (texBlend.b + texBlend.g));
+    float3 overlayNormal = normalize(lerp(float3(0.0f, 1.0f, 0.0f), normal3, texBlend.b / (texBlend.b + texBlend.g)));
     surfaceMat.Diffuse = lerp(tex2Diffuse, overlayDiffuse, clamp(texBlend.b + texBlend.g, 0.0f, 1.0f));
+    float3 surfaceNormal = normalize(lerp(float3(0.0f, 1.0f, 0.0f), overlayNormal, clamp(texBlend.b + texBlend.g, 0.0f, 1.0f)));
 
     float eyeDistance = length(eyeDisplacement);
 
@@ -187,7 +222,7 @@ void PixelProc(float3   normal          : NORMAL,
     [unroll]
     for (int i = 0; i < NumLights; i++)
     {
-        ComputeDirectionalLight(surfaceMat, DirLights[i], normalize(normal), eyeDisplacement / eyeDistance, 
+        ComputeDirectionalLight(surfaceMat, DirLights[i], surfaceNormal, eyeDisplacement / eyeDistance, 
             ambientPiece, diffusePiece, specularPiece);
 
         // Add shade for the shadow mapped light.
