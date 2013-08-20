@@ -96,7 +96,7 @@ void PixelProc(float2   texCoord        : TEXCOORD0,
 
     // Sum the light contribution from each light source.
     float4 ambientPiece, diffusePiece, specularPiece;
-    [unroll]
+
     for (int i = 0; i < NumLights; i++)
     {
         ComputeDirectionalLight(surfaceMat, DirLights[i], normal, eyeDisplacement / eyeDistance, 

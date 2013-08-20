@@ -79,7 +79,6 @@ void VertexProc(float3   position        : POSITION,
                          0.0f, 0.0f, 0.0f,
                          0.0f, 0.0f, 0.0f};
 
-    [unroll]
     for (int i = 0; i < WeightsPerVert; i++)
     {
         skinning += PosedBones[indices[i]] * weights[i];
@@ -138,7 +137,6 @@ void PixelProc(float2   texCoord        : TEXCOORD0,
     float4 ambientPiece, diffusePiece, specularPiece, fringeColor;
     float filmDepthFromEye;
 
-    [unroll]
     for (int i = 0; i < NumLights; i++)
     {
         ComputeDirectionalLight(surfaceMat, DirLights[i], normal, eyeDisplacement / eyeDistance, 

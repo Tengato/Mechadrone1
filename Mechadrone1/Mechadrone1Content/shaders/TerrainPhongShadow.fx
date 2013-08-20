@@ -125,16 +125,15 @@ float CalculateShadowFactor(float4 smapTexCoord)
 
     float smapDepth;
 
-    [unroll]
     for (int i = 0; i < 9; i++)
     {
         smapDepth = tex2D(ShadowMapSampler, smapTexCoord.xy + offset[i]);
         percentLit += smapTexCoord.z <= smapDepth ? 1.0f : 0.0f;
     }
 
-    float4 borderColor = tex2D(BorderSampler, smapTexCoord.xy);
+    float borderColor = tex2D(BorderSampler, smapTexCoord.xy);
 
-    return lerp(percentLit / 9.0f, 1.0f, borderColor.a);
+    return lerp(percentLit / 9.0f, 1.0f, borderColor);
 }
 
 
@@ -219,7 +218,7 @@ void PixelProc(float3   normal          : NORMAL,
 
     // Sum the light contribution from each light source.
     float4 ambientPiece, diffusePiece, specularPiece;
-    [unroll]
+
     for (int i = 0; i < NumLights; i++)
     {
         ComputeDirectionalLight(surfaceMat, DirLights[i], surfaceNormal, eyeDisplacement / eyeDistance, 

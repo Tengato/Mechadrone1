@@ -15,7 +15,6 @@ void VertexShaderFunction(float3 position  : POSITION,
                          0.0f, 0.0f, 0.0f,
                          0.0f, 0.0f, 0.0f};
 
-    [unroll]
     for (int i = 0; i < WeightsPerVert; i++)
     {
         skinning += PosedBones[indices[i]] * weights[i];
