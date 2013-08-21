@@ -78,11 +78,11 @@
                     </Item>
                     <Item>
                         <Key>Position</Key>
-                        <Value Type="Framework:Vector3">-8 4.7 -10.5</Value>
+                        <Value Type="Framework:Vector3">-10.66944 5.88696 13.2511</Value>
                     </Item>
                     <Item>
                         <Key>Orientation</Key>
-                        <Value Type="Framework:Quaternion">0 0 0 1</Value>
+                        <Value Type="Framework:Quaternion">0.04660299 -0.1447379 0.01170864 0.9883026</Value>
                     </Item>
                     <Item>
                         <Key>Scale</Key>

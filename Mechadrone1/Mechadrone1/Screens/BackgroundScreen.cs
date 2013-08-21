@@ -55,7 +55,7 @@ namespace Mechadrone1.StateManagement
             if (content == null)
                 content = new ContentManager(ScreenManager.Game.Services, "Content");
 
-            backgroundTexture = content.Load<Texture2D>("textures\\Sci Fi Cavern Hangar");
+            backgroundTexture = content.Load<Texture2D>("textures\\sci fi thing by rich4rt");
         }
 
 
@@ -102,6 +102,12 @@ namespace Mechadrone1.StateManagement
                              new Color(TransitionAlpha, TransitionAlpha, TransitionAlpha));
 
             spriteBatch.End();
+
+            const string text = "image by:\nhttp://rich4rt.deviantart.com/";
+            Vector2 position = new Vector2(20.0f, 620.0f); 
+            ScreenManager.FontManager.BeginText();
+            ScreenManager.FontManager.DrawText(FontType.ArialSmall, text, position, Color.Multiply(Color.Multiply(Color.BurlyWood, 0.5f), TransitionAlpha));
+            ScreenManager.FontManager.EndText();
         }
 
 
