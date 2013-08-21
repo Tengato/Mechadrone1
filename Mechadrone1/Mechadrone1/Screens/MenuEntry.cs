@@ -145,7 +145,7 @@ namespace Mechadrone1.Screens
 #endif
 
             // Draw the selected entry in yellow, otherwise white.
-            Color color = isSelected ? Color.Yellow : Color.White;
+            Color color = isSelected ? Color.Cyan : Color.DarkSlateGray;
 
             // Pulsate the size of the selected menu entry.
             double time = gameTime.TotalGameTime.TotalSeconds;
@@ -158,6 +158,11 @@ namespace Mechadrone1.Screens
             color *= screen.TransitionAlpha;
 
             Vector2 origin = new Vector2(0, screen.ScreenManager.FontManager.LineSpacing(FontType.ArialMedium) / 2);
+
+            Vector2 dropShadowOffset = new Vector2(1.0f, 1.0f);
+
+            screen.ScreenManager.FontManager.DrawText(FontType.ArialMedium, text, position + dropShadowOffset, Color.Black, 0,
+                                   origin, scale, SpriteEffects.None, 0);
 
             screen.ScreenManager.FontManager.DrawText(FontType.ArialMedium, text, position, color, 0,
                                    origin, scale, SpriteEffects.None, 0);

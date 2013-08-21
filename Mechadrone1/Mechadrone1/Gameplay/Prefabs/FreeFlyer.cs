@@ -20,7 +20,14 @@ namespace Mechadrone1.Gameplay.Prefabs
             handlingDesc.MaxVelocity = 90.0f;
             mover = new FloatMovement(handlingDesc);
 
-            mover.Reset(Matrix.CreateTranslation(Position) * Matrix.CreateFromQuaternion(Orientation));
+            mover.Reset(Matrix.CreateFromQuaternion(Orientation) * Matrix.CreateTranslation(Position));
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            mover.Reset(Matrix.CreateFromQuaternion(Orientation) * Matrix.CreateTranslation(Position));
         }
 
         public override void HandleInput(Microsoft.Xna.Framework.GameTime gameTime, InputManager input, PlayerIndex player, ICamera camera)

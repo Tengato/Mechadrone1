@@ -225,11 +225,15 @@ namespace Mechadrone1.Screens
             // Draw the menu title centered on the screen
             Vector2 titlePosition = new Vector2(graphics.Viewport.Width / 2, 80);
             Vector2 titleOrigin = ScreenManager.FontManager.MeasureString(FontType.ArialMedium, menuTitle) / 2;
-            Color titleColor = new Color(192, 192, 192) * TransitionAlpha;
+            Color titleColor = Color.OldLace * TransitionAlpha;
             float titleScale = 1.25f;
 
             titlePosition.Y -= transitionOffset * 100;
 
+            Vector2 dropShadowOffset = new Vector2(1.0f, 1.0f);
+
+            ScreenManager.FontManager.DrawText(FontType.ArialMedium, menuTitle, titlePosition + dropShadowOffset, Color.Black, 0,
+                                   titleOrigin, titleScale, SpriteEffects.None, 0);
             ScreenManager.FontManager.DrawText(FontType.ArialMedium, menuTitle, titlePosition, titleColor, 0,
                                    titleOrigin, titleScale, SpriteEffects.None, 0);
 
