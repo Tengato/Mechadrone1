@@ -33,14 +33,14 @@ namespace Mechadrone1.Gameplay
         public ISpaceObject SimulationObject { get; set; }
 
         protected Vector3 position;
-        public Vector3 Position
+        virtual public Vector3 Position
         {
             get { return position; }
             set { position = value; }
         }
 
         protected Quaternion orientation;
-        public Quaternion Orientation
+        virtual public Quaternion Orientation
         {
             get { return orientation; }
             set { orientation = value; }
