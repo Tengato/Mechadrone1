@@ -138,7 +138,7 @@ float CalculateShadowFactor(float4 smapTexCoord)
 
     //float borderColor = tex2D(BorderSampler, smapTexCoord.xy);
 
-    return lerp(percentLit / 9.0f, 1.0f, borderColor);
+    return lerp(1.0f, percentLit / 9.0f, borderColor);
 }
 
 
