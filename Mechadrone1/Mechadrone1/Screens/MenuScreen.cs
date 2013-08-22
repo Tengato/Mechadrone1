@@ -230,11 +230,7 @@ namespace Mechadrone1.Screens
 
             titlePosition.Y -= transitionOffset * 100;
 
-            Vector2 dropShadowOffset = new Vector2(1.0f, 1.0f);
-
-            ScreenManager.FontManager.DrawText(FontType.ArialMedium, menuTitle, titlePosition + dropShadowOffset, Color.Black, 0,
-                                   titleOrigin, titleScale, SpriteEffects.None, 0);
-            ScreenManager.FontManager.DrawText(FontType.ArialMedium, menuTitle, titlePosition, titleColor, 0,
+            ScreenManager.FontManager.DrawText(FontType.ArialMedium, menuTitle, titlePosition, titleColor, true, 0,
                                    titleOrigin, titleScale, SpriteEffects.None, 0);
 
             ScreenManager.FontManager.EndText();

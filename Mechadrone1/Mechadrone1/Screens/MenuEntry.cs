@@ -159,12 +159,7 @@ namespace Mechadrone1.Screens
 
             Vector2 origin = new Vector2(0, screen.ScreenManager.FontManager.LineSpacing(FontType.ArialMedium) / 2);
 
-            Vector2 dropShadowOffset = new Vector2(1.0f, 1.0f);
-
-            screen.ScreenManager.FontManager.DrawText(FontType.ArialMedium, text, position + dropShadowOffset, Color.Black, 0,
-                                   origin, scale, SpriteEffects.None, 0);
-
-            screen.ScreenManager.FontManager.DrawText(FontType.ArialMedium, text, position, color, 0,
+            screen.ScreenManager.FontManager.DrawText(FontType.ArialMedium, text, position, color, true, 0,
                                    origin, scale, SpriteEffects.None, 0);
         }
 

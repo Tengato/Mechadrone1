@@ -151,8 +151,7 @@ namespace Mechadrone1.Screens
             string fps = string.Format("fps: {0}", frameRate);
 
             ScreenManager.FontManager.BeginText();
-            ScreenManager.FontManager.DrawText(FontType.ArialSmall, fps, new Vector2(33, 33), Color.Black);
-            ScreenManager.FontManager.DrawText(FontType.ArialSmall, fps, new Vector2(32, 32), Color.White);
+            ScreenManager.FontManager.DrawText(FontType.ArialSmall, fps, new Vector2(32, 32), Color.White, true);
             ScreenManager.FontManager.EndText();
 
             // If the game is transitioning on or off, fade it out to black.

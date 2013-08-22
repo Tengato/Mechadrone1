@@ -106,7 +106,7 @@ namespace Mechadrone1.StateManagement
             const string text = "image by:\nhttp://rich4rt.deviantart.com/";
             Vector2 position = new Vector2(20.0f, 620.0f); 
             ScreenManager.FontManager.BeginText();
-            ScreenManager.FontManager.DrawText(FontType.ArialSmall, text, position, Color.Multiply(Color.Multiply(Color.BurlyWood, 0.5f), TransitionAlpha));
+            ScreenManager.FontManager.DrawText(FontType.ArialSmall, text, position, Color.Multiply(Color.Multiply(Color.BurlyWood, 0.5f), TransitionAlpha), true);
             ScreenManager.FontManager.EndText();
         }
 

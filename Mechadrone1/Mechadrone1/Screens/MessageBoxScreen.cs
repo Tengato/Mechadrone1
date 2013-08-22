@@ -158,7 +158,7 @@ namespace Mechadrone1.Screens
             ScreenManager.FontManager.DrawTexture(gradientTexture, backgroundRectangle, color, BlendState.AlphaBlend);
 
             // Draw the message box text.
-            ScreenManager.FontManager.DrawText(FontType.ArialMedium, message, textPosition, color);
+            ScreenManager.FontManager.DrawText(FontType.ArialMedium, message, textPosition, color, false);
 
             ScreenManager.FontManager.EndText();
         }

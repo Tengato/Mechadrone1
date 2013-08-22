@@ -29,16 +29,19 @@ namespace Mechadrone1.Screens
         {
             // Create our menu entries.
             MenuEntry playGameMenuEntry = new MenuEntry("Play Game");
+            MenuEntry helpMenuEntry = new MenuEntry("Help");
             MenuEntry optionsMenuEntry = new MenuEntry("Options");
             MenuEntry exitMenuEntry = new MenuEntry("Exit");
 
             // Hook up menu event handlers.
             playGameMenuEntry.Selected += PlayGameMenuEntrySelected;
+            helpMenuEntry.Selected += HelpMenuEntrySelected;
             optionsMenuEntry.Selected += OptionsMenuEntrySelected;
             exitMenuEntry.Selected += OnCancel;
 
             // Add entries to the menu.
             MenuEntries.Add(playGameMenuEntry);
+            MenuEntries.Add(helpMenuEntry);
             MenuEntries.Add(optionsMenuEntry);
             MenuEntries.Add(exitMenuEntry);
         }
@@ -58,6 +61,13 @@ namespace Mechadrone1.Screens
                                new GameplayScreen("levels\\steppes"));
         }
 
+        /// <summary>
+        /// Event handler for when the Help menu entry is selected.
+        /// </summary>
+        void HelpMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        {
+            ScreenManager.AddScreen(new HelpScreen(), e.PlayerIndex);
+        }
 
         /// <summary>
         /// Event handler for when the Options menu entry is selected.

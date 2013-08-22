@@ -31,6 +31,7 @@ namespace Mechadrone1.StateManagement
         SpriteBatch sprite;
         List<SpriteFont> fonts;
         bool textMode;
+        Vector2 dropShadowOffset;
 
 
         public FontManager(GraphicsDevice gd, SpriteBatch sb)
@@ -39,6 +40,7 @@ namespace Mechadrone1.StateManagement
             sprite = sb;
             fonts = new List<SpriteFont>();
             textMode = false;
+            dropShadowOffset = new Vector2(1.0f, 1.0f);
         }
 
 
@@ -77,20 +79,30 @@ namespace Mechadrone1.StateManagement
         /// <summary>
         /// Drawn text using given font, position and color
         /// </summary>
-        public void DrawText(FontType font, String text, Vector2 position, Color color)
+        public void DrawText(FontType font, String text, Vector2 position, Color color, bool dropShadow)
         {
             if (textMode)
+            {
+                if (dropShadow)
+                    sprite.DrawString(fonts[(int)font], text, position + dropShadowOffset, new Color(color.ToVector4() * new Vector4(0, 0, 0, 1)));
+
                 sprite.DrawString(fonts[(int)font], text, position, color);
+            }
         }
 
 
         /// <summary>
         /// Drawn text using given font, position and color, rotation, etc.
         /// </summary>
-        public void DrawText(FontType font, String text, Vector2 position, Color color, float rotation, Vector2 origin, float scale, SpriteEffects effects, float layerDepth)
+        public void DrawText(FontType font, String text, Vector2 position, Color color, bool dropShadow, float rotation, Vector2 origin, float scale, SpriteEffects effects, float layerDepth)
         {
             if (textMode)
+            {
+                if (dropShadow)
+                    sprite.DrawString(fonts[(int)font], text, position + dropShadowOffset, new Color(color.ToVector4() * new Vector4(0, 0, 0, 1)), rotation, origin, scale, effects, layerDepth);
+
                 sprite.DrawString(fonts[(int)font], text, position, color, rotation, origin, scale, effects, layerDepth);
+            }
         }
 
 

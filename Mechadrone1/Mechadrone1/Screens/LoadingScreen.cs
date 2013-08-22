@@ -149,7 +149,7 @@ namespace Mechadrone1.Screens
 
                 // Draw the text.
                 ScreenManager.FontManager.BeginText();
-                ScreenManager.FontManager.DrawText(FontType.ArialLarge, message, textPosition, color);
+                ScreenManager.FontManager.DrawText(FontType.ArialLarge, message, textPosition, color, false);
                 ScreenManager.FontManager.EndText();
             }
         }

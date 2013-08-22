@@ -23,7 +23,7 @@ namespace Mechadrone1.Gameplay.Prefabs
             {
                 if (input.CurrentState.KeyState[(int)player].IsKeyDown(Keys.Space))
                 {
-                    soEnt.LinearMomentum += Vector3.Up * 10.0f * (float)(gameTime.ElapsedGameTime.TotalMilliseconds) * 0.06f;
+                    soEnt.LinearMomentum += (Vector3.Up + camera.Transform.Forward) * 7.0f * (float)(gameTime.ElapsedGameTime.TotalMilliseconds) * 0.06f;
                 }
             }
 
