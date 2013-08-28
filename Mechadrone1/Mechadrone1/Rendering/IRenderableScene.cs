@@ -28,5 +28,6 @@ namespace Mechadrone1.Rendering
         List<DirectLight> TerrainLights { get; }
         DirectLight ShadowCastingLight { get; }
 
+        BoundingBox WorldBounds { get; }
     }
 }

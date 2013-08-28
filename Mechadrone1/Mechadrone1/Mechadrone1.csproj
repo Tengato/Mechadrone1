@@ -113,6 +113,10 @@
     <Compile Include="Rendering\ICamera.cs" />
     <Compile Include="Rendering\ILight.cs" />
     <Compile Include="Rendering\IRenderableScene.cs" />
+    <Compile Include="Rendering\QuadTree.cs" />
+    <Compile Include="Rendering\QuadTreeNode.cs" />
+    <Compile Include="Rendering\QuadTreeRect.cs" />
+    <Compile Include="Rendering\RenderQueue.cs" />
     <Compile Include="Screens\HelpScreen.cs" />
     <Compile Include="StateManagement\FontManager.cs" />
     <Compile Include="Gameplay\Game1Manager.cs" />

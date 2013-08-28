@@ -34,6 +34,7 @@ namespace Mechadrone1.Gameplay
 
         public Skelemator.Terrain Substrate { get; private set; }
         public List<GameObject> GameObjects { get; private set; }
+        public BoundingBox WorldBounds { get; private set; }
 
         public FogDesc Fog { get; set; }
 
@@ -115,6 +116,10 @@ namespace Mechadrone1.Gameplay
             terrainSimModel.Material.StaticFriction = 1.0f;
             terrainSimModel.Material.KineticFriction = 1.0f;
             SimSpace.Add(terrainSimModel);
+
+            BoundingBox extents = terrainSimModel.BoundingBox;
+            extents.Max.Y += (extents.Max.Y - extents.Min.Y);   // Add some head room.
+            WorldBounds = extents;
 
             // The manifest may direct us to instantiate any kind of class that inherits from GameObject.
             // So we must use reflection to construct the object and initialize its properties.

@@ -32,26 +32,112 @@ namespace Mechadrone1.Gameplay
         [NotInitializable]
         public ISpaceObject SimulationObject { get; set; }
 
+        [NotInitializable]
+        public QuadTreeNode QuadTreeNode { get; set; }
+
+        private QuadTree quadTree { get; set; }
+
+
+        private BoundingBox? worldSpaceBoundingBox;
+        [NotInitializable]
+        public BoundingBox WorldSpaceBoundingBox
+        {
+            get
+            {
+                if (worldSpaceBoundingBox == null)
+                {
+                    worldSpaceBoundingBox = BoundingBox.CreateFromSphere(VisualModel.Meshes[0].BoundingSphere.Transform(WorldTransform));
+
+                    for (int i = 1; i < VisualModel.Meshes.Count; i++)
+                    {
+                        worldSpaceBoundingBox = CombineBBoxes((BoundingBox)worldSpaceBoundingBox,
+                            BoundingBox.CreateFromSphere(VisualModel.Meshes[i].BoundingSphere.Transform(WorldTransform)));
+                    }
+                }
+
+                return (BoundingBox)worldSpaceBoundingBox;
+            }
+        }
+
+        private QuadTreeRect? quadTreeBoundingBox;
+        [NotInitializable]
+        public QuadTreeRect QuadTreeBoundingBox
+        {
+            get
+            {
+                if (quadTreeBoundingBox == null)
+                {
+                    quadTreeBoundingBox = QuadTreeRect.CreateFromBoundingBox(WorldSpaceBoundingBox, quadTree.WorldToQuadTreeTransform);
+                }
+
+                return (QuadTreeRect)quadTreeBoundingBox;
+            }
+        }
+
+        private bool hasMovedSinceLastUpdate;
+
         protected Vector3 position;
         virtual public Vector3 Position
         {
             get { return position; }
-            set { position = value; }
+            set
+            {
+                if (position != value)
+                {
+                    worldSpaceBoundingBox = null;
+                    quadTreeBoundingBox = null;
+                    hasMovedSinceLastUpdate = true;
+                }
+                position = value;
+            }
         }
+
 
         protected Quaternion orientation;
         virtual public Quaternion Orientation
         {
             get { return orientation; }
-            set { orientation = value; }
+            set
+            {
+                if (orientation != value)
+                {
+                worldSpaceBoundingBox = null;
+                quadTreeBoundingBox = null;
+                hasMovedSinceLastUpdate = true;
+                }
+                orientation = value;
+            }
         }
+
 
         protected float scale;
         public float Scale
         {
             get { return scale; }
-            set { scale = value; }
+            set
+            {
+                if (scale != value)
+                {
+                    worldSpaceBoundingBox = null;
+                    quadTreeBoundingBox = null;
+                    hasMovedSinceLastUpdate = true;
+                }
+                scale = value;
+            }
         }
+
+
+        [NotInitializable]
+        public Matrix WorldTransform
+        {
+            get
+            {
+                return Matrix.CreateScale(Scale) *
+                    Matrix.CreateFromQuaternion(Orientation) *
+                    Matrix.CreateTranslation(Position);
+            }
+        }
+
 
         [NotInitializable]
         public virtual Matrix CameraAnchor
@@ -62,6 +148,7 @@ namespace Mechadrone1.Gameplay
             }
         }
 
+
         public SkinningData Animations { get; set; }
         public AnimationPlayer AnimationPlayer { get; set; }
         public bool CastsShadow { get; set; }
@@ -69,6 +156,7 @@ namespace Mechadrone1.Gameplay
         public bool Visible { get; set; }
         public bool Dynamic { get; set; }
         public event MakeSoundEventHandler MakeSound;
+
 
         [NotInitializable]
         public Vector3 SimulationPosition
@@ -142,12 +230,15 @@ namespace Mechadrone1.Gameplay
             get { return (Matrix.CreateFromQuaternion(Orientation)).Up; }
         }
 
+
         protected void OnMakeSound(string soundName)
         {
             MakeSound(this, new MakeSoundEventArgs(soundName, 0.1f));
         }
 
+
         public virtual void HandleInput(GameTime gameTime, InputManager input, PlayerIndex player, ICamera camera) { }
+
 
         public virtual void Update(GameTime gameTime)
         {
@@ -163,8 +254,38 @@ namespace Mechadrone1.Gameplay
                     }
                 }
             }
+
+            if (hasMovedSinceLastUpdate)
+            {
+                if (Visible)
+                    quadTree.AddOrUpdateSceneObject(this);
+
+                hasMovedSinceLastUpdate = false;
+            }
         }
 
+
+        private BoundingBox CombineBBoxes(BoundingBox a, BoundingBox b)
+        {
+            BoundingBox result;
+            result.Min.X = Math.Min(a.Min.X, b.Min.X);
+            result.Min.Y = Math.Min(a.Min.Y, b.Min.Y);
+            result.Min.Z = Math.Min(a.Min.Z, b.Min.Z);
+            result.Max.X = Math.Max(a.Max.X, b.Max.X);
+            result.Max.Y = Math.Max(a.Max.Y, b.Max.Y);
+            result.Max.Z = Math.Max(a.Max.Z, b.Max.Z);
+
+            return result;
+        }
+
+
+        public void JoinQuadTree(QuadTree quadTree)
+        {
+            this.quadTree = quadTree;
+
+            if (Visible)
+                this.quadTree.AddOrUpdateSceneObject(this);
+        }
     }
 
 }

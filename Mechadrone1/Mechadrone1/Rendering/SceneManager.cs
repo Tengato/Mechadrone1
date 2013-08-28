@@ -21,6 +21,7 @@ namespace Mechadrone1.Rendering
     {
         GraphicsDevice gd;
         IRenderableScene sceneModel;
+        QuadTree quadTree;
 
         SpriteBatch spriteBatch;
         SamplerState pointTexFilter;
@@ -121,6 +122,7 @@ namespace Mechadrone1.Rendering
         public void LoadContent(IRenderableScene scene, ContentManager content)
         {
             sceneModel = scene;
+            quadTree = new QuadTree(scene.WorldBounds);
 
             cameraFrustum = new BoundingFrustum(Matrix.Identity);
 
@@ -202,6 +204,8 @@ namespace Mechadrone1.Rendering
                         RegisterEffectParams(mmp.Effect, (RenderOptions)(mmp.Tag));
                     }
                 }
+
+                go.JoinQuadTree(quadTree);
             }
 
             SetFog(sceneModel.Fog);
@@ -311,7 +315,10 @@ namespace Mechadrone1.Rendering
         {
             ICamera camera = sceneModel.GetCamera(player);
 
-            List<GameObject> visibleObjects = sceneModel.GameObjects.FindAll(obj => obj.VisualModel != null && obj.Visible == true);
+            cameraFrustum.Matrix = camera.View * projection;
+            BoundingBox cameraRect = BoundingBox.CreateFromPoints(cameraFrustum.GetCorners());
+
+            List<GameObject> visibleObjects = quadTree.Search(cameraRect, cameraFrustum);
 
             // TODO: Make some refactorizations to declutter this method.
             // Build the shadow map. The main light will cast the shadow.
