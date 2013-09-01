@@ -54,7 +54,6 @@ namespace Mechadrone1.Rendering
                                                0.0f, 0.0f, 1.0f, 0.0f,
                                                0.5f, 0.5f, 0.0f, 1.0f);
         RenderTarget2D smapRenderTarget;
-        Texture2D smapStencil;
 
         // Default pose
         Matrix[] bindPose = new Matrix[72];
@@ -79,7 +78,6 @@ namespace Mechadrone1.Rendering
         const string SHADOWLIGHTINDEX_PARAM_NAME = "ShadowLightIndex";
         const string SHADOWTRANSFORM_PARAM_NAME = "ShadowTransform";
         const string SHADOWMAP_PARAM_NAME = "ShadowMap";
-        const string SHADOWMAP_STENCIL_PARAM_NAME = "Border";
         const string ENVIROMAP_PARAM_NAME = "EnviroMap";
 
         string[] standardParamNames = new string[8] {
@@ -187,8 +185,6 @@ namespace Mechadrone1.Rendering
                                                   SurfaceFormat.Single,
                                                   DepthFormat.Depth24);
 
-            smapStencil = content.Load<Texture2D>("textures\\Shadow Map Stencil");
-
             // Build the effect/param collections.
             loadedEffects = new List<Effect>();
             effectParams = new Dictionary<Effect, Dictionary<string, EffectParameter>>();
@@ -258,7 +254,6 @@ namespace Mechadrone1.Rendering
                 fx.Parameters[SHADOWLIGHTINDEX_PARAM_NAME].SetValue(0);
                 standardParams.Add(SHADOWTRANSFORM_PARAM_NAME, fx.Parameters[SHADOWTRANSFORM_PARAM_NAME]);
                 standardParams.Add(SHADOWMAP_PARAM_NAME, fx.Parameters[SHADOWMAP_PARAM_NAME]);
-                standardParams.Add(SHADOWMAP_STENCIL_PARAM_NAME, fx.Parameters[SHADOWMAP_STENCIL_PARAM_NAME]);
             }
 
             effectParams.Add(fx, standardParams);
@@ -451,7 +446,6 @@ namespace Mechadrone1.Rendering
             effectParams[sceneModel.Substrate.Effect][WORLDVIEWPROJ_PARAM_NAME].SetValue(wvp);
             effectParams[sceneModel.Substrate.Effect][WORLDINVTRANSPOSE_PARAM_NAME].SetValue(wit);
             effectParams[sceneModel.Substrate.Effect][EYEPOSITION_PARAM_NAME].SetValue(camera.Transform.Translation);
-            effectParams[sceneModel.Substrate.Effect][SHADOWMAP_STENCIL_PARAM_NAME].SetValue(smapStencil);
 
             gd.SetVertexBuffer(sceneModel.Substrate.Vertices);
             gd.Indices = sceneModel.Substrate.Indices;
@@ -505,7 +499,6 @@ namespace Mechadrone1.Rendering
                         {
                             effectParams[mmp.Effect][SHADOWTRANSFORM_PARAM_NAME].SetValue(world * lightView * lightFrustum * ndcToTextureCoords);
                             effectParams[mmp.Effect][SHADOWMAP_PARAM_NAME].SetValue(smapRenderTarget);
-                            effectParams[mmp.Effect][SHADOWMAP_STENCIL_PARAM_NAME].SetValue(smapStencil);
                         }
 
                         effectParams[mmp.Effect][WORLD_PARAM_NAME].SetValue(world);

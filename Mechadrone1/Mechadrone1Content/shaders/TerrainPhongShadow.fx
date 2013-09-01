@@ -92,17 +92,6 @@ sampler2D ShadowMapSampler = sampler_state
     AddressV = CLAMP;
 };
 
-texture2D Border;
-sampler2D BorderSampler = sampler_state
-{
-    Texture = <Border>;
-    MinFilter = LINEAR;
-    MagFilter = LINEAR;
-    MipFilter = LINEAR;
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-};
-
 
 float CalculateShadowFactor(float4 smapTexCoord)
 {
@@ -135,8 +124,6 @@ float CalculateShadowFactor(float4 smapTexCoord)
                       smoothstep(1.0f, 0.9f, smapTexCoord.x) *
                       smoothstep(0.0f, 0.1f, smapTexCoord.y) *
                       smoothstep(1.0f, 0.9f, smapTexCoord.y);
-
-    //float borderColor = tex2D(BorderSampler, smapTexCoord.xy);
 
     return lerp(1.0f, percentLit / 9.0f, borderColor);
 }

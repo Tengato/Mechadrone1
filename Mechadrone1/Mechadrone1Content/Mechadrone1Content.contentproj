@@ -287,11 +287,6 @@
       <ProcessorParameters_XZScale>1</ProcessorParameters_XZScale>
       <ProcessorParameters_YScale>1</ProcessorParameters_YScale>
     </Compile>
-    <Compile Include="textures\Shadow Map Stencil.tga">
-      <Name>Shadow Map Stencil</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="shaders\NormSpecSkinPhongReflect.fx">
