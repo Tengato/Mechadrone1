@@ -5,31 +5,31 @@
         <CustomEffect>shaders\TerrainPhongShadow.fx</CustomEffect>
         <EffectParams>
             <EffectParam>
-                <string>Texture1</string>
+                <string>TextureFlatBlend</string>
                 <EffectParamCategory>Texture</EffectParamCategory>
                 <string>System.String</string>
                 <string>textures\Terrain Gravel.tga</string>
             </EffectParam>
             <EffectParam>
-                <string>Texture2</string>
+                <string>TextureFlatBase</string>
                 <EffectParamCategory>Texture</EffectParamCategory>
                 <string>System.String</string>
                 <string>textures\Terrain Grass.tga</string>
             </EffectParam>
             <EffectParam>
-                <string>Texture3</string>
+                <string>TextureSteep</string>
                 <EffectParamCategory>Texture</EffectParamCategory>
                 <string>System.String</string>
                 <string>textures\Terrain Boulder.tga</string>
             </EffectParam>
             <EffectParam>
-                <string>Texture3Normal</string>
+                <string>TextureSteepNormal</string>
                 <EffectParamCategory>Texture</EffectParamCategory>
                 <string>System.String</string>
                 <string>textures\Terrain Boulder Normal.jpg</string>
             </EffectParam>
             <EffectParam>
-                <string>TextureBlend</string>
+                <string>TextureLowFreq</string>
                 <EffectParamCategory>Texture</EffectParamCategory>
                 <string>System.String</string>
                 <string>textures\Terrain Blend 01.tga</string>
@@ -51,6 +51,17 @@
                 <EffectParamCategory>OpaqueData</EffectParamCategory>
                 <string>System.Single</string>
                 <float>12</float>
+            </EffectParam>
+            <EffectParam>
+                <string>MatSpecColor</string>
+                <EffectParamCategory>OpaqueData</EffectParamCategory>
+                <string>Microsoft.Xna.Framework.Vector4, Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553</string>
+                <Vector4>
+                    <X>0.02</X>
+                    <Y>0.02</Y>
+                    <Z>0.02</Z>
+                    <W>20.0</W>
+                </Vector4>
             </EffectParam>
             <EffectParam>
                 <string>LargeTexCoordOffset</string>

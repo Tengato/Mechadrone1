@@ -199,7 +199,7 @@ namespace Mechadrone1
             Matrix transform = Matrix.Identity;
             transform.Forward = ChaseDirection;
             transform.Up = Up;
-            transform.Right = Vector3.Cross(Up, ChaseDirection);
+            transform.Right = Vector3.Cross(ChaseDirection, Up);
 
             // Calculate desired camera properties in world space
             desiredPosition = ChasePosition +

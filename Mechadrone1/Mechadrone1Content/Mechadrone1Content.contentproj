@@ -285,7 +285,7 @@
       <ProcessorParameters_MaterialDataFilePath>terrain\SteppesMaterialData.xml</ProcessorParameters_MaterialDataFilePath>
       <ProcessorParameters_Width>1025</ProcessorParameters_Width>
       <ProcessorParameters_XZScale>1</ProcessorParameters_XZScale>
-      <ProcessorParameters_YScale>1</ProcessorParameters_YScale>
+      <ProcessorParameters_YScale>0.5</ProcessorParameters_YScale>
     </Compile>
   </ItemGroup>
   <ItemGroup>

@@ -25,10 +25,10 @@ float4 FogColor;
 
 #include "Common.fxh"
 
-texture2D Texture1;
-sampler2D Texture1Sampler = sampler_state
+texture2D TextureFlatBase;
+sampler2D TextureFlatBaseSampler = sampler_state
 {
-    Texture = <Texture1>;
+    Texture = <TextureFlatBase>;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
     MipFilter = LINEAR;
@@ -36,10 +36,10 @@ sampler2D Texture1Sampler = sampler_state
     AddressV = WRAP;
 };
 
-texture2D Texture2;
-sampler2D Texture2Sampler = sampler_state
+texture2D TextureFlatBlend;
+sampler2D TextureFlatBlendSampler = sampler_state
 {
-    Texture = <Texture2>;
+    Texture = <TextureFlatBlend>;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
     MipFilter = LINEAR;
@@ -47,10 +47,10 @@ sampler2D Texture2Sampler = sampler_state
     AddressV = WRAP;
 };
 
-texture2D Texture3;
-sampler2D Texture3Sampler = sampler_state
+texture2D TextureSteep;
+sampler2D TextureSteepSampler = sampler_state
 {
-    Texture = <Texture3>;
+    Texture = <TextureSteep>;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
     MipFilter = LINEAR;
@@ -58,10 +58,10 @@ sampler2D Texture3Sampler = sampler_state
     AddressV = WRAP;
 };
 
-texture2D Texture3Normal;
-sampler2D Texture3NormalSampler = sampler_state
+texture2D TextureSteepNormal;
+sampler2D TextureSteepNormalSampler = sampler_state
 {
-    Texture = <Texture3Normal>;
+    Texture = <TextureSteepNormal>;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
     MipFilter = LINEAR;
@@ -69,10 +69,10 @@ sampler2D Texture3NormalSampler = sampler_state
     AddressV = WRAP;
 };
 
-texture2D TextureBlend;
-sampler2D TextureBlendSampler = sampler_state
+texture2D TextureLowFreq;
+sampler2D TextureLowFreqSampler = sampler_state
 {
-    Texture = <TextureBlend>;
+    Texture = <TextureLowFreq>;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
     MipFilter = LINEAR;
@@ -97,6 +97,14 @@ float CalculateShadowFactor(float4 smapTexCoord)
 {
     smapTexCoord.xyz /= smapTexCoord.w;
 
+    float smapInfluence = smoothstep(0.0f, 0.1f, smapTexCoord.x) *
+                      smoothstep(1.0f, 0.9f, smapTexCoord.x) *
+                      smoothstep(0.0f, 0.1f, smapTexCoord.y) *
+                      smoothstep(1.0f, 0.9f, smapTexCoord.y);
+
+    if (smapInfluence == 0.0f)
+        return 1.0f;
+
     float percentLit = 0.0f;
 
     const float2 offset[9] =
@@ -120,12 +128,7 @@ float CalculateShadowFactor(float4 smapTexCoord)
         percentLit += smapTexCoord.z <= smapDepth ? 1.0f : 0.0f;
     }
 
-    float borderColor = smoothstep(0.0f, 0.1f, smapTexCoord.x) *
-                      smoothstep(1.0f, 0.9f, smapTexCoord.x) *
-                      smoothstep(0.0f, 0.1f, smapTexCoord.y) *
-                      smoothstep(1.0f, 0.9f, smapTexCoord.y);
-
-    return lerp(1.0f, percentLit / 9.0f, borderColor);
+    return lerp(1.0f, percentLit / 9.0f, smapInfluence);
 }
 
 
@@ -184,22 +187,20 @@ void PixelProc(float3   normal          : NORMAL,
     tangentToWorld[2] = normalize(tangentToWorld[2]);
 
     // Fetch and expand range-compressed normal
-    float3 normal3Tex = tex2D(Texture3NormalSampler, medTexCoord).xyz;
-    float3 normal3TanSpc = expandNormalTex(normal3Tex);
-    float3 normal3 = mul(normal3TanSpc, tangentToWorld);
+    float3 normalSteepTex = tex2D(TextureSteepNormalSampler, medTexCoord).xyz;
+    float3 normalSteepTanSpc = expandNormalTex(normalSteepTex);
+    float3 normalSteep = mul(normalSteepTanSpc, tangentToWorld);
 
-    float4 tex1Diffuse = tex2D(Texture1Sampler, medTexCoord);
-    float4 tex2Diffuse = tex2D(Texture2Sampler, medTexCoord);
-    float4 tex3Diffuse = tex2D(Texture3Sampler, medTexCoord);
-    float4 texBlend = tex2D(TextureBlendSampler, largeTexCoord);
+    float3 texFlatBaseDiffuse = tex2D(TextureFlatBaseSampler, medTexCoord);
+    float3 texFlatBlendDiffuse = tex2D(TextureFlatBlendSampler, medTexCoord);
+    float3 texSteepDiffuse = tex2D(TextureSteepSampler, medTexCoord);
+    float4 texLowFreq = tex2D(TextureLowFreqSampler, largeTexCoord);
 
-    texBlend.b = length(normal.xz);
-    texBlend.g = 0.0f;
+    float steepness = length(normal.xz);
 
-    float4 overlayDiffuse = lerp(tex1Diffuse, tex3Diffuse, texBlend.b / (texBlend.b + texBlend.g));
-    float3 overlayNormal = normalize(lerp(float3(0.0f, 1.0f, 0.0f), normal3, texBlend.b / (texBlend.b + texBlend.g)));
-    surfaceMat.Diffuse = lerp(tex2Diffuse, overlayDiffuse, clamp(texBlend.b + texBlend.g, 0.0f, 1.0f));
-    float3 surfaceNormal = normalize(lerp(float3(0.0f, 1.0f, 0.0f), overlayNormal, clamp(texBlend.b + texBlend.g, 0.0f, 1.0f)));
+    float3 flatDiffuse = lerp(texFlatBaseDiffuse, texFlatBlendDiffuse, texLowFreq.r);
+    surfaceMat.Diffuse = float4(lerp(flatDiffuse, texSteepDiffuse, smoothstep(0.4f, 0.7f, steepness)) * texLowFreq.g * 2.0f, 1.0f);
+    float3 surfaceNormal = normalize(lerp(float3(0.0f, 1.0f, 0.0f), normalSteep, steepness));
 
     float eyeDistance = length(eyeDisplacement);
 

@@ -1,5 +1,3 @@
-#define PROFILE
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Mechadrone1.StateManagement;
