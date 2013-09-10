@@ -91,7 +91,7 @@ namespace Mechadrone1.Gameplay
             RenderEntry re = new RenderEntry();
 
             re.VertexBuffer = parent.BaseTerrain.Vertices;
-            re.NumVertices = (parent.BaseTerrain.SectorSize + 1) * (parent.BaseTerrain.SectorSize + 1);
+            re.NumVertices = parent.BaseTerrain.SectorSize * parent.BaseTerrain.VertexCountAlongXAxis + parent.BaseTerrain.SectorSize + 1;
             re.IndexBuffer = parent.BaseTerrain.Indices;
             re.VertexOffset = xIndex * parent.BaseTerrain.SectorSize +
                             zIndex * parent.BaseTerrain.SectorSize * parent.BaseTerrain.VertexCountAlongXAxis;
