@@ -8,13 +8,13 @@ using System;
 using BEPUphysics.Entities.Prefabs;
 using BEPUphysics.Entities;
 using Mechadrone1.Rendering;
+using System.Collections.Generic;
 
 
 namespace Mechadrone1.Gameplay
 {
-    class GameObject : IAudible
+    class GameObject : IAudible, ISceneObject
     {
-
         public string Name { get; set; }
 
         [LoadedAsset]
@@ -35,8 +35,14 @@ namespace Mechadrone1.Gameplay
         [NotInitializable]
         public QuadTreeNode QuadTreeNode { get; set; }
 
-        private QuadTree quadTree { get; set; }
+        [NotInitializable]
+        public QuadTree QuadTree { get; set; }
 
+        private Matrix world;
+        private Matrix wvp;
+        private Matrix wit;
+
+        private Matrix[] bones;
 
         private BoundingBox? worldSpaceBoundingBox;
         [NotInitializable]
@@ -50,7 +56,7 @@ namespace Mechadrone1.Gameplay
 
                     for (int i = 1; i < VisualModel.Meshes.Count; i++)
                     {
-                        worldSpaceBoundingBox = CombineBBoxes((BoundingBox)worldSpaceBoundingBox,
+                        worldSpaceBoundingBox = SlagformCommon.Space.CombineBBoxes((BoundingBox)worldSpaceBoundingBox,
                             BoundingBox.CreateFromSphere(VisualModel.Meshes[i].BoundingSphere.Transform(WorldTransform)));
                     }
                 }
@@ -67,7 +73,7 @@ namespace Mechadrone1.Gameplay
             {
                 if (quadTreeBoundingBox == null)
                 {
-                    quadTreeBoundingBox = QuadTreeRect.CreateFromBoundingBox(WorldSpaceBoundingBox, quadTree.WorldToQuadTreeTransform);
+                    quadTreeBoundingBox = QuadTreeRect.CreateFromBoundingBox(WorldSpaceBoundingBox, QuadTree.WorldToQuadTreeTransform);
                 }
 
                 return (QuadTreeRect)quadTreeBoundingBox;
@@ -148,6 +154,8 @@ namespace Mechadrone1.Gameplay
             }
         }
 
+        // Default pose
+        static private Matrix[] bindPose;
 
         public SkinningData Animations { get; set; }
         public AnimationPlayer AnimationPlayer { get; set; }
@@ -189,6 +197,17 @@ namespace Mechadrone1.Gameplay
 
         public GameObject()
         {
+            if (bindPose == null)
+            {
+                bindPose = new Matrix[72];
+
+                for (int i = 0; i < bindPose.Length; i++)
+                {
+                    bindPose[i] = Matrix.Identity;
+                }
+            }
+
+            // Set defaults:
             IsSimulationParticipant = false;
             Position = Vector3.Zero;
             Orientation = Quaternion.Identity;
@@ -219,6 +238,23 @@ namespace Mechadrone1.Gameplay
                 }
             }
 
+            if (VisualModel != null)
+            {
+                if (EffectRegistry.RegisteredModels.Add(VisualModel))
+                {
+                    foreach (ModelMesh mesh in VisualModel.Meshes)
+                    {
+                        foreach (ModelMeshPart mmp in mesh.MeshParts)
+                        {
+                            EffectRegistry.Add(mmp.Effect, (RenderOptions)(mmp.Tag));
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Visible = false;
+            }
         }
 
 
@@ -258,34 +294,154 @@ namespace Mechadrone1.Gameplay
             if (hasMovedSinceLastUpdate)
             {
                 if (Visible)
-                    quadTree.AddOrUpdateSceneObject(this);
+                    QuadTree.AddOrUpdateSceneObject(this);
 
                 hasMovedSinceLastUpdate = false;
             }
         }
 
 
-        private BoundingBox CombineBBoxes(BoundingBox a, BoundingBox b)
+        public virtual List<RenderEntry> GetRenderEntries(
+            int frame,
+            RenderStep step,
+            Matrix view,
+            Matrix projection,
+            Matrix cameraTransform,
+            Matrix shadowCastingLightView,
+            Matrix shadowCastingLightProjection,
+            RenderTarget2D shadowMap,
+            List<DirectLight> lights)
         {
-            BoundingBox result;
-            result.Min.X = Math.Min(a.Min.X, b.Min.X);
-            result.Min.Y = Math.Min(a.Min.Y, b.Min.Y);
-            result.Min.Z = Math.Min(a.Min.Z, b.Min.Z);
-            result.Max.X = Math.Max(a.Max.X, b.Max.X);
-            result.Max.Y = Math.Max(a.Max.Y, b.Max.Y);
-            result.Max.Z = Math.Max(a.Max.Z, b.Max.Z);
+            world = Matrix.CreateScale(Scale) * Matrix.CreateFromQuaternion(Orientation) * Matrix.CreateTranslation(Position);
 
-            return result;
+            wvp = step == RenderStep.Shadows ?
+                world * shadowCastingLightView * shadowCastingLightProjection :
+                world * view * projection;
+            wit = Matrix.Transpose(Matrix.Invert(world));
+
+            bones = bindPose;
+
+            if (Animations != null && AnimationPlayer != null && AnimationPlayer.CurrentClip != null)
+            {
+                bones = AnimationPlayer.GetSkinTransforms();
+            }
+
+            List<RenderEntry> results = new List<RenderEntry>();
+
+            foreach (ModelMesh mesh in VisualModel.Meshes)
+            {
+                foreach (ModelMeshPart mmp in mesh.MeshParts)
+                {
+                    RenderEntry re = new RenderEntry();
+
+                    re.VertexBuffer = mmp.VertexBuffer;
+                    re.NumVertices = mmp.NumVertices;
+                    re.IndexBuffer = mmp.IndexBuffer;
+                    re.VertexOffset = mmp.VertexOffset;
+                    re.StartIndex = mmp.StartIndex;
+                    re.RenderOptions = (RenderOptions)(mmp.Tag);
+                    re.PrimitiveCount = mmp.PrimitiveCount;
+
+                    re.View = view;
+                    re.Projection = projection;
+                    re.ShadowCastingLightView = shadowCastingLightView;
+                    re.ShadowCastingLightProjection = shadowCastingLightProjection;
+                    re.ShadowMap = shadowMap;
+                    re.CameraTransform = cameraTransform;
+                    re.SceneObject = this;
+                    re.Lights = lights;
+
+                    switch (step)
+                    {
+                        case RenderStep.Default:
+                            re.DrawCallback = Draw;
+                            re.Effect = mmp.Effect;
+                            break;
+                        case RenderStep.Shadows:
+                            re.DrawCallback = DrawShadow;
+
+                            // TODO: perhaps put these fx into separate techniques instead maybe?
+                            if (re.RenderOptions.HasFlag(RenderOptions.RequiresSkeletalPose) && Animations != null)
+                            {
+                                re.Effect = EffectRegistry.DepthOnlySkinFx;
+                            }
+                            else
+                            {
+                                re.Effect = EffectRegistry.DepthOnlyFx;
+                            }
+                            break;
+                        default:
+                            throw new NotImplementedException();
+                    }
+
+                    re.Pass = re.Effect.CurrentTechnique.Passes[0];
+                    results.Add(re);
+
+                    // Make additional copies of the render entry for multi-pass techniques:
+                    for (int i = 1; i < re.Effect.CurrentTechnique.Passes.Count; i++)
+                    {
+                        RenderEntry reCopy = new RenderEntry(re);
+                        reCopy.Pass = re.Effect.CurrentTechnique.Passes[i];
+                        results.Add(reCopy);
+                    }
+                }
+            }
+
+            return results;
         }
 
 
-        public void JoinQuadTree(QuadTree quadTree)
+        public virtual void DrawShadow(RenderEntry re)
         {
-            this.quadTree = quadTree;
+            EffectRegistry.DOWorldViewProj.SetValue(wvp);
+            EffectRegistry.DOSWorldViewProj.SetValue(wvp);
 
-            if (Visible)
-                this.quadTree.AddOrUpdateSceneObject(this);
+            if (Animations != null)
+            {
+                EffectRegistry.DOSWeightsPerVert.SetValue(Animations.WeightsPerVert);
+                EffectRegistry.DOSPosedBones.SetValue(bones);
+            }
+
+            re.Pass.Apply();
+            re.Effect.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, re.VertexOffset, 0,
+                re.NumVertices, re.StartIndex, re.PrimitiveCount);
         }
+
+
+        public virtual void Draw(RenderEntry re)
+        {
+            if (re.RenderOptions.HasFlag(RenderOptions.RequiresSkeletalPose))
+            {
+                EffectRegistry.Params[re.Effect][EffectRegistry.POSEDBONES_PARAM_NAME].SetValue(bones);
+                if (Animations != null)
+                {
+                    EffectRegistry.Params[re.Effect][EffectRegistry.WEIGHTS_PER_VERT_PARAM_NAME].SetValue(Animations.WeightsPerVert);
+                }
+                else
+                {
+                    EffectRegistry.Params[re.Effect][EffectRegistry.WEIGHTS_PER_VERT_PARAM_NAME].SetValue(4);
+                }
+
+            }
+
+            if (re.RenderOptions.HasFlag(RenderOptions.RequiresShadowMap))
+            {
+                EffectRegistry.Params[re.Effect][EffectRegistry.SHADOWTRANSFORM_PARAM_NAME].SetValue(
+                    world * re.ShadowCastingLightView * re.ShadowCastingLightProjection * SceneManager.NDC_TO_TEXCOORDS);
+                EffectRegistry.Params[re.Effect][EffectRegistry.SHADOWMAP_PARAM_NAME].SetValue(re.ShadowMap);
+            }
+
+            EffectRegistry.Params[re.Effect][EffectRegistry.WORLD_PARAM_NAME].SetValue(world);
+            EffectRegistry.Params[re.Effect][EffectRegistry.WORLDVIEWPROJ_PARAM_NAME].SetValue(wvp);
+            EffectRegistry.Params[re.Effect][EffectRegistry.WORLDINVTRANSPOSE_PARAM_NAME].SetValue(wit);
+            EffectRegistry.Params[re.Effect][EffectRegistry.EYEPOSITION_PARAM_NAME].SetValue(re.CameraTransform.Translation);
+            EffectRegistry.SetLighting(re.Lights, re.Effect);
+
+            re.Pass.Apply();
+            re.Effect.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList,
+                re.VertexOffset, 0, re.NumVertices, re.StartIndex, re.PrimitiveCount);
+        }
+
     }
 
 }

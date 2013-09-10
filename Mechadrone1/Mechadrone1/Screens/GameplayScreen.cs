@@ -81,7 +81,7 @@ namespace Mechadrone1.Screens
         public override void Update(GameTime gameTime, bool otherScreenHasFocus,
                                                        bool coveredByOtherScreen)
         {
-            // TODO: I'm guessing the 2nd param is false here because this screen wants to do it's own covered effect?
+            // TODO: I'm guessing the 2nd param is false here because this screen wants to do its own covered effect?
             base.Update(gameTime, otherScreenHasFocus, false);
 
             // Gradually fade in or out depending on whether we are covered by the pause screen.
@@ -150,8 +150,10 @@ namespace Mechadrone1.Screens
 
             string fps = string.Format("fps: {0}", frameRate);
 
+            Color fpsColor = gameTime.IsRunningSlowly == true ? Color.Orange : Color.White;
+
             ScreenManager.FontManager.BeginText();
-            ScreenManager.FontManager.DrawText(FontType.ArialSmall, fps, new Vector2(32, 32), Color.White, true);
+            ScreenManager.FontManager.DrawText(FontType.ArialSmall, fps, new Vector2(32, 32), fpsColor, true);
             ScreenManager.FontManager.EndText();
 
             // If the game is transitioning on or off, fade it out to black.

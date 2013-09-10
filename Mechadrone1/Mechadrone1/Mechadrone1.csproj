@@ -29,7 +29,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>3</ApplicationRevision>
+    <ApplicationRevision>5</ApplicationRevision>
     <ApplicationVersion>0.1.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -100,22 +100,29 @@
     <Compile Include="Gameplay\Prefabs\FreeFlyer.cs" />
     <Compile Include="Gameplay\GameObject.cs" />
     <Compile Include="Gameplay\Helpers\FloatMovement.cs" />
+    <Compile Include="Gameplay\Prefabs\Grid.cs" />
     <Compile Include="Gameplay\Prefabs\OrbitingLightbulb.cs" />
     <Compile Include="Gameplay\Prefabs\QuadWheel.cs" />
     <Compile Include="Gameplay\Prefabs\Roller.cs" />
+    <Compile Include="Gameplay\Prefabs\WireBox.cs" />
+    <Compile Include="Gameplay\TerrainChunk.cs" />
     <Compile Include="Gameplay\Subsystems\AnimSprite.cs" />
     <Compile Include="Gameplay\Subsystems\AnimSpriteManager.cs" />
     <Compile Include="BlurManager.cs" />
     <Compile Include="ChaseCamera.cs" />
     <Compile Include="EntityList.cs" />
+    <Compile Include="Gameplay\TerrainSector.cs" />
     <Compile Include="InputManager.cs" />
     <Compile Include="InputState.cs" />
+    <Compile Include="Rendering\EffectRegistry.cs" />
     <Compile Include="Rendering\ICamera.cs" />
     <Compile Include="Rendering\ILight.cs" />
     <Compile Include="Rendering\IRenderableScene.cs" />
+    <Compile Include="Rendering\ISceneObject.cs" />
     <Compile Include="Rendering\QuadTree.cs" />
     <Compile Include="Rendering\QuadTreeNode.cs" />
     <Compile Include="Rendering\QuadTreeRect.cs" />
+    <Compile Include="Rendering\RenderEntry.cs" />
     <Compile Include="Rendering\RenderQueue.cs" />
     <Compile Include="Screens\HelpScreen.cs" />
     <Compile Include="StateManagement\FontManager.cs" />
@@ -159,6 +166,10 @@
     <ProjectReference Include="..\..\Skelemator\Skelemator.csproj">
       <Project>{C6A308A7-1781-4699-A993-B8C7643891AF}</Project>
       <Name>Skelemator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SlagformCommon\SlagformCommon.csproj">
+      <Project>{8F94C145-E7DD-47F5-912E-3D2311CDB8AF}</Project>
+      <Name>SlagformCommon</Name>
     </ProjectReference>
     <ProjectReference Include="..\Mechadrone1Content\Mechadrone1Content.contentproj">
       <Name>Mechadrone1Content</Name>

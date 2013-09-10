@@ -286,6 +286,7 @@
       <ProcessorParameters_Width>1025</ProcessorParameters_Width>
       <ProcessorParameters_XZScale>1</ProcessorParameters_XZScale>
       <ProcessorParameters_YScale>0.5</ProcessorParameters_YScale>
+      <ProcessorParameters_YOffset>-96.5</ProcessorParameters_YOffset>
     </Compile>
   </ItemGroup>
   <ItemGroup>

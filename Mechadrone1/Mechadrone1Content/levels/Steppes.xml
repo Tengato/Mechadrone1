@@ -1,7 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <XnaContent xmlns:Framework="Microsoft.Xna.Framework">
     <Asset Type="Manifracture.Game1Manifest">
-        <TerrainAssetName>terrain\Steppes Heightmap</TerrainAssetName>
+        <TerrainChunks>
+            <Item>
+                <AssetName>terrain\Steppes Heightmap</AssetName>
+                <Position>0 0 0</Position>
+            </Item>
+        </TerrainChunks>
         <GameObjects>
             <Item>
                 <TypeFullName>Mechadrone1.Gameplay.GameObject, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>

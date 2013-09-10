@@ -13,21 +13,16 @@ namespace Mechadrone1.Rendering
 {
     interface IRenderableScene
     {
-        Terrain Substrate { get; }
-        List<GameObject> GameObjects { get; }
         ICamera GetCamera(PlayerIndex player);
 
-        /// <summary>
-        /// Field of view in the y direction, in radians.
-        /// </summary>
-        float FieldOfView { get; }
         FogDesc Fog { get; }
         Space SimSpace { get; }
 
-        List<DirectLight> GetObjectLights(ModelMesh mesh, Matrix worldTransform, Vector3 eyePosition);
+        List<DirectLight> GetObjectLights(Vector3 position, Vector3 eyePosition);
         List<DirectLight> TerrainLights { get; }
         DirectLight ShadowCastingLight { get; }
 
         BoundingBox WorldBounds { get; }
+        QuadTree QuadTree { get; }
     }
 }

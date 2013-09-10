@@ -13,20 +13,23 @@ namespace Skelemator
         public int VertexCountAlongXAxis;
         public int VertexCountAlongZAxis;
         public int SectorSize;
+        public float XZScale;
         public VertexBuffer Vertices;
         public IndexBuffer Indices;
         public int TriangleCount;
         public int VertexCount;
         public Effect Effect;
         public object Tag;
-        public Vector3 Position { get; set; }
 
 
-        public Vector3 SimulationPosition
+        public Vector3 TransformForGeometry
         {
             get
             {
-                return Position - new Vector3((float)(VertexCountAlongXAxis) / 2.0f, 0.0f, (float)(VertexCountAlongZAxis) / 2.0f);
+                return new Vector3(
+                -(float)(VertexCountAlongXAxis - 1) * XZScale / 2.0f,
+                0.0f,
+                -(float)(VertexCountAlongZAxis - 1) * XZScale / 2.0f);
             }
         }
 

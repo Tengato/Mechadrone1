@@ -111,6 +111,8 @@ namespace Mechadrone1
         }
         private Vector3 lookAt;
 
+        public float FieldOfView { get; set; }
+
         #endregion
 
         #region Camera physics (typically set when creating camera)

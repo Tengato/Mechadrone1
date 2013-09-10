@@ -20,21 +20,22 @@ namespace Mechadrone1.Gameplay
 {
     /// <summary>
     /// Manages the gameplay object model and simulation. It generally doesn't care about
-    /// rendering problems but will store information that is necessary for dealing with them.
+    /// rendering problems but will store information that is necessary for dealing with them,
+    /// like a quadtree.
     /// </summary>
     class Game1Manager : IRenderableScene
     {
-        public float FieldOfView { get; set; }
-
         SoundBank soundBank;
         List<Cue> cueSounds;            // list of currently playing 3D sounds
         List<Cue> cueSoundsDelete;      // 3D sounds finished and ready to delete
 
         float[] vibrationTime;          // pad vibration times for each player (zero for no vibration)
 
-        public Skelemator.Terrain Substrate { get; private set; }
+        public List<TerrainChunk> Substrate { get; private set; }
         public List<GameObject> GameObjects { get; private set; }
         public BoundingBox WorldBounds { get; private set; }
+
+        public QuadTree QuadTree { get; private set; }
 
         public FogDesc Fog { get; set; }
 
@@ -53,7 +54,7 @@ namespace Mechadrone1.Gameplay
 
         public DirectLight ShadowCastingLight { get; private set; }
 
-        public Space SimSpace { get; set; }
+        public Space SimSpace { get; private set; }
 
         public PowerupManager powerup;
         public ProjectileManager projectile;
@@ -102,25 +103,45 @@ namespace Mechadrone1.Gameplay
 
             SimSpace = new Space();
             SimSpace.ForceUpdater.Gravity = new Vector3(0.0f, -39.2f, 0.0f);   // 4 units = 1 meter?
+
+            Substrate = new List<TerrainChunk>();
         }
 
 
         public void LoadContent(GraphicsDevice gd, ContentManager contentMan, Game1Manifest manifest)
         {
+            WorldBounds = new BoundingBox(Vector3.Zero, Vector3.One);
 
-            Substrate = contentMan.Load<Skelemator.Terrain>(manifest.TerrainAssetName);
-            Substrate.Position = new Vector3(0.0f, -66.7f, 0.0f);
+            // Load terrain assests from level manifest:
+            foreach (TerrainChunkLoadInfo tcli in manifest.TerrainChunks)
+            {
+                TerrainChunk chunk = new TerrainChunk(contentMan.Load<Skelemator.Terrain>(tcli.AssetName));
+                chunk.Position = tcli.Position;
+                chunk.Initialize();
+                Substrate.Add(chunk);
+                BEPUphysics.Collidables.Terrain terrainSimModel = new BEPUphysics.Collidables.Terrain(chunk.BaseTerrain.GetGeometry(), new AffineTransform(chunk.Position + chunk.BaseTerrain.TransformForGeometry));
+                terrainSimModel.Material.Bounciness = 0.60f;
+                terrainSimModel.Material.StaticFriction = 1.0f;
+                terrainSimModel.Material.KineticFriction = 1.0f;
+                SimSpace.Add(terrainSimModel);
 
-            BEPUphysics.Collidables.Terrain terrainSimModel = new BEPUphysics.Collidables.Terrain(Substrate.GetGeometry(), new AffineTransform(Substrate.SimulationPosition));
-            terrainSimModel.Material.Bounciness = 0.60f;
-            terrainSimModel.Material.StaticFriction = 1.0f;
-            terrainSimModel.Material.KineticFriction = 1.0f;
-            SimSpace.Add(terrainSimModel);
+                BoundingBox extents = terrainSimModel.BoundingBox;
+                extents.Max.Y += (extents.Max - extents.Min).Length() * SlagformCommon.MathHelper.INV_SQRT_3;   // Add some head room.
 
-            BoundingBox extents = terrainSimModel.BoundingBox;
-            extents.Max.Y += (extents.Max.Y - extents.Min.Y);   // Add some head room.
-            WorldBounds = extents;
+                WorldBounds = SlagformCommon.Space.CombineBBoxes(WorldBounds, extents);
+            }
 
+            QuadTree = new QuadTree(WorldBounds);
+
+            foreach (TerrainChunk tc in Substrate)
+            {
+                foreach (TerrainSector ts in tc.Sectors)
+                {
+                    QuadTree.AddOrUpdateSceneObject(ts);
+                }
+            }
+
+            // Load game object assets from level manifest:
             // The manifest may direct us to instantiate any kind of class that inherits from GameObject.
             // So we must use reflection to construct the object and initialize its properties.
             GameObject goLoaded;
@@ -164,6 +185,9 @@ namespace Mechadrone1.Gameplay
 
                 GameObjects.Add(goLoaded);
 
+                if (goLoaded.Visible)
+                    QuadTree.AddOrUpdateSceneObject(goLoaded);
+
                 if (goLoaded.IsSimulationParticipant)
                     SimSpace.Add(goLoaded.SimulationObject);
 
@@ -174,9 +198,6 @@ namespace Mechadrone1.Gameplay
             ShadowCastingLight = dirLight;
 
             Fog = manifest.Fog;
-
-            // TODO: Camera setup
-
 
             // load particle textures
             if (particleTextures == null)
@@ -219,8 +240,6 @@ namespace Mechadrone1.Gameplay
 
             // load content for particle system manager
             particle.LoadContent(gd, contentMan);
-
-            FieldOfView = MathHelper.ToRadians(45.0f);
         }
 
 
@@ -257,6 +276,7 @@ namespace Mechadrone1.Gameplay
                 cameras[kvp.Key].Update(elapsedTime);
             }
 
+
             // update animated projectiles
             projectile.Update(elapsedTime);
 
@@ -268,6 +288,7 @@ namespace Mechadrone1.Gameplay
 
             // update particle systems
             particle.Update(elapsedTime);
+
 
             // if gamepad vibreate enabled
             if (GameOptions.UseGamepadVibrate)
@@ -332,8 +353,7 @@ namespace Mechadrone1.Gameplay
             newCam.Stiffness = GameOptions.CameraStiffness;
             newCam.Damping = GameOptions.CameraDamping;
             newCam.Mass = GameOptions.CameraMass;
-
-            Matrix rotTransform = Matrix.CreateFromQuaternion(avatars[player].Orientation);
+            newCam.FieldOfView = MathHelper.ToRadians(45.0f);
 
             newCam.ChasePosition = avatars[player].CameraAnchor.Translation;
             newCam.ChaseDirection = avatars[player].CameraAnchor.Forward;
@@ -350,17 +370,14 @@ namespace Mechadrone1.Gameplay
         }
 
 
-        public List<DirectLight> GetObjectLights(ModelMesh mesh, Matrix worldTransform, Vector3 eyePosition)
+        public List<DirectLight> GetObjectLights(Vector3 position, Vector3 eyePosition)
         {
             List<DirectLight> lights = new List<DirectLight>();
-            //DirectLight greenLight = ShadowCastingLight;
-            //greenLight.Diffuse = new Vector4(0.15f, 0.85f, 0.15f, 1.0f);
-            //lights.Add(greenLight);
             lights.Add(ShadowCastingLight);
 
             DirectLight fill;
             fill.Ambient = Vector4.Zero;
-            Matrix complementary = Matrix.CreateFromAxisAngle(Vector3.One * 0.57735026918962576450914878050196f, MathHelper.Pi);
+            Matrix complementary = Matrix.CreateFromAxisAngle(Vector3.One * SlagformCommon.MathHelper.INV_SQRT_3, MathHelper.Pi);
             Vector3 diffuse = new Vector3(ShadowCastingLight.Diffuse.X, ShadowCastingLight.Diffuse.Y, ShadowCastingLight.Diffuse.Z);
             diffuse = Vector3.Transform(diffuse, complementary);
             fill.Diffuse.X = diffuse.X / 7.0f;
@@ -369,10 +386,10 @@ namespace Mechadrone1.Gameplay
             fill.Diffuse.W = 1.0f;
             fill.Specular = Vector4.Zero;
             fill.Energy = ShadowCastingLight.Energy;
-            Vector3 goToEye = eyePosition - Vector3.Transform(mesh.BoundingSphere.Center, worldTransform);
-            Vector3 keyEyeX = Vector3.Normalize(Vector3.Cross(ShadowCastingLight.Direction, goToEye));
-            Matrix fillRot = Matrix.CreateFromAxisAngle(keyEyeX, -MathHelper.Pi / 6.0f);
-            fill.Direction = Vector3.Normalize(Vector3.Transform(-goToEye, fillRot));
+            Vector3 objToEye = eyePosition - position;
+            Vector3 keyEyeCross = Vector3.Normalize(Vector3.Cross(ShadowCastingLight.Direction, objToEye));
+            Matrix fillRot = Matrix.CreateFromAxisAngle(keyEyeCross, -MathHelper.Pi / 6.0f);
+            fill.Direction = Vector3.Normalize(Vector3.Transform(-objToEye, fillRot));
             lights.Add(fill);
 
             DirectLight rim;
@@ -380,8 +397,8 @@ namespace Mechadrone1.Gameplay
             rim.Diffuse = Vector4.Zero;
             rim.Specular = ShadowCastingLight.Specular;
             rim.Energy = ShadowCastingLight.Energy * 1.2f;
-            Matrix keyRot = Matrix.CreateFromAxisAngle(keyEyeX, MathHelper.Pi / 6.0f);
-            rim.Direction = Vector3.Normalize(Vector3.Transform(goToEye, keyRot));
+            Matrix keyRot = Matrix.CreateFromAxisAngle(keyEyeCross, MathHelper.Pi / 6.0f);
+            rim.Direction = Vector3.Normalize(Vector3.Transform(objToEye, keyRot));
             lights.Add(rim);
 
             return lights;
@@ -399,7 +416,7 @@ namespace Mechadrone1.Gameplay
 
                 DirectLight fill;
                 fill.Ambient = Vector4.Zero;
-                Matrix complementary = Matrix.CreateFromAxisAngle(Vector3.One * 0.57735026918962576450914878050196f, MathHelper.Pi);
+                Matrix complementary = Matrix.CreateFromAxisAngle(Vector3.One * SlagformCommon.MathHelper.INV_SQRT_3, MathHelper.Pi);
                 Vector3 diffuse = new Vector3(ShadowCastingLight.Diffuse.X, ShadowCastingLight.Diffuse.Y, ShadowCastingLight.Diffuse.Z);
                 diffuse = Vector3.Transform(diffuse, complementary);
                 fill.Diffuse.X = diffuse.X / 5.0f;

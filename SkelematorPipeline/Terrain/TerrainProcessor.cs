@@ -21,6 +21,7 @@ namespace SkelematorPipeline
         public int Height { get; set; }
         public float XZScale { get; set; }
         public float YScale { get; set; }
+        public float YOffset { get; set; }
 
         // Location of an XML file that describes which materials to use.
         public virtual string MaterialDataFilePath { get; set; }
@@ -62,13 +63,13 @@ namespace SkelematorPipeline
             outputTC.VertexCountAlongXAxis = Width;
             outputTC.VertexCountAlongZAxis = Height;
             outputTC.SectorSize = SECTOR_SIZE;
+            outputTC.XZScale = XZScale;
             outputTC.VertexBufferContent = new VertexBufferContent(Width * Height * vertexStride);
             outputTC.VertexBufferContent.VertexDeclaration.VertexElements.Add(vePosition0);
             outputTC.VertexBufferContent.VertexDeclaration.VertexElements.Add(veNormal0);
             outputTC.VertexBufferContent.VertexDeclaration.VertexStride = vertexStride;
             outputTC.TriangleCount = (Width - 1) * (Height - 1) * 2;
             outputTC.VertexCount = Width * Height;
-            outputTC.Position = Vector3.Zero;
 
             GeneratePositions(input);
             GenerateNormals();
@@ -128,7 +129,7 @@ namespace SkelematorPipeline
                 {
                     x = -mapXRadius + col * XZScale;
                     z = -mapZRadius + row * XZScale;
-                    y = 0.0f;
+                    y = YOffset;
 
                     // Apply smoothing:
                     for (int i = -pixelRadius; i <= pixelRadius; i++)

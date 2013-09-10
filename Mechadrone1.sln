@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkelematorPipeline", "Skele
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manifracture", "Manifracture\Manifracture.csproj", "{D26A9930-6434-4A3B-B56F-C93C2710FDD1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlagformCommon", "SlagformCommon\SlagformCommon.csproj", "{8F94C145-E7DD-47F5-912E-3D2311CDB8AF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -35,6 +37,10 @@ Global
 		{D26A9930-6434-4A3B-B56F-C93C2710FDD1}.Debug|x86.Build.0 = Debug|x86
 		{D26A9930-6434-4A3B-B56F-C93C2710FDD1}.Release|x86.ActiveCfg = Release|x86
 		{D26A9930-6434-4A3B-B56F-C93C2710FDD1}.Release|x86.Build.0 = Release|x86
+		{8F94C145-E7DD-47F5-912E-3D2311CDB8AF}.Debug|x86.ActiveCfg = Debug|x86
+		{8F94C145-E7DD-47F5-912E-3D2311CDB8AF}.Debug|x86.Build.0 = Debug|x86
+		{8F94C145-E7DD-47F5-912E-3D2311CDB8AF}.Release|x86.ActiveCfg = Release|x86
+		{8F94C145-E7DD-47F5-912E-3D2311CDB8AF}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

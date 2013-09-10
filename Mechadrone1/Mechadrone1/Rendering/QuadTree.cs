@@ -69,17 +69,20 @@ namespace Mechadrone1.Rendering
         }
 
 
-        public void AddOrUpdateSceneObject(GameObject obj)
+        public void AddOrUpdateSceneObject(ISceneObject obj)
         {
+            if (obj.QuadTree != this)
+                obj.QuadTree = this;
+
             QuadTreeNode node = FindTreeNode(obj.QuadTreeBoundingBox);
 
             node.AddOrUpdateMember(obj);
         }
 
 
-        public List<GameObject> Search(BoundingBox worldRect, BoundingFrustum worldFrustum)
+        public List<ISceneObject> Search(BoundingBox worldRect, BoundingFrustum worldFrustum)
         {
-            List<GameObject> results = new List<GameObject>();
+            List<ISceneObject> results = new List<ISceneObject>();
 
             QuadTreeRect byteRect = QuadTreeRect.CreateFromBoundingBox(worldRect, WorldToQuadTreeTransform);
 
@@ -114,8 +117,8 @@ namespace Mechadrone1.Rendering
                             continueSearch = true;
 
                             // search all the edge cells with the full world rectangle,
-                            // all non-edge cells are contained within the search rect 
-                            // and be called with just the y extents
+                            // because objects in these cells may lie outside of the search
+                            // area.
                             if (z == localRect.Z0
                                 || z == localRect.Z1
                                 || x == localRect.X0

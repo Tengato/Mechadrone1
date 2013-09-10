@@ -11,7 +11,7 @@ namespace Mechadrone1.Rendering
     {
         QuadTreeNode[] children;
         QuadTreeNode parent;
-        List<GameObject> gameObjects;
+        List<ISceneObject> sceneObjects;
         public int YMask;
         int yLocalMask;
 
@@ -24,13 +24,13 @@ namespace Mechadrone1.Rendering
             children[1] = child1;
             children[2] = child2;
             children[3] = child3;
-            gameObjects = new List<GameObject>();
+            sceneObjects = new List<ISceneObject>();
             YMask = 0;
             yLocalMask = 0;
         }
 
 
-        internal void AddOrUpdateMember(GameObject obj)
+        internal void AddOrUpdateMember(ISceneObject obj)
         {
             // is this object not already a member?
             if (obj.QuadTreeNode != this)
@@ -41,7 +41,7 @@ namespace Mechadrone1.Rendering
                     obj.QuadTreeNode.RemoveMember(obj);
                 }
 
-                gameObjects.Add(obj);
+                sceneObjects.Add(obj);
 
                 // update our yMask
                 yLocalMask |= obj.QuadTreeBoundingBox.YMask;
@@ -81,9 +81,9 @@ namespace Mechadrone1.Rendering
             yLocalMask = 0;
 
             // add add any local members
-            foreach (GameObject go in gameObjects)
+            foreach (ISceneObject so in sceneObjects)
             {
-                yLocalMask |= go.QuadTreeBoundingBox.YMask;
+                yLocalMask |= so.QuadTreeBoundingBox.YMask;
             }
 
             RebuildYMask();
@@ -119,9 +119,9 @@ namespace Mechadrone1.Rendering
         }
 
 
-        private void RemoveMember(GameObject obj)
+        private void RemoveMember(ISceneObject obj)
         {
-            gameObjects.Remove(obj);
+            sceneObjects.Remove(obj);
 
             RebuildLocalYMask();
 
@@ -133,24 +133,24 @@ namespace Mechadrone1.Rendering
         }
 
 
-        internal List<GameObject> SearchLocalMembers(int searchYMask, BoundingBox worldRect, BoundingFrustum worldFrustum)
+        internal List<ISceneObject> SearchLocalMembers(int searchYMask, BoundingBox worldRect, BoundingFrustum worldFrustum)
         {
             // calling this function assumes that the 2D search rectangle intersects this node,
             // so we need to test against the yMask bit patterns as well as the search 
             // area for our local members
-            List<GameObject> results = new List<GameObject>();
+            List<ISceneObject> results = new List<ISceneObject>();
 
             if ((yLocalMask & searchYMask) > 0)
             {
-                foreach (GameObject go in gameObjects)
+                foreach (ISceneObject so in sceneObjects)
                 {
-                    if ((go.QuadTreeBoundingBox.YMask & searchYMask) > 0)
+                    if ((so.QuadTreeBoundingBox.YMask & searchYMask) > 0)
                     {
-                        if (worldRect.Intersects(go.WorldSpaceBoundingBox))
+                        if (worldRect.Intersects(so.WorldSpaceBoundingBox))
                         {
-                            if (worldFrustum == null || worldFrustum.Intersects(go.WorldSpaceBoundingBox))
+                            if (worldFrustum == null || worldFrustum.Intersects(so.WorldSpaceBoundingBox))
                             {
-                                results.Add(go);
+                                results.Add(so);
                             }
                         }
                     }
@@ -161,17 +161,17 @@ namespace Mechadrone1.Rendering
         }
 
 
-        internal List<GameObject> SearchLocalMembers(int searchYMask, BoundingFrustum worldFrustum)
+        internal List<ISceneObject> SearchLocalMembers(int searchYMask, BoundingFrustum worldFrustum)
         {
             // calling this function assumes that the 
             // 2D search rectangle contains this node completely,
             // so all we need to test against is the 
             // y range specified and the optional frustum
-            List<GameObject> results = new List<GameObject>();
+            List<ISceneObject> results = new List<ISceneObject>();
 
             if ((yLocalMask & searchYMask) > 0)
             {
-                foreach (GameObject go in gameObjects)
+                foreach (ISceneObject go in sceneObjects)
                 {
                     if ((go.QuadTreeBoundingBox.YMask & searchYMask) > 0)
                     {

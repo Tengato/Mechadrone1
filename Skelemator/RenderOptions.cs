@@ -7,6 +7,7 @@ namespace Skelemator
     [Flags]
     public enum RenderOptions
     {
+        None = 0x0,
         RequiresSkeletalPose = 0x01,
         RequiresEnviroMap = 0x02,
 
