@@ -1,6 +1,6 @@
 This repository contains a WIP of my attempt to build a 3D game engine in C# for the XNA 4.0 platform.  My goal is to explore game engine problems and add support for features common to a first- or third–person 3D ‘outdoor’ game, eventually making small games using the engine.  Since it’s built on the XNA platform, I start out with a lot of data types created for me and a simplified interface to the graphics library.  I also got a free framework for the asset conditioning pipeline and runtime content resource manager.
 
-You can run the engine demo on Windows by running \Drop\setup.exe
+You can run the engine demo on Windows downloadling a zip file of the installer from here: https://www.amazon.com/clouddrive/share?s=0ghYFN1iSCsqAv4oEGb-sk
 
 Some important files to look out for:
 •	\Mechadrone1\Mechadrone1\Rendering\SceneManager.cs
