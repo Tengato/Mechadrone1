@@ -5,6 +5,7 @@
             <Item>
                 <AssetName>terrain\Steppes Heightmap</AssetName>
                 <Position>0 0 0</Position>
+                <CastsShadow>false</CastsShadow>
             </Item>
         </TerrainChunks>
         <GameObjects>

@@ -115,9 +115,10 @@ namespace Mechadrone1.Gameplay
             // Load terrain assests from level manifest:
             foreach (TerrainChunkLoadInfo tcli in manifest.TerrainChunks)
             {
-                TerrainChunk chunk = new TerrainChunk(contentMan.Load<Skelemator.Terrain>(tcli.AssetName));
-                chunk.Position = tcli.Position;
-                chunk.Initialize();
+                TerrainChunk chunk = new TerrainChunk(
+                    contentMan.Load<Skelemator.Terrain>(tcli.AssetName),
+                    tcli.Position,
+                    tcli.CastsShadow);
                 Substrate.Add(chunk);
                 BEPUphysics.Collidables.Terrain terrainSimModel = new BEPUphysics.Collidables.Terrain(chunk.BaseTerrain.GetGeometry(), new AffineTransform(chunk.Position + chunk.BaseTerrain.TransformForGeometry));
                 terrainSimModel.Material.Bounciness = 0.60f;
@@ -370,7 +371,20 @@ namespace Mechadrone1.Gameplay
         }
 
 
-        public List<DirectLight> GetObjectLights(Vector3 position, Vector3 eyePosition)
+        public List<DirectLight> GetObjectLights(ISceneObject sceneObject, Vector3 eyePosition)
+        {
+            if (sceneObject is TerrainSector)
+            {
+                return GetTerrainLights();
+            }
+            else
+            {
+                return GetModelLights(sceneObject.Position, eyePosition);
+            }
+        }
+
+
+        private List<DirectLight> GetModelLights(Vector3 position, Vector3 eyePosition)
         {
             List<DirectLight> lights = new List<DirectLight>();
             lights.Add(ShadowCastingLight);
@@ -405,11 +419,8 @@ namespace Mechadrone1.Gameplay
         }
 
 
-        public List<DirectLight> TerrainLights
+        private List<DirectLight> GetTerrainLights()
         {
-            get
-            {
-
                 List<DirectLight> lights = new List<DirectLight>();
 
                 lights.Add(ShadowCastingLight);
@@ -429,7 +440,6 @@ namespace Mechadrone1.Gameplay
                 lights.Add(fill);
 
                 return lights;
-            }
         }
 
 

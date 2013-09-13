@@ -8,6 +8,7 @@ using Manifracture;
 using System;
 using System.Linq;
 using BEPUphysics;
+using Mechadrone1.Gameplay.Prefabs;
 
 
 namespace Mechadrone1.Rendering
@@ -40,6 +41,7 @@ namespace Mechadrone1.Rendering
 
         public bool GridEnabled { get; set; }
 
+        WireBox box;
 
         public SceneManager(GraphicsDevice graphicsDevice)
         {
@@ -64,6 +66,8 @@ namespace Mechadrone1.Rendering
                                                   SurfaceFormat.Single,
                                                   DepthFormat.Depth24);
 
+            box = new WireBox(gd, 1.0f);
+
             EffectRegistry.SetFog(sceneModel.Fog);
         }
 
@@ -84,18 +88,18 @@ namespace Mechadrone1.Rendering
 
             // Build the shadow map. The main light will cast the shadow.
             // First, find the space to put into the shadow map:
-            RayCastResult rcr;
-            Ray cameraRay;
 
-            cameraRay.Direction = Vector3.Down;
-            cameraRay.Position = camera.Transform.Translation;
+            Matrix nearProjection = Matrix.CreatePerspectiveFieldOfView(camera.FieldOfView, gd.Viewport.AspectRatio, 0.1f, 100.0f);
+            BoundingFrustum shadowFrustum = new BoundingFrustum(camera.View * nearProjection);
 
-            if (sceneModel.SimSpace.RayCast(cameraRay, 90.0f, out rcr))
-                shadowedSurface.Center = rcr.HitData.Location;
-            else
-                shadowedSurface.Center = cameraRay.Position + Vector3.Normalize(cameraRay.Direction) * 90.0f;
+            Vector3[] shadowFrustumCorners = shadowFrustum.GetCorners();
+            shadowedSurface.Center = Vector3.Zero;
+            for (int i = 0; i < 8; i++)
+            {
+                shadowedSurface.Center += shadowFrustumCorners[i];
+            }
 
-            shadowedSurface.Center += new Vector3(camera.Transform.Forward.X, 0.0f, camera.Transform.Forward.Z) * 50.0f;
+            shadowedSurface.Center /= 8.0f;
             shadowedSurface.Radius = 50.0f;
 
             float texelsPerWorldUnit = (float)SMAP_SIZE / (shadowedSurface.Radius * 2.0f);
@@ -111,11 +115,13 @@ namespace Mechadrone1.Rendering
 
             shadowedSurface.Center = Vector3.Transform(shadowedSurface.Center, lightViewAtOriginInv);
 
-            lightView = Matrix.CreateLookAt(shadowedSurface.Center - sceneModel.ShadowCastingLight.Direction * shadowedSurface.Radius * 2.0f, shadowedSurface.Center, Vector3.Up);
+            float minLightTerrainAngle = MathHelper.ToRadians(6.0f); // The minimum angle we expect the light to make with the horizon.  Determines how far away we need to set the frustum floor.
+
+            lightView = Matrix.CreateLookAt(shadowedSurface.Center - sceneModel.ShadowCastingLight.Direction * shadowedSurface.Radius * 4.0f, shadowedSurface.Center, Vector3.Up);
             lightProjection = Matrix.CreateOrthographic(shadowedSurface.Radius * 2.0f,
                                                      shadowedSurface.Radius * 2.0f,
                                                      0.0f,
-                                                     shadowedSurface.Radius * 6.0f);
+                                                     shadowedSurface.Radius * (2.0f / (float)(Math.Tan(minLightTerrainAngle)) + 4.0f));
 
             BoundingFrustum lightFrustum = new BoundingFrustum(lightView * lightProjection);
             BoundingBox lightRect = BoundingBox.CreateFromPoints(lightFrustum.GetCorners());
@@ -146,6 +152,18 @@ namespace Mechadrone1.Rendering
             gd.SetRenderTarget(null);
             gd.Clear(Color.CornflowerBlue);
 
+            box.Position = shadowedSurface.Center;
+            renderQueue.AddSceneObject(
+                box,
+                RenderStep.Default,
+                camera.View,
+                projection,
+                camera.Transform,
+                lightView,
+                lightProjection,
+                null,
+                null);
+
             // Draw objects:
             foreach (ISceneObject sObj in visibleObjectsCamera)
             {
@@ -158,7 +176,7 @@ namespace Mechadrone1.Rendering
                     lightView,
                     lightProjection,
                     smapRenderTarget,
-                    sceneModel.GetObjectLights(sObj.Position, camera.Transform.Translation));
+                    sceneModel.GetObjectLights(sObj, camera.Transform.Translation));
             }
 
             renderQueue.Execute();

@@ -38,9 +38,9 @@ namespace Mechadrone1.Gameplay
         [NotInitializable]
         public QuadTree QuadTree { get; set; }
 
-        private Matrix world;
-        private Matrix wvp;
-        private Matrix wit;
+        protected Matrix world;
+        protected Matrix wvp;
+        protected Matrix wit;
 
         private Matrix[] bones;
 
@@ -302,7 +302,7 @@ namespace Mechadrone1.Gameplay
 
 
         public virtual List<RenderEntry> GetRenderEntries(
-            int frame,
+            int batchId,
             RenderStep step,
             Matrix view,
             Matrix projection,

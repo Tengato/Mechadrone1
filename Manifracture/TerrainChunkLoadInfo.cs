@@ -10,5 +10,6 @@ namespace Manifracture
     {
         public string AssetName { get; set; }
         public Vector3 Position { get; set; }
+        public bool CastsShadow { get; set; }
     }
 }

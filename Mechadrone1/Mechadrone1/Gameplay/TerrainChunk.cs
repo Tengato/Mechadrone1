@@ -13,11 +13,12 @@ namespace Mechadrone1.Gameplay
     class TerrainChunk
     {
         public Terrain BaseTerrain { get; private set; }
+        public bool CastsShadow { get; private set; }
 
         public int XAxisSectorCount { get; private set; }
         public int ZAxisSectorCount { get; private set; }
 
-        public Vector3 Position { get; set; }
+        public Vector3 Position { get; private set; }
 
         public Matrix SectorCoordToChunkLocalSpace { get; private set; }
 
@@ -29,9 +30,12 @@ namespace Mechadrone1.Gameplay
         private Matrix wit;
 
 
-        public TerrainChunk(Terrain baseTerrain)
+        public TerrainChunk(Terrain baseTerrain, Vector3 position, bool castsShadow)
         {
             BaseTerrain = baseTerrain;
+            Position = position;
+            CastsShadow = castsShadow;
+
             XAxisSectorCount = baseTerrain.VertexCountAlongXAxis / baseTerrain.SectorSize;
             ZAxisSectorCount = baseTerrain.VertexCountAlongZAxis / baseTerrain.SectorSize;
 
@@ -49,8 +53,12 @@ namespace Mechadrone1.Gameplay
                 for (int j = 0; j < ZAxisSectorCount; j++)
                 {
                     Sectors[i, j] = new TerrainSector(this, i, j);
+                    Sectors[i, j].CastsShadow = CastsShadow;
                 }
             }
+
+            if (!EffectRegistry.Params.Keys.Contains(BaseTerrain.Effect))
+                EffectRegistry.Add(BaseTerrain.Effect, (RenderOptions)(BaseTerrain.Tag));
 
             readyBatchId = -1;
         }
@@ -110,8 +118,6 @@ namespace Mechadrone1.Gameplay
 
         public void Initialize()
         {
-            if (!EffectRegistry.Params.Keys.Contains(BaseTerrain.Effect))
-                EffectRegistry.Add(BaseTerrain.Effect, (RenderOptions)(BaseTerrain.Tag));
         }
     }
 }

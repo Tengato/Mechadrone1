@@ -18,8 +18,7 @@ namespace Mechadrone1.Rendering
         FogDesc Fog { get; }
         Space SimSpace { get; }
 
-        List<DirectLight> GetObjectLights(Vector3 position, Vector3 eyePosition);
-        List<DirectLight> TerrainLights { get; }
+        List<DirectLight> GetObjectLights(ISceneObject sceneObject, Vector3 eyePosition);
         DirectLight ShadowCastingLight { get; }
 
         BoundingBox WorldBounds { get; }
