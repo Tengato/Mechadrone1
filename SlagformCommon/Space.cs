@@ -15,7 +15,7 @@ namespace SlagformCommon
     {
         public static BoundingBox CombineBBoxes(BoundingBox a, BoundingBox b)
         {
-            BoundingBox result;
+            BoundingBox result = new BoundingBox();
             result.Min.X = Math.Min(a.Min.X, b.Min.X);
             result.Min.Y = Math.Min(a.Min.Y, b.Min.Y);
             result.Min.Z = Math.Min(a.Min.Z, b.Min.Z);

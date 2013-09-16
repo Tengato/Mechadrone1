@@ -46,7 +46,7 @@ namespace Mechadrone1.Gameplay.Prefabs
 
             Entity soEnt = SimulationObject as Entity;
 
-            Vector3 controlForceDir;
+            Vector3 controlForceDir = new Vector3();
             controlForceDir.X = input.CurrentState.PadState[(int)player].ThumbSticks.Left.X;
             controlForceDir.Y = 0.0f;
             controlForceDir.Z = -input.CurrentState.PadState[(int)player].ThumbSticks.Left.Y;

@@ -240,7 +240,7 @@ namespace Mechadrone1.Gameplay
 
             if (VisualModel != null)
             {
-                if (EffectRegistry.RegisteredModels.Add(VisualModel))
+                if (!EffectRegistry.RegisteredModels.Contains(VisualModel))
                 {
                     foreach (ModelMesh mesh in VisualModel.Meshes)
                     {
@@ -361,7 +361,7 @@ namespace Mechadrone1.Gameplay
                             re.DrawCallback = DrawShadow;
 
                             // TODO: perhaps put these fx into separate techniques instead maybe?
-                            if (re.RenderOptions.HasFlag(RenderOptions.RequiresSkeletalPose) && Animations != null)
+                            if ((re.RenderOptions & RenderOptions.RequiresSkeletalPose) > 0 && Animations != null)
                             {
                                 re.Effect = EffectRegistry.DepthOnlySkinFx;
                             }
@@ -410,7 +410,7 @@ namespace Mechadrone1.Gameplay
 
         public virtual void Draw(RenderEntry re)
         {
-            if (re.RenderOptions.HasFlag(RenderOptions.RequiresSkeletalPose))
+            if ((re.RenderOptions & RenderOptions.RequiresSkeletalPose) > 0)
             {
                 EffectRegistry.Params[re.Effect][EffectRegistry.POSEDBONES_PARAM_NAME].SetValue(bones);
                 if (Animations != null)
@@ -424,7 +424,7 @@ namespace Mechadrone1.Gameplay
 
             }
 
-            if (re.RenderOptions.HasFlag(RenderOptions.RequiresShadowMap))
+            if ((re.RenderOptions & RenderOptions.RequiresShadowMap) > 0)
             {
                 EffectRegistry.Params[re.Effect][EffectRegistry.SHADOWTRANSFORM_PARAM_NAME].SetValue(
                     world * re.ShadowCastingLightView * re.ShadowCastingLightProjection * SceneManager.NDC_TO_TEXCOORDS);

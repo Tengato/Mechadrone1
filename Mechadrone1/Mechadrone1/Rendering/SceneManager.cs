@@ -132,8 +132,11 @@ namespace Mechadrone1.Rendering
             gd.Clear(Color.White);
 
             // Draw objects that cast shadows:
-            foreach (ISceneObject sObj in visibleObjectsLight.FindAll(obj => obj.CastsShadow == true))
+            foreach (ISceneObject sObj in visibleObjectsLight)
             {
+                if (!sObj.CastsShadow)
+                    continue;
+
                 renderQueue.AddSceneObject(sObj,
                     RenderStep.Shadows,
                     camera.View,

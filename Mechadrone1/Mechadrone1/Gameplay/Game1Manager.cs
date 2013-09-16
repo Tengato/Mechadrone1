@@ -47,6 +47,19 @@ namespace Mechadrone1.Gameplay
             get { return avatars.AsEnumerable(); }
         }
 
+
+        public GameObject GetGameObject(string name)
+        {
+            for (int i = 0; i < GameObjects.Count; i++)
+            {
+                if (GameObjects[i].Name == name)
+                    return GameObjects[i];
+            }
+
+            return null;
+        }
+
+
         public ICamera GetCamera(PlayerIndex player)
         {
             return cameras[player];
@@ -252,7 +265,7 @@ namespace Mechadrone1.Gameplay
             }
 
             // TODO: remove temp code:
-            GameObjects.Find(obj => obj.Name == "Suzanne").HandleInput(gameTime, input, PlayerIndex.One, GetCamera(PlayerIndex.One));
+            GetGameObject("Suzanne").HandleInput(gameTime, input, PlayerIndex.One, GetCamera(PlayerIndex.One));
         }
 
 
@@ -346,7 +359,7 @@ namespace Mechadrone1.Gameplay
 
         public void AddPlayer(PlayerIndex player, string avatarName)
         {
-            avatars.Add(player, GameObjects.Find(obj => obj.Name == avatarName));
+            avatars.Add(player, GetGameObject(avatarName));
             ChaseCamera newCam = new ChaseCamera(this);
 
             newCam.DesiredPositionOffset = GameOptions.CameraOffset;
@@ -389,7 +402,7 @@ namespace Mechadrone1.Gameplay
             List<DirectLight> lights = new List<DirectLight>();
             lights.Add(ShadowCastingLight);
 
-            DirectLight fill;
+            DirectLight fill = new DirectLight();
             fill.Ambient = Vector4.Zero;
             Matrix complementary = Matrix.CreateFromAxisAngle(Vector3.One * SlagformCommon.MathHelper.INV_SQRT_3, MathHelper.Pi);
             Vector3 diffuse = new Vector3(ShadowCastingLight.Diffuse.X, ShadowCastingLight.Diffuse.Y, ShadowCastingLight.Diffuse.Z);
@@ -407,6 +420,7 @@ namespace Mechadrone1.Gameplay
             lights.Add(fill);
 
             DirectLight rim;
+            rim = new DirectLight();
             rim.Ambient = Vector4.Zero;
             rim.Diffuse = Vector4.Zero;
             rim.Specular = ShadowCastingLight.Specular;
@@ -425,7 +439,7 @@ namespace Mechadrone1.Gameplay
 
                 lights.Add(ShadowCastingLight);
 
-                DirectLight fill;
+                DirectLight fill = new DirectLight();
                 fill.Ambient = Vector4.Zero;
                 Matrix complementary = Matrix.CreateFromAxisAngle(Vector3.One * SlagformCommon.MathHelper.INV_SQRT_3, MathHelper.Pi);
                 Vector3 diffuse = new Vector3(ShadowCastingLight.Diffuse.X, ShadowCastingLight.Diffuse.Y, ShadowCastingLight.Diffuse.Z);

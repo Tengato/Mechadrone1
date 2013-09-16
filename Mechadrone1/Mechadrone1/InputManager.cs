@@ -52,12 +52,12 @@ namespace Mechadrone1
 
         public PlayerIndex KeyboardUserPI
         {
-            get { return InputState.PlayerIndices[KeyboardUser]; }
+            get { return (PlayerIndex)KeyboardUser; }
             set
             {
-                for (KeyboardUser = 0; KeyboardUser < InputState.PlayerIndices.Length; KeyboardUser++)
+                for (KeyboardUser = 0; KeyboardUser < InputState.MAX_PLAYERS; KeyboardUser++)
                 {
-                    if (InputState.PlayerIndices[KeyboardUser] == value)
+                    if ((PlayerIndex)KeyboardUser == value)
                         break;
                 }
             }

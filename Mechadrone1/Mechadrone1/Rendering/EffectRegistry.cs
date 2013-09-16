@@ -12,7 +12,7 @@ namespace Mechadrone1.Rendering
     {
         public static Dictionary<Effect, Dictionary<string, EffectParameter>> Params;
 
-        public static HashSet<Model> RegisteredModels = new HashSet<Model>();
+        public static List<Model> RegisteredModels = new List<Model>();
 
         const int NUM_LIGHTS_PER_EFFECT = 3;
 
@@ -137,13 +137,13 @@ namespace Mechadrone1.Rendering
                 }
             }
 
-            if (options.HasFlag(RenderOptions.RequiresSkeletalPose))
+            if ((options & RenderOptions.RequiresSkeletalPose) > 0)
             {
                 standardParams.Add(POSEDBONES_PARAM_NAME, fx.Parameters[POSEDBONES_PARAM_NAME]);
                 standardParams.Add(WEIGHTS_PER_VERT_PARAM_NAME, fx.Parameters[WEIGHTS_PER_VERT_PARAM_NAME]);
             }
 
-            if (options.HasFlag(RenderOptions.RequiresShadowMap))
+            if ((options & RenderOptions.RequiresShadowMap) > 0)
             {
                 fx.Parameters[SHADOWLIGHTINDEX_PARAM_NAME].SetValue(0);
                 fx.Parameters[INVSHADOWMAPSIZE_PARAM_NAME].SetValue(1.0f / (float)(SceneManager.SMAP_SIZE));
