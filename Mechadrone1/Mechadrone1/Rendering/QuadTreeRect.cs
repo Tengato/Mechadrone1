@@ -11,8 +11,8 @@ namespace Mechadrone1.Rendering
         public int X0 { get; set; }
         public int Z0 { get; set; }
 
-        private int y0;
-        public int Y0
+        private uint y0;
+        public uint Y0
         {
             get
             {
@@ -28,8 +28,8 @@ namespace Mechadrone1.Rendering
         public int X1 { get; set; }
         public int Z1 { get; set; }
 
-        private int y1;
-        public int Y1
+        private uint y1;
+        public uint Y1
         {
             get
             {
@@ -42,18 +42,18 @@ namespace Mechadrone1.Rendering
             }
         }
 
-        private int? yMask;
+        private uint? yMask;
 
-        public int YMask
+        public uint YMask
         {
             get
             {
                 if (yMask == null)
                 {
-                    int high = (1 << Y1);
-                    int low = (1 << Y0);
-                    int setMask = high - 1;
-                    int clearMask = low - 1;
+                    uint high = (1u << (int)Y1);
+                    uint low = (1u << (int)Y0);
+                    uint setMask = high - 1;
+                    uint clearMask = low - 1;
 
                     yMask = setMask;
                     if (Y0 > 0)
@@ -64,7 +64,7 @@ namespace Mechadrone1.Rendering
                     yMask |= low;
                 }
 
-                return (int)yMask;
+                return (uint)yMask;
             }
         }
 
@@ -85,8 +85,8 @@ namespace Mechadrone1.Rendering
             result.X1 = (int)(Math.Floor((double)(worldRect.Max.X)));
             result.Z0 = (int)(Math.Floor((double)(worldRect.Min.Z)));
             result.Z1 = (int)(Math.Floor((double)(worldRect.Max.Z)));
-            result.Y0 = (int)(Math.Floor((double)(worldRect.Min.Y)));
-            result.Y1 = (int)(Math.Floor((double)(worldRect.Max.Y)));
+            result.Y0 = (uint)(Math.Floor((double)(worldRect.Min.Y)));
+            result.Y1 = (uint)(Math.Floor((double)(worldRect.Max.Y)));
 
             // we must be positive
             result.X0 = Clamp(result.X0, 0, 254);
@@ -112,6 +112,11 @@ namespace Mechadrone1.Rendering
             return value;
         }
 
+
+        private static uint Clamp(uint value, uint min, uint max)
+        {
+            return (uint)Clamp((int)value, (int)min, (int)max);
+        }
 
     }
 }

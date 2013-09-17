@@ -86,7 +86,7 @@ namespace Mechadrone1.Rendering
 
             QuadTreeRect byteRect = QuadTreeRect.CreateFromBoundingBox(worldRect, WorldToQuadTreeTransform);
 
-            int searchYMask = byteRect.YMask;
+            uint searchYMask = byteRect.YMask;
 
             bool continueSearch = true;
             int level = 0;

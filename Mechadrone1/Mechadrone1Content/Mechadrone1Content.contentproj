@@ -287,6 +287,19 @@
       <ProcessorParameters_XZScale>1</ProcessorParameters_XZScale>
       <ProcessorParameters_YScale>0.5</ProcessorParameters_YScale>
       <ProcessorParameters_YOffset>-96.5</ProcessorParameters_YOffset>
+      <ProcessorParameters_NumXValues>1025</ProcessorParameters_NumXValues>
+      <ProcessorParameters_NumZValues>1025</ProcessorParameters_NumZValues>
+    </Compile>
+    <Compile Include="terrain\HeightmapCreate 03.raw">
+      <Name>HeightmapCreate 03</Name>
+      <Importer>RawTerrainImporter</Importer>
+      <Processor>TerrainProcessor</Processor>
+      <ProcessorParameters_NumXValues>513</ProcessorParameters_NumXValues>
+      <ProcessorParameters_NumZValues>513</ProcessorParameters_NumZValues>
+      <ProcessorParameters_XZScale>1</ProcessorParameters_XZScale>
+      <ProcessorParameters_YOffset>-96.5</ProcessorParameters_YOffset>
+      <ProcessorParameters_MaterialDataFilePath>terrain\SteppesMaterialData.xml</ProcessorParameters_MaterialDataFilePath>
+      <ProcessorParameters_YScale>0.25</ProcessorParameters_YScale>
     </Compile>
   </ItemGroup>
   <ItemGroup>

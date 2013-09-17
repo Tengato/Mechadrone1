@@ -3,8 +3,23 @@
     <Asset Type="Manifracture.Game1Manifest">
         <TerrainChunks>
             <Item>
-                <AssetName>terrain\Steppes Heightmap</AssetName>
-                <Position>0 0 0</Position>
+                <AssetName>terrain\HeightmapCreate 03</AssetName>
+                <Position>256 0 256</Position>
+                <CastsShadow>false</CastsShadow>
+            </Item>
+            <Item>
+                <AssetName>terrain\HeightmapCreate 03</AssetName>
+                <Position>256 0 -256</Position>
+                <CastsShadow>false</CastsShadow>
+            </Item>
+            <Item>
+                <AssetName>terrain\HeightmapCreate 03</AssetName>
+                <Position>-256 0 -256</Position>
+                <CastsShadow>false</CastsShadow>
+            </Item>
+            <Item>
+                <AssetName>terrain\HeightmapCreate 03</AssetName>
+                <Position>-256 0 256</Position>
                 <CastsShadow>false</CastsShadow>
             </Item>
         </TerrainChunks>

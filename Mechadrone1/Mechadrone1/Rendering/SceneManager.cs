@@ -24,9 +24,6 @@ namespace Mechadrone1.Rendering
         IRenderableScene sceneModel;
         RenderQueue renderQueue;
 
-        Matrix projection;
-        BoundingFrustum cameraFrustum;
-
         // Shadow map stuff
         public const int SMAP_SIZE = 2048;
         public static readonly Matrix NDC_TO_TEXCOORDS = new Matrix(0.5f, 0.0f, 0.0f, 0.0f,
@@ -34,14 +31,12 @@ namespace Mechadrone1.Rendering
                                                                     0.0f, 0.0f, 1.0f, 0.0f,
                                                                     0.5f, 0.5f, 0.0f, 1.0f);
 
-        BoundingSphere shadowedSurface;
-        Matrix lightView;
-        Matrix lightProjection;
         RenderTarget2D smapRenderTarget;
 
+        // An example of a debug visual aid that can be configured:
         public bool GridEnabled { get; set; }
 
-        WireBox box;
+        WireBox shadowCenterMarker;
 
         public SceneManager(GraphicsDevice graphicsDevice)
         {
@@ -54,8 +49,6 @@ namespace Mechadrone1.Rendering
             sceneModel = scene;
             renderQueue = new RenderQueue();
 
-            cameraFrustum = new BoundingFrustum(Matrix.Identity);
-
             EffectRegistry.DepthOnlySkinFx = content.Load<Effect>("shaders\\DepthOnlySkin");
             EffectRegistry.DepthOnlyFx = content.Load<Effect>("shaders\\DepthOnly");
 
@@ -66,7 +59,7 @@ namespace Mechadrone1.Rendering
                                                   SurfaceFormat.Single,
                                                   DepthFormat.Depth24);
 
-            box = new WireBox(gd, 1.0f);
+            shadowCenterMarker = new WireBox(gd, 1.0f);
 
             EffectRegistry.SetFog(sceneModel.Fog);
         }
@@ -78,9 +71,9 @@ namespace Mechadrone1.Rendering
         public void DrawScene(PlayerIndex player)
         {
             ICamera camera = sceneModel.GetCamera(player);
-            projection = Matrix.CreatePerspectiveFieldOfView(camera.FieldOfView, gd.Viewport.AspectRatio, 0.1f, 1000.0f);
+            Matrix projection = Matrix.CreatePerspectiveFieldOfView(camera.FieldOfView, gd.Viewport.AspectRatio, 0.1f, 1000.0f);
 
-            cameraFrustum.Matrix = camera.View * projection;
+            BoundingFrustum cameraFrustum = new BoundingFrustum(camera.View * projection);
             BoundingBox cameraRect = BoundingBox.CreateFromPoints(cameraFrustum.GetCorners());
 
             // TODO: Put stuff into separate threads
@@ -93,14 +86,15 @@ namespace Mechadrone1.Rendering
             BoundingFrustum shadowFrustum = new BoundingFrustum(camera.View * nearProjection);
 
             Vector3[] shadowFrustumCorners = shadowFrustum.GetCorners();
-            shadowedSurface.Center = Vector3.Zero;
+
+            BoundingSphere shadowedSurface = new BoundingSphere(Vector3.Zero, 50.0f);
+
             for (int i = 0; i < 8; i++)
             {
                 shadowedSurface.Center += shadowFrustumCorners[i];
             }
 
             shadowedSurface.Center /= 8.0f;
-            shadowedSurface.Radius = 50.0f;
 
             float texelsPerWorldUnit = (float)SMAP_SIZE / (shadowedSurface.Radius * 2.0f);
 
@@ -117,8 +111,8 @@ namespace Mechadrone1.Rendering
 
             float minLightTerrainAngle = MathHelper.ToRadians(6.0f); // The minimum angle we expect the light to make with the horizon.  Determines how far away we need to set the frustum floor.
 
-            lightView = Matrix.CreateLookAt(shadowedSurface.Center - sceneModel.ShadowCastingLight.Direction * shadowedSurface.Radius * 4.0f, shadowedSurface.Center, Vector3.Up);
-            lightProjection = Matrix.CreateOrthographic(shadowedSurface.Radius * 2.0f,
+            Matrix lightView = Matrix.CreateLookAt(shadowedSurface.Center - sceneModel.ShadowCastingLight.Direction * shadowedSurface.Radius * 4.0f, shadowedSurface.Center, Vector3.Up);
+            Matrix lightProjection = Matrix.CreateOrthographic(shadowedSurface.Radius * 2.0f,
                                                      shadowedSurface.Radius * 2.0f,
                                                      0.0f,
                                                      shadowedSurface.Radius * (2.0f / (float)(Math.Tan(minLightTerrainAngle)) + 4.0f));
@@ -155,9 +149,9 @@ namespace Mechadrone1.Rendering
             gd.SetRenderTarget(null);
             gd.Clear(Color.CornflowerBlue);
 
-            box.Position = shadowedSurface.Center;
+            shadowCenterMarker.Position = shadowedSurface.Center;
             renderQueue.AddSceneObject(
-                box,
+                shadowCenterMarker,
                 RenderStep.Default,
                 camera.View,
                 projection,

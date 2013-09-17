@@ -12,8 +12,8 @@ namespace Mechadrone1.Rendering
         QuadTreeNode[] children;
         QuadTreeNode parent;
         List<ISceneObject> sceneObjects;
-        public int YMask;
-        int yLocalMask;
+        public uint YMask;
+        uint yLocalMask;
 
 
         internal void Initialize(QuadTreeNode parent, QuadTreeNode child0, QuadTreeNode child1, QuadTreeNode child2, QuadTreeNode child3)
@@ -63,7 +63,7 @@ namespace Mechadrone1.Rendering
         }
 
 
-        private void OnDescendantMemberAdded(int descendantsYMask)
+        private void OnDescendantMemberAdded(uint descendantsYMask)
         {
             // update our yMask
             YMask |= descendantsYMask;
@@ -133,7 +133,7 @@ namespace Mechadrone1.Rendering
         }
 
 
-        internal List<ISceneObject> SearchLocalMembers(int searchYMask, BoundingBox worldRect, BoundingFrustum worldFrustum)
+        internal List<ISceneObject> SearchLocalMembers(uint searchYMask, BoundingBox worldRect, BoundingFrustum worldFrustum)
         {
             // calling this function assumes that the 2D search rectangle intersects this node,
             // so we need to test against the yMask bit patterns as well as the search 
@@ -161,7 +161,7 @@ namespace Mechadrone1.Rendering
         }
 
 
-        internal List<ISceneObject> SearchLocalMembers(int searchYMask, BoundingFrustum worldFrustum)
+        internal List<ISceneObject> SearchLocalMembers(uint searchYMask, BoundingFrustum worldFrustum)
         {
             // calling this function assumes that the 
             // 2D search rectangle contains this node completely,

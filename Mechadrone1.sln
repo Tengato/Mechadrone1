@@ -13,13 +13,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manifracture", "Manifractur
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlagformCommon", "SlagformCommon\SlagformCommon.csproj", "{8F94C145-E7DD-47F5-912E-3D2311CDB8AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Skelemator (Xbox 360)", "Skelemator\Skelemator (Xbox 360).csproj", "{74BB1BE3-8BC8-4D28-929E-EA660510B625}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Skelemator_Xbox360", "Skelemator\Skelemator_Xbox360.csproj", "{74BB1BE3-8BC8-4D28-929E-EA660510B625}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manifracture (Xbox 360)", "Manifracture\Manifracture (Xbox 360).csproj", "{DC797127-CA22-4418-9498-285369AFA55A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manifracture_Xbox360", "Manifracture\Manifracture_Xbox360.csproj", "{DC797127-CA22-4418-9498-285369AFA55A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlagformCommon (Xbox 360)", "SlagformCommon\SlagformCommon (Xbox 360).csproj", "{C2D25A8A-A14B-4F95-B722-FD3AB5A4A985}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlagformCommon_Xbox360", "SlagformCommon\SlagformCommon_Xbox360.csproj", "{C2D25A8A-A14B-4F95-B722-FD3AB5A4A985}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mechadrone1 (Xbox 360)", "Mechadrone1\Mechadrone1\Mechadrone1 (Xbox 360).csproj", "{ED697E71-0779-4811-BEC4-3524F029138F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mechadrone1_Xbox360", "Mechadrone1\Mechadrone1\Mechadrone1_Xbox360.csproj", "{ED697E71-0779-4811-BEC4-3524F029138F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

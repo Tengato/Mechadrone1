@@ -137,17 +137,17 @@
     <Content Include="Game.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Manifracture\Manifracture %28Xbox 360%29.csproj">
+    <ProjectReference Include="..\..\Manifracture\Manifracture_Xbox360.csproj">
       <Project>{dc797127-ca22-4418-9498-285369afa55a}</Project>
-      <Name>Manifracture %28Xbox 360%29</Name>
+      <Name>Manifracture_Xbox360</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Skelemator\Skelemator %28Xbox 360%29.csproj">
+    <ProjectReference Include="..\..\Skelemator\Skelemator_Xbox360.csproj">
       <Project>{74bb1be3-8bc8-4d28-929e-ea660510b625}</Project>
-      <Name>Skelemator %28Xbox 360%29</Name>
+      <Name>Skelemator_Xbox360</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\SlagformCommon\SlagformCommon %28Xbox 360%29.csproj">
+    <ProjectReference Include="..\..\SlagformCommon\SlagformCommon_Xbox360.csproj">
       <Project>{c2d25a8a-a14b-4f95-b722-fd3ab5a4a985}</Project>
-      <Name>SlagformCommon %28Xbox 360%29</Name>
+      <Name>SlagformCommon_Xbox360</Name>
     </ProjectReference>
     <ProjectReference Include="..\Mechadrone1Content\Mechadrone1Content.contentproj">
       <Name>Mechadrone1Content %28Content%29</Name>

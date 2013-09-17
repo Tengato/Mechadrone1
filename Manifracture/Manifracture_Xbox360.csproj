@@ -42,9 +42,9 @@
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Skelemator\Skelemator %28Xbox 360%29.csproj">
+    <ProjectReference Include="..\Skelemator\Skelemator_Xbox360.csproj">
       <Project>{74bb1be3-8bc8-4d28-929e-ea660510b625}</Project>
-      <Name>Skelemator %28Xbox 360%29</Name>
+      <Name>Skelemator_Xbox360</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

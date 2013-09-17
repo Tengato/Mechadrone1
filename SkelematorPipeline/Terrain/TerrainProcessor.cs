@@ -17,8 +17,8 @@ namespace SkelematorPipeline
     {
         const int SECTOR_SIZE = 64;
 
-        public int Width { get; set; }
-        public int Height { get; set; }
+        public int NumXValues { get; set; }
+        public int NumZValues { get; set; }
         public float XZScale { get; set; }
         public float YScale { get; set; }
         public float YOffset { get; set; }
@@ -41,35 +41,35 @@ namespace SkelematorPipeline
         {
             this.context = context;
 
-            if (Width < 1 && Width % SECTOR_SIZE == 1)
+            if (NumXValues < 1 && NumXValues % SECTOR_SIZE == 1)
                 throw new InvalidContentException(String.Format("Width property must be an integer w = n * {0} + 1 where n: {1, 2, 3...}", SECTOR_SIZE));
-            if (Height < 1 && Height % SECTOR_SIZE == 1)
+            if (NumZValues < 1 && NumZValues % SECTOR_SIZE == 1)
                 throw new InvalidContentException(String.Format("Height property must be an integer h = n * {0} + 1 where n: {1, 2, 3...}", SECTOR_SIZE));
-            if (input.Length != Width * Height)
+            if (input.Length != NumXValues * NumZValues)
                 throw new InvalidContentException("The number of bytes in the heightmap is not equal to the product of the Height and Width properties.");
             if (XZScale <= 0.0f)
                 throw new InvalidContentException("XZScale property must be greater than 0.");
             if (YScale <= 0.0f)
                 throw new InvalidContentException("YScale property must be greater than 0.");
 
-            mapXRadius = XZScale * (float)(Width - 1) / 2.0f;
-            mapZRadius = XZScale * (float)(Height - 1) / 2.0f;
+            mapXRadius = XZScale * (float)(NumXValues - 1) / 2.0f;
+            mapZRadius = XZScale * (float)(NumZValues - 1) / 2.0f;
 
             VertexElement vePosition0 = new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.Position, 0);
             VertexElement veNormal0 = new VertexElement(12, VertexElementFormat.Vector3, VertexElementUsage.Normal, 0);
             int vertexStride = 24; // This is set based on the above VertexElement composition.
 
             outputTC = new TerrainContent();
-            outputTC.VertexCountAlongXAxis = Width;
-            outputTC.VertexCountAlongZAxis = Height;
+            outputTC.VertexCountAlongXAxis = NumXValues;
+            outputTC.VertexCountAlongZAxis = NumZValues;
             outputTC.SectorSize = SECTOR_SIZE;
             outputTC.XZScale = XZScale;
-            outputTC.VertexBufferContent = new VertexBufferContent(Width * Height * vertexStride);
+            outputTC.VertexBufferContent = new VertexBufferContent(NumXValues * NumZValues * vertexStride);
             outputTC.VertexBufferContent.VertexDeclaration.VertexElements.Add(vePosition0);
             outputTC.VertexBufferContent.VertexDeclaration.VertexElements.Add(veNormal0);
             outputTC.VertexBufferContent.VertexDeclaration.VertexStride = vertexStride;
-            outputTC.TriangleCount = (Width - 1) * (Height - 1) * 2;
-            outputTC.VertexCount = Width * Height;
+            outputTC.TriangleCount = (NumXValues - 1) * (NumZValues - 1) * 2;
+            outputTC.VertexCount = NumXValues * NumZValues;
 
             GeneratePositions(input);
             GenerateNormals();
@@ -89,13 +89,13 @@ namespace SkelematorPipeline
             {
                 for (int col = 0; col < SECTOR_SIZE; col++)
                 {
-                    indices[i++] = row * Width + Width + col;
-                    indices[i++] = row * Width + col;
-                    indices[i++] = row * Width + col + 1;
+                    indices[i++] = row * NumXValues + NumXValues + col;
+                    indices[i++] = row * NumXValues + col;
+                    indices[i++] = row * NumXValues + col + 1;
 
-                    indices[i++] = row * Width + Width + col;
-                    indices[i++] = row * Width + col + 1;
-                    indices[i++] = row * Width + Width + col + 1;
+                    indices[i++] = row * NumXValues + NumXValues + col;
+                    indices[i++] = row * NumXValues + col + 1;
+                    indices[i++] = row * NumXValues + NumXValues + col + 1;
                 }
             }
 
@@ -110,7 +110,7 @@ namespace SkelematorPipeline
             const float STD_DEV_SQ = STD_DEV * STD_DEV;
             int pixelRadius = (int)(Math.Ceiling(3.0f * STD_DEV));
 
-            position = new Vector3[Width, Height];
+            position = new Vector3[NumXValues, NumZValues];
 
             float x;
             float y;
@@ -123,9 +123,9 @@ namespace SkelematorPipeline
             int sampleRow;
             float pixelDistSq;
 
-            for (int row = 0; row < Height; row++)
+            for (int row = 0; row < NumZValues; row++)
             {
-                for (int col = 0; col < Width; col++)
+                for (int col = 0; col < NumXValues; col++)
                 {
                     x = -mapXRadius + col * XZScale;
                     z = -mapZRadius + row * XZScale;
@@ -136,12 +136,12 @@ namespace SkelematorPipeline
                     {
                         for (int j = -pixelRadius; j <= pixelRadius; j++)
                         {
-                            sampleRow = Math.Min(Math.Max(row + i, 0), Height - 1);
-                            sampleColumn = Math.Min(Math.Max(col + j, 0), Width - 1);
+                            sampleRow = Math.Min(Math.Max(row + i, 0), NumZValues - 1);
+                            sampleColumn = Math.Min(Math.Max(col + j, 0), NumXValues - 1);
 
                             // Assuming std deviation is 1 pixel.
                             pixelDistSq = (float)(i * i + j * j);
-                            y += (float)(Math.Exp(-pixelDistSq / (2.0f * STD_DEV_SQ))) / (MathHelper.TwoPi * STD_DEV_SQ) * (float)(heightData[sampleColumn + sampleRow * Width]) * YScale;
+                            y += (float)(Math.Exp(-pixelDistSq / (2.0f * STD_DEV_SQ))) / (MathHelper.TwoPi * STD_DEV_SQ) * (float)(heightData[sampleColumn + sampleRow * NumXValues]) * YScale;
                         }
                     }
 
@@ -155,9 +155,9 @@ namespace SkelematorPipeline
 
                     for (int i = 0; i < 4; i++)
                     {
-                        outputTC.VertexBufferContent.VertexData[(col + row * Width) * vertStride + i] = xBytes[i];
-                        outputTC.VertexBufferContent.VertexData[(col + row * Width) * vertStride + 4 + i] = yBytes[i];
-                        outputTC.VertexBufferContent.VertexData[(col + row * Width) * vertStride + 8 + i] = zBytes[i];
+                        outputTC.VertexBufferContent.VertexData[(col + row * NumXValues) * vertStride + i] = xBytes[i];
+                        outputTC.VertexBufferContent.VertexData[(col + row * NumXValues) * vertStride + 4 + i] = yBytes[i];
+                        outputTC.VertexBufferContent.VertexData[(col + row * NumXValues) * vertStride + 8 + i] = zBytes[i];
                     }
                 }
             }
@@ -175,25 +175,25 @@ namespace SkelematorPipeline
             int downStartRow;
             int downEndRow;
 
-            normal = new Vector3[Width, Height];
+            normal = new Vector3[NumXValues, NumZValues];
 
             byte[] xBytes;
             byte[] yBytes;
             byte[] zBytes;
 
-            for (int row = 0; row < Height; row++)
+            for (int row = 0; row < NumZValues; row++)
             {
-                for (int col = 0; col < Width; col++)
+                for (int col = 0; col < NumXValues; col++)
                 {
                     if (col == 0)
                     {
                         rightStartCol = 0;    // *
                         rightEndCol = 1;
                     }
-                    else if (col == Width - 1)
+                    else if (col == NumXValues - 1)
                     {
-                        rightStartCol = Width - 2;
-                        rightEndCol = Width - 1;    // *
+                        rightStartCol = NumXValues - 2;
+                        rightEndCol = NumXValues - 1;    // *
                     }
                     else
                     {
@@ -206,10 +206,10 @@ namespace SkelematorPipeline
                         downStartRow = 0;   // *
                         downEndRow = 1;
                     } 
-                    else if (row == Height - 1)
+                    else if (row == NumZValues - 1)
                     {
-                        downStartRow = Height - 2;
-                        downEndRow = Height - 1;  // *
+                        downStartRow = NumZValues - 2;
+                        downEndRow = NumZValues - 1;  // *
                     }
                     else
                     {
@@ -231,9 +231,9 @@ namespace SkelematorPipeline
 
                     for (int i = 0; i < 4; i++)
                     {
-                        outputTC.VertexBufferContent.VertexData[(col + row * Width) * vertStride + 12 + i] = xBytes[i];
-                        outputTC.VertexBufferContent.VertexData[(col + row * Width) * vertStride + 16 + i] = yBytes[i];
-                        outputTC.VertexBufferContent.VertexData[(col + row * Width) * vertStride + 20 + i] = zBytes[i];
+                        outputTC.VertexBufferContent.VertexData[(col + row * NumXValues) * vertStride + 12 + i] = xBytes[i];
+                        outputTC.VertexBufferContent.VertexData[(col + row * NumXValues) * vertStride + 16 + i] = yBytes[i];
+                        outputTC.VertexBufferContent.VertexData[(col + row * NumXValues) * vertStride + 20 + i] = zBytes[i];
                     }
                 }
             }
