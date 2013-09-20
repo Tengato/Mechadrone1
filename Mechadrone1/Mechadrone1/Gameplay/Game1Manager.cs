@@ -133,16 +133,12 @@ namespace Mechadrone1.Gameplay
                     tcli.Position,
                     tcli.CastsShadow);
                 Substrate.Add(chunk);
-                BEPUphysics.Collidables.Terrain terrainSimModel = new BEPUphysics.Collidables.Terrain(chunk.BaseTerrain.GetGeometry(), new AffineTransform(chunk.Position + chunk.BaseTerrain.TransformForGeometry));
-                terrainSimModel.Material.Bounciness = 0.60f;
-                terrainSimModel.Material.StaticFriction = 1.0f;
-                terrainSimModel.Material.KineticFriction = 1.0f;
-                SimSpace.Add(terrainSimModel);
+                SimSpace.Add(chunk.SimulationObject);
 
-                BoundingBox extents = terrainSimModel.BoundingBox;
-                extents.Max.Y += (extents.Max - extents.Min).Length() * SlagformCommon.MathHelper.INV_SQRT_3;   // Add some head room.
+                BoundingBox chunkExtents = chunk.SimulationObject.BoundingBox;
+                chunkExtents.Max.Y += (chunkExtents.Max - chunkExtents.Min).Length() * SlagformCommon.MathHelper.INV_SQRT_3;   // Add some head room.
 
-                WorldBounds = SlagformCommon.Space.CombineBBoxes(WorldBounds, extents);
+                WorldBounds = SlagformCommon.Space.CombineBBoxes(WorldBounds, chunkExtents);
             }
 
             QuadTree = new QuadTree(WorldBounds);

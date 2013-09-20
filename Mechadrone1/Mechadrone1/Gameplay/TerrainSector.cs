@@ -49,18 +49,18 @@ namespace Mechadrone1.Gameplay
         public QuadTreeNode QuadTreeNode { get; set; }
 
 
-        public TerrainSector(TerrainChunk parent, int XIndex, int ZIndex)
+        public TerrainSector(TerrainChunk parent, int XIndex, int ZIndex, float minHeight, float maxHeight)
         {
             this.parent = parent;
             xIndex = XIndex;
             zIndex = ZIndex;
 
-            Vector3 radius = new Vector3(
+            Vector3 XZRadius = new Vector3(
                 (float)(parent.BaseTerrain.SectorSize) * parent.BaseTerrain.XZScale / 2.0f,
-                1.0e10f, // This will be clamped when converted into quadtree coords...
+                0.0f,
                 (float)(parent.BaseTerrain.SectorSize) * parent.BaseTerrain.XZScale / 2.0f);
 
-            WorldSpaceBoundingBox = new BoundingBox(Position - radius, Position + radius);
+            WorldSpaceBoundingBox = new BoundingBox(Position - XZRadius + Vector3.Up * minHeight, Position + XZRadius + Vector3.Up * maxHeight);
         }
 
 

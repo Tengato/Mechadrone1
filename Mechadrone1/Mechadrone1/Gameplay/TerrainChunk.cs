@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Mechadrone1.Rendering;
 using Microsoft.Xna.Framework.Graphics;
 using Manifracture;
+using BEPUphysics.MathExtensions;
 
 namespace Mechadrone1.Gameplay
 {
@@ -24,6 +25,8 @@ namespace Mechadrone1.Gameplay
 
         public TerrainSector[,] Sectors { get; private set; }
 
+        public BEPUphysics.Collidables.Terrain SimulationObject { get; private set; }
+
         private int readyBatchId;
         private Matrix world;
         private Matrix wvp;
@@ -39,12 +42,14 @@ namespace Mechadrone1.Gameplay
             XAxisSectorCount = baseTerrain.VertexCountAlongXAxis / baseTerrain.SectorSize;
             ZAxisSectorCount = baseTerrain.VertexCountAlongZAxis / baseTerrain.SectorSize;
 
-            SectorCoordToChunkLocalSpace  = Matrix.CreateScale((float)(BaseTerrain.SectorSize) / BaseTerrain.XZScale) *
-                Matrix.CreateTranslation((-(float)(BaseTerrain.VertexCountAlongXAxis - 1) / 2.0f +
-                    (float)(BaseTerrain.SectorSize) / 2.0f) * BaseTerrain.XZScale,
+            SectorCoordToChunkLocalSpace = Matrix.CreateScale((float)(BaseTerrain.SectorSize) * BaseTerrain.XZScale) *
+                Matrix.CreateTranslation((-(float)(BaseTerrain.VertexCountAlongXAxis - 1) * BaseTerrain.XZScale / 2.0f +
+                    (float)(BaseTerrain.SectorSize) * BaseTerrain.XZScale / 2.0f),
                     0.0f,
-                    (-(float)(BaseTerrain.VertexCountAlongZAxis - 1) / 2.0f +
-                    (float)(BaseTerrain.SectorSize) / 2.0f) * BaseTerrain.XZScale);
+                    (-(float)(BaseTerrain.VertexCountAlongZAxis - 1) * BaseTerrain.XZScale / 2.0f +
+                    (float)(BaseTerrain.SectorSize) * BaseTerrain.XZScale / 2.0f));
+
+            float[,] heightVals = BaseTerrain.GetGeometry();
 
             Sectors = new TerrainSector[XAxisSectorCount, ZAxisSectorCount];
 
@@ -52,7 +57,24 @@ namespace Mechadrone1.Gameplay
             {
                 for (int j = 0; j < ZAxisSectorCount; j++)
                 {
-                    Sectors[i, j] = new TerrainSector(this, i, j);
+                    float minHeight = 1.0e10f;
+                    float maxHeight = -1.0e10f;
+
+                    for (int m = i * BaseTerrain.SectorSize; m <= (i + 1) * BaseTerrain.SectorSize; m++)
+                    {
+                        for (int n = j * BaseTerrain.SectorSize; n <= (j + 1) * BaseTerrain.SectorSize; n++)
+                        {
+                            if (heightVals[m, n] < minHeight)
+                                minHeight = heightVals[m, n];
+                            if (heightVals[m, n] > maxHeight)
+                                maxHeight = heightVals[m, n];
+                        }
+                    }
+
+                    minHeight += Position.Y;
+                    maxHeight += Position.Y;
+
+                    Sectors[i, j] = new TerrainSector(this, i, j, minHeight, maxHeight);
                     Sectors[i, j].CastsShadow = CastsShadow;
                 }
             }
@@ -61,6 +83,11 @@ namespace Mechadrone1.Gameplay
                 EffectRegistry.Add(BaseTerrain.Effect, (RenderOptions)(BaseTerrain.Tag));
 
             readyBatchId = -1;
+
+            SimulationObject = new BEPUphysics.Collidables.Terrain(heightVals, new AffineTransform(new Vector3(BaseTerrain.XZScale, 1.0f, BaseTerrain.XZScale), Quaternion.Identity, Position + BaseTerrain.TransformForGeometry));
+            SimulationObject.Material.Bounciness = 0.60f;
+            SimulationObject.Material.StaticFriction = 1.0f;
+            SimulationObject.Material.KineticFriction = 1.0f;
         }
 
 

@@ -3,23 +3,23 @@
     <Asset Type="Manifracture.Game1Manifest">
         <TerrainChunks>
             <Item>
-                <AssetName>terrain\HeightmapCreate 03</AssetName>
-                <Position>256 0 256</Position>
+                <AssetName>terrain\HeightmapCreate 03 Q4</AssetName>
+                <Position>768 0 768</Position>
                 <CastsShadow>false</CastsShadow>
             </Item>
             <Item>
-                <AssetName>terrain\HeightmapCreate 03</AssetName>
-                <Position>256 0 -256</Position>
+                <AssetName>terrain\HeightmapCreate 03 Q1</AssetName>
+                <Position>768 0 -768</Position>
                 <CastsShadow>false</CastsShadow>
             </Item>
             <Item>
-                <AssetName>terrain\HeightmapCreate 03</AssetName>
-                <Position>-256 0 -256</Position>
+                <AssetName>terrain\HeightmapCreate 03 Q2</AssetName>
+                <Position>-768 0 -768</Position>
                 <CastsShadow>false</CastsShadow>
             </Item>
             <Item>
-                <AssetName>terrain\HeightmapCreate 03</AssetName>
-                <Position>-256 0 256</Position>
+                <AssetName>terrain\HeightmapCreate 03 Q3</AssetName>
+                <Position>-768 0 768</Position>
                 <CastsShadow>false</CastsShadow>
             </Item>
         </TerrainChunks>
@@ -209,8 +209,8 @@
             </Item>
         </GameObjects>
         <Fog>
-            <StartDistance>170</StartDistance>
-            <EndDistance>966</EndDistance>
+            <StartDistance>370</StartDistance>
+            <EndDistance>987</EndDistance>
             <Color>FF6495ED</Color>
         </Fog>
         <PlayerStartTransforms>1 0 0 0 0 1 0 0 0 0 1 0 -24 0 -12 1 1 0 0 0 0 1 0 0 0 0 1 0 -33 0 -12 1 1 0 0 0 0 1 0 0 0 0 1 0 -24 0 -28 1 1 0 0 0 0 1 0 0 0 0 1 0 -33 0 -23 1</PlayerStartTransforms>

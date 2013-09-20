@@ -38,13 +38,13 @@
                 <string>LargeTileLength</string>
                 <EffectParamCategory>OpaqueData</EffectParamCategory>
                 <string>System.Single</string>
-                <float>1024</float>
+                <float>3072</float>
             </EffectParam>
             <EffectParam>
                 <string>MedTileLength</string>
                 <EffectParamCategory>OpaqueData</EffectParamCategory>
                 <string>System.Single</string>
-                <float>53</float>
+                <float>93</float>
             </EffectParam>
             <EffectParam>
                 <string>SmallTileLength</string>
@@ -68,8 +68,8 @@
                 <EffectParamCategory>OpaqueData</EffectParamCategory>
                 <string>Microsoft.Xna.Framework.Vector2, Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553</string>
                 <Vector2>
-                    <X>512.0</X>
-                    <Y>512.0</Y>
+                    <X>1536.0</X>
+                    <Y>1536.0</Y>
                 </Vector2>
             </EffectParam>
         </EffectParams>

@@ -143,13 +143,13 @@ void VertexProc(float3   position        : POSITION,
             out float4   shadowMapPos    : TEXCOORD4,
             out float3x3 tangentToWorld  : TEXCOORD5)    // Includes TEXCOORD6 and TEXCOORD7
 {
-    largeTexCoord = (position.xz  + LargeTexCoordOffset) / LargeTileLength;
-    medTexCoord = position.xz / MedTileLength;
-    smallTexCoord = position.xz / SmallTileLength;
-
     // Transform position from object space to world space:
     float4 wPosition = mul(float4(position, 1.0f), World);
     eyeDisplacement = EyePosition - wPosition.xyz;
+
+    largeTexCoord = (wPosition.xz + LargeTexCoordOffset) / LargeTileLength;
+    medTexCoord = wPosition.xz / MedTileLength;
+    smallTexCoord = wPosition.xz / SmallTileLength;
 
     // Transform position from object space to clip space:
     oPosition = mul(float4(position, 1.0f), WorldViewProj);

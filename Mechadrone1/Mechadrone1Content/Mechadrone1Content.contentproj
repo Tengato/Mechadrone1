@@ -277,29 +277,65 @@
     <None Include="shaders\Structures.fxh">
       <Name>Structures</Name>
     </None>
-    <Compile Include="terrain\Steppes Heightmap.raw">
-      <Name>Steppes Heightmap</Name>
+    <Compile Include="terrain\HeightmapCreate 03 Q1.raw">
+      <Name>HeightmapCreate 03 Q1</Name>
       <Importer>RawTerrainImporter</Importer>
       <Processor>TerrainProcessor</Processor>
-      <ProcessorParameters_Height>1025</ProcessorParameters_Height>
+      <ProcessorParameters_CropXLeft>7</ProcessorParameters_CropXLeft>
+      <ProcessorParameters_CropXRight>0</ProcessorParameters_CropXRight>
+      <ProcessorParameters_CropZBottom>7</ProcessorParameters_CropZBottom>
+      <ProcessorParameters_CropZTop>0</ProcessorParameters_CropZTop>
       <ProcessorParameters_MaterialDataFilePath>terrain\SteppesMaterialData.xml</ProcessorParameters_MaterialDataFilePath>
-      <ProcessorParameters_Width>1025</ProcessorParameters_Width>
-      <ProcessorParameters_XZScale>1</ProcessorParameters_XZScale>
-      <ProcessorParameters_YScale>0.5</ProcessorParameters_YScale>
-      <ProcessorParameters_YOffset>-96.5</ProcessorParameters_YOffset>
-      <ProcessorParameters_NumXValues>1025</ProcessorParameters_NumXValues>
-      <ProcessorParameters_NumZValues>1025</ProcessorParameters_NumZValues>
+      <ProcessorParameters_NumXValues>520</ProcessorParameters_NumXValues>
+      <ProcessorParameters_NumZValues>520</ProcessorParameters_NumZValues>
+      <ProcessorParameters_XZScale>3</ProcessorParameters_XZScale>
+      <ProcessorParameters_YOffset>-286</ProcessorParameters_YOffset>
+      <ProcessorParameters_YScale>2</ProcessorParameters_YScale>
     </Compile>
-    <Compile Include="terrain\HeightmapCreate 03.raw">
-      <Name>HeightmapCreate 03</Name>
+    <Compile Include="terrain\HeightmapCreate 03 Q2.raw">
+      <Name>HeightmapCreate 03 Q2</Name>
       <Importer>RawTerrainImporter</Importer>
       <Processor>TerrainProcessor</Processor>
-      <ProcessorParameters_NumXValues>513</ProcessorParameters_NumXValues>
-      <ProcessorParameters_NumZValues>513</ProcessorParameters_NumZValues>
-      <ProcessorParameters_XZScale>1</ProcessorParameters_XZScale>
-      <ProcessorParameters_YOffset>-96.5</ProcessorParameters_YOffset>
+      <ProcessorParameters_CropXLeft>0</ProcessorParameters_CropXLeft>
+      <ProcessorParameters_CropXRight>7</ProcessorParameters_CropXRight>
+      <ProcessorParameters_CropZBottom>7</ProcessorParameters_CropZBottom>
+      <ProcessorParameters_CropZTop>0</ProcessorParameters_CropZTop>
       <ProcessorParameters_MaterialDataFilePath>terrain\SteppesMaterialData.xml</ProcessorParameters_MaterialDataFilePath>
-      <ProcessorParameters_YScale>0.25</ProcessorParameters_YScale>
+      <ProcessorParameters_NumXValues>520</ProcessorParameters_NumXValues>
+      <ProcessorParameters_NumZValues>520</ProcessorParameters_NumZValues>
+      <ProcessorParameters_XZScale>3</ProcessorParameters_XZScale>
+      <ProcessorParameters_YOffset>-286</ProcessorParameters_YOffset>
+      <ProcessorParameters_YScale>2</ProcessorParameters_YScale>
+    </Compile>
+    <Compile Include="terrain\HeightmapCreate 03 Q3.raw">
+      <Name>HeightmapCreate 03 Q3</Name>
+      <Importer>RawTerrainImporter</Importer>
+      <Processor>TerrainProcessor</Processor>
+      <ProcessorParameters_MaterialDataFilePath>terrain\SteppesMaterialData.xml</ProcessorParameters_MaterialDataFilePath>
+      <ProcessorParameters_CropXLeft>0</ProcessorParameters_CropXLeft>
+      <ProcessorParameters_CropZBottom>0</ProcessorParameters_CropZBottom>
+      <ProcessorParameters_CropXRight>7</ProcessorParameters_CropXRight>
+      <ProcessorParameters_CropZTop>7</ProcessorParameters_CropZTop>
+      <ProcessorParameters_NumXValues>520</ProcessorParameters_NumXValues>
+      <ProcessorParameters_NumZValues>520</ProcessorParameters_NumZValues>
+      <ProcessorParameters_XZScale>3</ProcessorParameters_XZScale>
+      <ProcessorParameters_YOffset>-286</ProcessorParameters_YOffset>
+      <ProcessorParameters_YScale>2</ProcessorParameters_YScale>
+    </Compile>
+    <Compile Include="terrain\HeightmapCreate 03 Q4.raw">
+      <Name>HeightmapCreate 03 Q4</Name>
+      <Importer>RawTerrainImporter</Importer>
+      <Processor>TerrainProcessor</Processor>
+      <ProcessorParameters_MaterialDataFilePath>terrain\SteppesMaterialData.xml</ProcessorParameters_MaterialDataFilePath>
+      <ProcessorParameters_CropXLeft>7</ProcessorParameters_CropXLeft>
+      <ProcessorParameters_CropXRight>0</ProcessorParameters_CropXRight>
+      <ProcessorParameters_CropZBottom>0</ProcessorParameters_CropZBottom>
+      <ProcessorParameters_CropZTop>7</ProcessorParameters_CropZTop>
+      <ProcessorParameters_NumXValues>520</ProcessorParameters_NumXValues>
+      <ProcessorParameters_NumZValues>520</ProcessorParameters_NumZValues>
+      <ProcessorParameters_XZScale>3</ProcessorParameters_XZScale>
+      <ProcessorParameters_YOffset>-286</ProcessorParameters_YOffset>
+      <ProcessorParameters_YScale>2</ProcessorParameters_YScale>
     </Compile>
   </ItemGroup>
   <ItemGroup>
