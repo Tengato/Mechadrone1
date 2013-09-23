@@ -14,7 +14,7 @@
                 <string>TextureFlatBase</string>
                 <EffectParamCategory>Texture</EffectParamCategory>
                 <string>System.String</string>
-                <string>textures\Terrain Grass.tga</string>
+                <string>textures\Swamp.tga</string>
             </EffectParam>
             <EffectParam>
                 <string>TextureSteep</string>
@@ -50,7 +50,7 @@
                 <string>SmallTileLength</string>
                 <EffectParamCategory>OpaqueData</EffectParamCategory>
                 <string>System.Single</string>
-                <float>12</float>
+                <float>32</float>
             </EffectParam>
             <EffectParam>
                 <string>MatSpecColor</string>

@@ -20,6 +20,8 @@ namespace Mechadrone1.Rendering
         public ISceneObject SceneObject;
         public EffectPass Pass { get; set; }
 
+        public int SortOrder { get; set; }
+
         public BlendState BlendState;
         public DepthStencilState DepthStencilState;
         public RasterizerState RasterizerState;
@@ -43,11 +45,7 @@ namespace Mechadrone1.Rendering
 
         public RenderEntry()
         {
-            // Set some default values:
-            BlendState = BlendState.Opaque;
-            DepthStencilState = DepthStencilState.Default;
-            RasterizerState = RasterizerState.CullCounterClockwise;
-            RenderOptions = RenderOptions.None;
+            SetDefaults();
         }
 
 
@@ -75,6 +73,36 @@ namespace Mechadrone1.Rendering
         }
 
 
+        public RenderEntry(ModelMeshPart modelMeshPart)
+        {
+            SetDefaults();
+
+            // Set the ModelMeshPart values:
+            VertexBuffer = modelMeshPart.VertexBuffer;
+            NumVertices = modelMeshPart.NumVertices;
+            IndexBuffer = modelMeshPart.IndexBuffer;
+            VertexOffset = modelMeshPart.VertexOffset;
+            StartIndex = modelMeshPart.StartIndex;
+            
+            if (modelMeshPart.Tag != null)
+            {
+                RenderOptions = (RenderOptions)(modelMeshPart.Tag);
+            }
+
+            PrimitiveCount = modelMeshPart.PrimitiveCount;
+        }
+
+
+        private void SetDefaults()
+        {
+            SortOrder = 100;
+            BlendState = BlendState.Opaque;
+            DepthStencilState = DepthStencilState.Default;
+            RasterizerState = RasterizerState.CullCounterClockwise;
+            RenderOptions = RenderOptions.None;
+        }
+
+
         public void Draw()
         {
             DrawCallback(this);
@@ -87,6 +115,8 @@ namespace Mechadrone1.Rendering
     {
         public override int Compare(RenderEntry x, RenderEntry y)
         {
+            if (x.SortOrder != y.SortOrder)
+                return x.SortOrder - y.SortOrder;
             if (x.BlendState != y.BlendState)
                 return x.BlendState.GetHashCode() - y.BlendState.GetHashCode();
             if (x.DepthStencilState != y.DepthStencilState)

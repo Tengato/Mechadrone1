@@ -69,6 +69,7 @@ namespace Mechadrone1.Screens
 
         public override void UnloadContent()
         {
+            EffectRegistry.ClearRegistry();
             content.Unload();
         }
 

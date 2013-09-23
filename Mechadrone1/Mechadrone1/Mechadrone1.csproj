@@ -105,6 +105,7 @@
     <Compile Include="Gameplay\Prefabs\OrbitingLightbulb.cs" />
     <Compile Include="Gameplay\Prefabs\QuadWheel.cs" />
     <Compile Include="Gameplay\Prefabs\Roller.cs" />
+    <Compile Include="Gameplay\Skydome.cs" />
     <Compile Include="Gameplay\Prefabs\WireBox.cs" />
     <Compile Include="Gameplay\TerrainChunk.cs" />
     <Compile Include="Gameplay\Subsystems\AnimSprite.cs" />

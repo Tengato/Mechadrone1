@@ -12,9 +12,9 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Skelemator;
-using BEPUphysics.Entities.Prefabs;
 using BEPUphysics.Collidables;
 using BEPUphysics.MathExtensions;
+using Mechadrone1.Gameplay.Prefabs;
 
 namespace Mechadrone1.Gameplay
 {
@@ -30,6 +30,8 @@ namespace Mechadrone1.Gameplay
         List<Cue> cueSoundsDelete;      // 3D sounds finished and ready to delete
 
         float[] vibrationTime;          // pad vibration times for each player (zero for no vibration)
+
+        public Skydome Sky { get; set; }
 
         public List<TerrainChunk> Substrate { get; private set; }
         public List<GameObject> GameObjects { get; private set; }
@@ -124,6 +126,10 @@ namespace Mechadrone1.Gameplay
         public void LoadContent(GraphicsDevice gd, ContentManager contentMan, Game1Manifest manifest)
         {
             WorldBounds = new BoundingBox(Vector3.Zero, Vector3.One);
+
+            Sky = new Skydome(contentMan.Load<TextureCube>(manifest.SkydomeTextureName),
+                contentMan.Load<Model>("models\\system\\SkyEllipsoid"),
+                contentMan.Load<Effect>("shaders\\Skymap"));
 
             // Load terrain assests from level manifest:
             foreach (TerrainChunkLoadInfo tcli in manifest.TerrainChunks)
@@ -396,6 +402,7 @@ namespace Mechadrone1.Gameplay
         private List<DirectLight> GetModelLights(Vector3 position, Vector3 eyePosition)
         {
             List<DirectLight> lights = new List<DirectLight>();
+
             lights.Add(ShadowCastingLight);
 
             DirectLight fill = new DirectLight();
@@ -421,6 +428,7 @@ namespace Mechadrone1.Gameplay
             rim.Diffuse = Vector4.Zero;
             rim.Specular = ShadowCastingLight.Specular;
             rim.Energy = ShadowCastingLight.Energy * 1.2f;
+
             Matrix keyRot = Matrix.CreateFromAxisAngle(keyEyeCross, MathHelper.Pi / 6.0f);
             rim.Direction = Vector3.Normalize(Vector3.Transform(objToEye, keyRot));
             lights.Add(rim);

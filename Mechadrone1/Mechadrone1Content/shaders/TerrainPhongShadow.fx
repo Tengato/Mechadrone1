@@ -191,8 +191,8 @@ void PixelProc(float3   normal          : NORMAL,
     float3 normalSteepTanSpc = expandNormalTex(normalSteepTex);
     float3 normalSteep = mul(normalSteepTanSpc, tangentToWorld);
 
-    float3 texFlatBaseDiffuse = tex2D(TextureFlatBaseSampler, medTexCoord);
-    float3 texFlatBlendDiffuse = tex2D(TextureFlatBlendSampler, medTexCoord);
+    float3 texFlatBaseDiffuse = tex2D(TextureFlatBaseSampler, smallTexCoord);
+    float3 texFlatBlendDiffuse = tex2D(TextureFlatBlendSampler, smallTexCoord);
     float3 texSteepDiffuse = tex2D(TextureSteepSampler, medTexCoord);
     float4 texLowFreq = tex2D(TextureLowFreqSampler, largeTexCoord);
 

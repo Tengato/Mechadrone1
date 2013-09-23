@@ -99,7 +99,6 @@ namespace Mechadrone1.Rendering
         static EffectRegistry()
         {
             Params = new Dictionary<Effect,Dictionary<string, EffectParameter>>();
-            //Effects = new List<Effect>();
             StandardStructParamNames = new Dictionary<string, string[]>();
             StandardStructParamNames.Add(DIRLIGHT_STRUCT_NAME, DirLightStructParamNames);
         }
@@ -185,7 +184,8 @@ namespace Mechadrone1.Rendering
 
         public static void ClearRegistry()
         {
-            throw new NotImplementedException();
+            Params.Clear();
+            RegisteredModels.Clear();
         }
 
     }

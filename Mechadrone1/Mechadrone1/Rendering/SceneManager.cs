@@ -71,7 +71,7 @@ namespace Mechadrone1.Rendering
         public void DrawScene(PlayerIndex player)
         {
             ICamera camera = sceneModel.GetCamera(player);
-            Matrix projection = Matrix.CreatePerspectiveFieldOfView(camera.FieldOfView, gd.Viewport.AspectRatio, 0.1f, 1000.0f);
+            Matrix projection = Matrix.CreatePerspectiveFieldOfView(camera.FieldOfView, gd.Viewport.AspectRatio, 0.1f, 1300.0f);
 
             BoundingFrustum cameraFrustum = new BoundingFrustum(camera.View * projection);
             BoundingBox cameraRect = BoundingBox.CreateFromPoints(cameraFrustum.GetCorners());
@@ -111,11 +111,11 @@ namespace Mechadrone1.Rendering
 
             float minLightTerrainAngle = MathHelper.ToRadians(6.0f); // The minimum angle we expect the light to make with the horizon.  Determines how far away we need to set the frustum floor.
 
-            Matrix lightView = Matrix.CreateLookAt(shadowedSurface.Center - sceneModel.ShadowCastingLight.Direction * shadowedSurface.Radius * 4.0f, shadowedSurface.Center, Vector3.Up);
+            Matrix lightView = Matrix.CreateLookAt(shadowedSurface.Center - sceneModel.ShadowCastingLight.Direction * shadowedSurface.Radius * 8.0f, shadowedSurface.Center, Vector3.Up);
             Matrix lightProjection = Matrix.CreateOrthographic(shadowedSurface.Radius * 2.0f,
                                                      shadowedSurface.Radius * 2.0f,
                                                      0.0f,
-                                                     shadowedSurface.Radius * (2.0f / (float)(Math.Tan(minLightTerrainAngle)) + 4.0f));
+                                                     shadowedSurface.Radius * (2.0f / (float)(Math.Tan(minLightTerrainAngle)) + 8.0f));
 
             BoundingFrustum lightFrustum = new BoundingFrustum(lightView * lightProjection);
             BoundingBox lightRect = BoundingBox.CreateFromPoints(lightFrustum.GetCorners());
@@ -152,6 +152,17 @@ namespace Mechadrone1.Rendering
             shadowCenterMarker.Position = shadowedSurface.Center;
             renderQueue.AddSceneObject(
                 shadowCenterMarker,
+                RenderStep.Default,
+                camera.View,
+                projection,
+                camera.Transform,
+                lightView,
+                lightProjection,
+                null,
+                null);
+
+            renderQueue.AddSceneObject(
+                sceneModel.Sky,
                 RenderStep.Default,
                 camera.View,
                 projection,

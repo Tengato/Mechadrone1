@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <XnaContent xmlns:Framework="Microsoft.Xna.Framework">
     <Asset Type="Manifracture.Game1Manifest">
+        <SkydomeTextureName Type="string">textures\CloudCube</SkydomeTextureName>
         <TerrainChunks>
             <Item>
                 <AssetName>terrain\HeightmapCreate 03 Q4</AssetName>
@@ -210,8 +211,8 @@
         </GameObjects>
         <Fog>
             <StartDistance>370</StartDistance>
-            <EndDistance>987</EndDistance>
-            <Color>FF6495ED</Color>
+            <EndDistance>1487</EndDistance>
+            <Color>C0C0E0A0</Color>
         </Fog>
         <PlayerStartTransforms>1 0 0 0 0 1 0 0 0 0 1 0 -24 0 -12 1 1 0 0 0 0 1 0 0 0 0 1 0 -33 0 -12 1 1 0 0 0 0 1 0 0 0 0 1 0 -24 0 -28 1 1 0 0 0 0 1 0 0 0 0 1 0 -33 0 -23 1</PlayerStartTransforms>
         <KeyLight>
@@ -219,7 +220,7 @@
             <Diffuse Type="Framework:Vector4">0.75 0.75 0.68 1</Diffuse>
             <Specular Type="Framework:Vector4">0.75 0.75 0.68 1</Specular>
             <Direction Type="Framework:Vector3">-2 -0.7 -0.6</Direction>
-            <Energy Type="float">1.8</Energy>
+            <Energy Type="float">1.4</Energy>
         </KeyLight>
     </Asset>
 </XnaContent>
