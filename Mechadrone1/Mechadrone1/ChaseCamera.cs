@@ -18,12 +18,6 @@ namespace Mechadrone1
     /// <remarks>This class was first seen in the Chase Camera sample.</remarks>
     class ChaseCamera : ICamera
     {
-        Game1Manager gameMan;
-
-        public ChaseCamera(Game1Manager gameMan)
-        {
-            this.gameMan = gameMan;
-        }
 
         #region Chased object properties (set externally each frame)
 

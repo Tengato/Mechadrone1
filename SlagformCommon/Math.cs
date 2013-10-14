@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SlagformCommon
 {
-    public class MathHelper
+    public class SlagMath
     {
         public const float INV_SQRT_3 = 0.57735026918962576450914878050196f;
     }

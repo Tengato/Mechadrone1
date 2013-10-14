@@ -9,6 +9,8 @@ using BEPUphysics.Entities.Prefabs;
 using BEPUphysics.Entities;
 using Mechadrone1.Rendering;
 using System.Collections.Generic;
+using SlagformCommon;
+using BEPUphysicsDemos.AlternateMovement.Character;
 
 
 namespace Mechadrone1.Gameplay
@@ -20,17 +22,7 @@ namespace Mechadrone1.Gameplay
         [LoadedAsset]
         public Model VisualModel { get; set; }
 
-        public bool IsSimulationParticipant { get; set; }
-
-        // TODO: Maybe the simulation can be added using a decorator?
-        [LoadedAsset]
-        public Model CollisionModel { get; set; }
-        public string SimulationObjectTypeFullName { get; set; }
-        [NotInitializable]
-        public Type SimulationObjectType { get; set; }
-        public object[] SimulationObjectCtorParams { get; set; }
-        [NotInitializable]
-        public ISpaceObject SimulationObject { get; set; }
+        protected IGameManager owner;
 
         [NotInitializable]
         public QuadTreeNode QuadTreeNode { get; set; }
@@ -42,7 +34,10 @@ namespace Mechadrone1.Gameplay
         protected Matrix wvp;
         protected Matrix wit;
 
-        private Matrix[] bones;
+        [NotInitializable]
+        public ICamera Camera { get; set; }
+
+        protected Matrix[] bones;
 
         private BoundingBox? worldSpaceBoundingBox;
         [NotInitializable]
@@ -56,7 +51,7 @@ namespace Mechadrone1.Gameplay
 
                     for (int i = 1; i < VisualModel.Meshes.Count; i++)
                     {
-                        worldSpaceBoundingBox = SlagformCommon.Space.CombineBBoxes((BoundingBox)worldSpaceBoundingBox,
+                        worldSpaceBoundingBox = SlagformCommon.SpaceUtils.CombineBBoxes((BoundingBox)worldSpaceBoundingBox,
                             BoundingBox.CreateFromSphere(VisualModel.Meshes[i].BoundingSphere.Transform(WorldTransform)));
                     }
                 }
@@ -80,7 +75,7 @@ namespace Mechadrone1.Gameplay
             }
         }
 
-        private bool hasMovedSinceLastUpdate;
+        protected bool hasMovedSinceLastUpdate;
 
         protected Vector3 position;
         virtual public Vector3 Position
@@ -154,49 +149,23 @@ namespace Mechadrone1.Gameplay
             }
         }
 
+        public Vector3 CameraOffset { get; set; }
+        public Vector3 CameraTargetOffset { get; set; }
+
         // Default pose
         static private Matrix[] bindPose;
 
         public SkinningData Animations { get; set; }
         public AnimationPlayer AnimationPlayer { get; set; }
         public bool CastsShadow { get; set; }
-        public bool IsAlive { get; set; }
         public bool Visible { get; set; }
-        public bool Dynamic { get; set; }
         public event MakeSoundEventHandler MakeSound;
 
 
-        [NotInitializable]
-        public Vector3 SimulationPosition
+        public GameObject(IGameManager owner)
         {
-            get
-            {
-                Box soBox = SimulationObject as Box;
-                if (soBox != null)
-                {
-                    return Position + Matrix.CreateFromQuaternion(Orientation).Up * soBox.HalfHeight;
-                }
-                // TODO: Somewhat hacky...
-                else
-                    return Position;
-            }
+            this.owner = owner;
 
-            set
-            {
-                Box soBox = SimulationObject as Box;
-                if (soBox != null)
-                {
-                    Position =  value - Matrix.CreateFromQuaternion(Orientation).Up * soBox.HalfHeight;
-                }
-                // TODO: Somewhat hacky...
-                else
-                    Position = value;
-            }
-        }
-
-
-        public GameObject()
-        {
             if (bindPose == null)
             {
                 bindPose = new Matrix[72];
@@ -208,35 +177,19 @@ namespace Mechadrone1.Gameplay
             }
 
             // Set defaults:
-            IsSimulationParticipant = false;
             Position = Vector3.Zero;
             Orientation = Quaternion.Identity;
             Scale = 1.0f;
             CastsShadow = true;
-            IsAlive = false;
             Visible = true;
-            Dynamic = true;
+            CameraOffset = new Vector3(0, 5, -5);
+            CameraTargetOffset = new Vector3(0, 3, 0);
         }
 
 
         public virtual void Initialize()
         {
-            if (IsSimulationParticipant)
-            {
-                SimulationObjectType = Type.GetType(SimulationObjectTypeFullName);
-                SimulationObject = Activator.CreateInstance(SimulationObjectType, SimulationObjectCtorParams) as ISpaceObject;
-
-                Entity soEnt = SimulationObject as Entity;
-
-                if (soEnt != null)
-                {
-                    soEnt.Position = SimulationPosition;
-                    soEnt.Orientation = Orientation;
-                    soEnt.Material.Bounciness = 0.68f;
-                    soEnt.Material.StaticFriction = 0.6f;
-                    soEnt.Material.KineticFriction = 0.3f;
-                }
-            }
+            RegisterUpdateHandlers();
 
             if (VisualModel != null)
             {
@@ -258,8 +211,32 @@ namespace Mechadrone1.Gameplay
         }
 
 
+        public virtual void RegisterUpdateHandlers() { }
+
+
+        // TODO: Probably this should be purely virtual:
+        public virtual void CreateCamera()
+        {
+            ChaseCamera newCam = new ChaseCamera();
+
+            newCam.DesiredPositionOffset = CameraOffset;
+            newCam.LookAtOffset = CameraTargetOffset;
+            newCam.Stiffness = GameOptions.CameraStiffness;
+            newCam.Damping = GameOptions.CameraDamping;
+            newCam.Mass = GameOptions.CameraMass;
+            newCam.FieldOfView = MathHelper.ToRadians(45.0f);
+
+            newCam.ChasePosition = CameraAnchor.Translation;
+            newCam.ChaseDirection = CameraAnchor.Forward;
+            newCam.Up = CameraAnchor.Up;
+            newCam.Reset();
+
+            Camera = newCam;
+        }
+
+
         /// <summary>
-        /// Get actor's up vector in world space
+        /// Get objects's up vector in world space
         /// </summary>
         public Vector3 ViewUp
         {
@@ -273,24 +250,11 @@ namespace Mechadrone1.Gameplay
         }
 
 
-        public virtual void HandleInput(GameTime gameTime, InputManager input, PlayerIndex player, ICamera camera) { }
+        public virtual void HandleInput(GameTime gameTime, InputManager input, PlayerIndex player) { }
 
 
-        public virtual void Update(GameTime gameTime)
+        protected void UpdateQuadTree()
         {
-            if (IsSimulationParticipant)
-            {
-                Entity soEnt = SimulationObject as Entity;
-                if (soEnt != null)
-                {
-                    if (soEnt.IsDynamic)
-                    {
-                        SimulationPosition = soEnt.Position;
-                        Orientation = soEnt.Orientation;
-                    }
-                }
-            }
-
             if (hasMovedSinceLastUpdate)
             {
                 if (Visible)
@@ -298,6 +262,16 @@ namespace Mechadrone1.Gameplay
 
                 hasMovedSinceLastUpdate = false;
             }
+        }
+
+
+        public virtual void UpdateCamera(float elapsedTime)
+        {
+            ChaseCamera chaseCam = Camera as ChaseCamera;
+            chaseCam.ChasePosition = CameraAnchor.Translation;
+            chaseCam.ChaseDirection = CameraAnchor.Forward;
+            chaseCam.Up = CameraAnchor.Up;
+            chaseCam.Update(elapsedTime);
         }
 
 

@@ -26,7 +26,7 @@
         </TerrainChunks>
         <GameObjects>
             <Item>
-                <TypeFullName>Mechadrone1.Gameplay.GameObject, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                <TypeFullName>Mechadrone1.Gameplay.Prefabs.TPPedestrian, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
                 <Properties>
                     <Item>
                         <Key>Name</Key>
@@ -38,7 +38,7 @@
                     </Item>
                     <Item>
                         <Key>Position</Key>
-                        <Value Type="Framework:Vector3">-8 -0.4 -4.5</Value>
+                        <Value Type="Framework:Vector3">-8 16 -4.5</Value>
                     </Item>
                     <Item>
                         <Key>Orientation</Key>
@@ -47,6 +47,14 @@
                     <Item>
                         <Key>Scale</Key>
                         <Value Type="float">1</Value>
+                    </Item>
+                    <Item>
+                        <Key>CameraOffset</Key>
+                        <Value Type="Framework:Vector3">0 15 -24</Value>
+                    </Item>
+                    <Item>
+                        <Key>CameraTargetOffset</Key>
+                        <Value Type="Framework:Vector3">0 10 0</Value>
                     </Item>
                     <Item>
                         <Key>CastsShadow</Key>
@@ -128,17 +136,17 @@
                         <Value Type="string">models\suzanne\suzanne</Value>
                     </Item>
                     <Item>
-                        <Key>IsSimulationParticipant</Key>
-                        <Value Type="bool">true</Value>
-                    </Item>
-                    <Item>
                         <Key>SimulationObjectTypeFullName</Key>
-                        <Value Type="string">BEPUphysics.Entities.Prefabs.Box, BEPUphysics, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31f6a8732a21de19</Value>
+                        <Value Type="string">BEPUphysics.Entities.Prefabs.Box, BEPUphysics, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</Value>
                     </Item>
                     <Item>
                         <Key>SimulationObjectCtorParams</Key>
                         <Value Type="System.Object[]">
-                            <Item Type="Framework:Vector3">0 0 0</Item>
+                            <Item Type="BEPUutilities.Vector3">
+                                <X>0</X>
+                                <Y>0</Y>
+                                <Z>0</Z>
+                            </Item>
                             <Item Type="float">2</Item>
                             <Item Type="float">2</Item>
                             <Item Type="float">1.7</Item>
@@ -175,17 +183,17 @@
                         <Value Type="string">models\ball\ball</Value>
                     </Item>
                     <Item>
-                        <Key>IsSimulationParticipant</Key>
-                        <Value Type="bool">true</Value>
-                    </Item>
-                    <Item>
                         <Key>SimulationObjectTypeFullName</Key>
-                        <Value Type="string">BEPUphysics.Entities.Prefabs.Sphere, BEPUphysics, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31f6a8732a21de19</Value>
+                        <Value Type="string">BEPUphysics.Entities.Prefabs.Sphere, BEPUphysics, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</Value>
                     </Item>
                     <Item>
                         <Key>SimulationObjectCtorParams</Key>
                         <Value Type="System.Object[]">
-                            <Item Type="Framework:Vector3">0 0 0</Item>
+                            <Item Type="BEPUutilities.Vector3">
+                                <X>0</X>
+                                <Y>0</Y>
+                                <Z>0</Z>
+                            </Item>
                             <Item Type="float">1</Item>
                             <Item Type="float">1</Item>
                         </Value>

@@ -94,12 +94,6 @@ namespace Mechadrone1
         // missile velocity
         public static float      MissileVelocity               = 4000;
 
-        // offset for camera in 1st person mode
-        public static Vector3    CameraViewOffset              = new Vector3(0, -2, 0);
-        // offset for camera in 3rd person mode
-        public static Vector3    CameraOffset                  = new Vector3(0, 2, 5);
-        // offset for camera target in 3rd person mode
-        public static Vector3    CameraTargetOffset            = new Vector3(0, 0, -5);
         // stiffness for camera in 3rd person mode
         public static float      CameraStiffness               = 15000;
         // damping for camera in 3rd person mode

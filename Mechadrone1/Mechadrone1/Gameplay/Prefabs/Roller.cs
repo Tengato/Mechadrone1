@@ -6,16 +6,20 @@ using Mechadrone1.Rendering;
 using BEPUphysics.Entities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using SlagformCommon;
 
 namespace Mechadrone1.Gameplay.Prefabs
 {
-    class Roller : GameObject
+    class Roller : SimulatedGameObject
     {
-        private const float INPUT_FORCE = 1.0f;
+        private const float INPUT_FORCE = 0.06f;
         private const float INPUT_ROTATION_FORCE = 0.05f;
 
+        // Override camera anchor to not be dependent on the object's orientation because this
+        // object will be rolling around.
         private float cameraYaw;
         private float cameraPitch;
+
 
         public override Matrix CameraAnchor
         {
@@ -25,15 +29,15 @@ namespace Mechadrone1.Gameplay.Prefabs
             }
         }
 
-        public Roller()
+        public Roller(IGameManager owner) : base(owner)
         {
             cameraYaw = 0.0f;
             cameraPitch = -MathHelper.Pi / 8.0f;
         }
 
-        public override void HandleInput(Microsoft.Xna.Framework.GameTime gameTime, InputManager input, PlayerIndex player, ICamera camera)
+        public override void HandleInput(Microsoft.Xna.Framework.GameTime gameTime, InputManager input, PlayerIndex player)
         {
-            base.HandleInput(gameTime, input, player, camera);
+            base.HandleInput(gameTime, input, player);
 
             // camera rotation
             cameraYaw -= input.CurrentState.PadState[(int)player].ThumbSticks.Right.X *
@@ -53,18 +57,18 @@ namespace Mechadrone1.Gameplay.Prefabs
             if (controlForceDir.Length() > 1.0f)
                 controlForceDir = Vector3.Normalize(controlForceDir);
 
-            Matrix invView = Matrix.Invert(camera.View);
-
-            controlForceDir = Vector3.TransformNormal(controlForceDir, invView);
+            // Camera will be null if this object is not an avatar, but it should also not be receiving
+            // input if that is the case.
+            controlForceDir = Vector3.TransformNormal(controlForceDir, Camera.Transform);
 
             if (soEnt != null)
             {
-                soEnt.LinearMomentum += controlForceDir * INPUT_FORCE * (float)(gameTime.ElapsedGameTime.TotalMilliseconds) * 0.06f;
+                soEnt.LinearMomentum += BepuConverter.Convert(controlForceDir * INPUT_FORCE * (float)(gameTime.ElapsedGameTime.TotalMilliseconds));
 
                 if (input.CurrentState.PadState[(int)player].IsButtonDown(Buttons.B) && soEnt.LinearMomentum.Length() > 0.0f)
                 {
-                    Vector3 moveDir = Vector3.Normalize(soEnt.LinearMomentum);
-                    float brakeForce = INPUT_FORCE * (float)(gameTime.ElapsedGameTime.TotalMilliseconds) * 0.06f;
+                    BEPUutilities.Vector3 moveDir = BEPUutilities.Vector3.Normalize(soEnt.LinearMomentum);
+                    float brakeForce = INPUT_FORCE * (float)(gameTime.ElapsedGameTime.TotalMilliseconds);
 
                     soEnt.LinearMomentum -= Math.Min(soEnt.LinearMomentum.Length(), brakeForce) * moveDir;
                 }

@@ -78,6 +78,16 @@
   </PropertyGroup>
   <ItemGroup />
   <ItemGroup>
+    <Compile Include="ArcBallCamera.cs" />
+    <Compile Include="Gameplay\Helpers\CharacterController.cs" />
+    <Compile Include="Gameplay\Helpers\HorizontalMotionConstraint.cs" />
+    <Compile Include="Gameplay\Helpers\ICharacterTag.cs" />
+    <Compile Include="Gameplay\Helpers\QueryManager.cs" />
+    <Compile Include="Gameplay\Helpers\StanceManager.cs" />
+    <Compile Include="Gameplay\Helpers\StepManager.cs" />
+    <Compile Include="Gameplay\Helpers\SupportFinder.cs" />
+    <Compile Include="Gameplay\Helpers\VerticalMotionConstraint.cs" />
+    <Compile Include="Gameplay\IGameManager.cs" />
     <Compile Include="Gameplay\Prefabs\Bouncer.cs" />
     <Compile Include="Gameplay\Decorators\IAudible.cs" />
     <Compile Include="Gameplay\Prefabs\FreeFlyer.cs" />
@@ -87,13 +97,17 @@
     <Compile Include="Gameplay\Prefabs\OrbitingLightbulb.cs" />
     <Compile Include="Gameplay\Prefabs\QuadWheel.cs" />
     <Compile Include="Gameplay\Prefabs\Roller.cs" />
+    <Compile Include="Gameplay\Prefabs\TPPedestrian.cs" />
     <Compile Include="Gameplay\Prefabs\WireBox.cs" />
+    <Compile Include="Gameplay\SimulatedGameObject.cs" />
+    <Compile Include="Gameplay\Skydome.cs" />
     <Compile Include="Gameplay\TerrainChunk.cs" />
     <Compile Include="Gameplay\Subsystems\AnimSprite.cs" />
     <Compile Include="Gameplay\Subsystems\AnimSpriteManager.cs" />
     <Compile Include="BlurManager.cs" />
     <Compile Include="ChaseCamera.cs" />
     <Compile Include="Gameplay\TerrainSector.cs" />
+    <Compile Include="Gameplay\UpdateEventHandlers.cs" />
     <Compile Include="InputManager.cs" />
     <Compile Include="InputState.cs" />
     <Compile Include="Rendering\EffectRegistry.cs" />
@@ -190,8 +204,12 @@
     <None Include="Properties\app.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="BEPUphysics">
-      <HintPath>..\..\External\Xbox\BEPUphysics.dll</HintPath>
+    <Reference Include="BEPUphysics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\BEPU\BEPUphysics\bin\Xbox 360\Release\BEPUphysics.dll</HintPath>
+    </Reference>
+    <Reference Include="BEPUutilities">
+      <HintPath>..\..\..\BEPU\BEPUphysics\bin\Xbox 360\Release\BEPUutilities.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xna.Framework" />
     <Reference Include="Microsoft.Xna.Framework.Game" />

@@ -12,9 +12,8 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Skelemator;
-using BEPUphysics.Collidables;
-using BEPUphysics.MathExtensions;
 using Mechadrone1.Gameplay.Prefabs;
+using SlagformCommon;
 
 namespace Mechadrone1.Gameplay
 {
@@ -23,7 +22,7 @@ namespace Mechadrone1.Gameplay
     /// rendering problems but will store information that is necessary for dealing with them,
     /// like a quadtree.
     /// </summary>
-    class Game1Manager : IRenderableScene
+    class Game1Manager : IRenderableScene, IGameManager
     {
         SoundBank soundBank;
         List<Cue> cueSounds;            // list of currently playing 3D sounds
@@ -41,13 +40,7 @@ namespace Mechadrone1.Gameplay
 
         public FogDesc Fog { get; set; }
 
-        Dictionary<PlayerIndex, GameObject> avatars;
-        Dictionary<PlayerIndex, ChaseCamera> cameras;
-
-        public IEnumerable<KeyValuePair<PlayerIndex, GameObject>> Players
-        {
-            get { return avatars.AsEnumerable(); }
-        }
+        public Dictionary<PlayerIndex, GameObject> Avatars { get; set; }
 
 
         public GameObject GetGameObject(string name)
@@ -61,15 +54,12 @@ namespace Mechadrone1.Gameplay
             return null;
         }
 
-
-        public ICamera GetCamera(PlayerIndex player)
-        {
-            return cameras[player];
-        }
-
         public DirectLight ShadowCastingLight { get; private set; }
 
         public Space SimSpace { get; private set; }
+
+        public event PreAnimationUpdateEventHandler PreAnimationUpdateStep;
+        public event PostPhysicsUpdateEventHandler PostPhysicsUpdateStep;
 
         public PowerupManager powerup;
         public ProjectileManager projectile;
@@ -98,8 +88,7 @@ namespace Mechadrone1.Gameplay
 
             GameObjects = new List<GameObject>();
 
-            avatars = new Dictionary<PlayerIndex, GameObject>();
-            cameras = new Dictionary<PlayerIndex, ChaseCamera>();
+            Avatars = new Dictionary<PlayerIndex, GameObject>();
 
             cueSounds = new List<Cue>();
             cueSoundsDelete = new List<Cue>();
@@ -117,7 +106,7 @@ namespace Mechadrone1.Gameplay
             particle = new ParticleManager();
 
             SimSpace = new Space();
-            SimSpace.ForceUpdater.Gravity = new Vector3(0.0f, -39.2f, 0.0f);   // 4 units = 1 meter?
+            SimSpace.ForceUpdater.Gravity = new BEPUutilities.Vector3(0.0f, -89.2f, 0.0f);   // 9 units = 1 meter?
 
             Substrate = new List<TerrainChunk>();
         }
@@ -141,10 +130,10 @@ namespace Mechadrone1.Gameplay
                 Substrate.Add(chunk);
                 SimSpace.Add(chunk.SimulationObject);
 
-                BoundingBox chunkExtents = chunk.SimulationObject.BoundingBox;
-                chunkExtents.Max.Y += (chunkExtents.Max - chunkExtents.Min).Length() * SlagformCommon.MathHelper.INV_SQRT_3;   // Add some head room.
+                BoundingBox chunkExtents = BepuConverter.Convert(chunk.SimulationObject.BoundingBox);
+                chunkExtents.Max.Y += (chunkExtents.Max - chunkExtents.Min).Length() * SlagformCommon.SlagMath.INV_SQRT_3;   // Add some head room.
 
-                WorldBounds = SlagformCommon.Space.CombineBBoxes(WorldBounds, chunkExtents);
+                WorldBounds = SlagformCommon.SpaceUtils.CombineBBoxes(WorldBounds, chunkExtents);
             }
 
             QuadTree = new QuadTree(WorldBounds);
@@ -171,11 +160,13 @@ namespace Mechadrone1.Gameplay
             MethodInfo miLoad = (typeof(ContentManager)).GetMethod("Load");
             MethodInfo miLoadConstructed;
 
+            object[] basicCtorParams = new object[] { this };
+
             foreach (GameObjectLoadInfo goli in manifest.GameObjects)
             {
                 goLoadedType = Type.GetType(goli.TypeFullName);
                 goLoadedProperties = goLoadedType.GetProperties();
-                goLoaded = Activator.CreateInstance(goLoadedType) as GameObject;
+                goLoaded = Activator.CreateInstance(goLoadedType, basicCtorParams) as GameObject;
 
                 foreach (KeyValuePair<string, object> kvp in goli.Properties)
                 {
@@ -203,10 +194,6 @@ namespace Mechadrone1.Gameplay
 
                 if (goLoaded.Visible)
                     QuadTree.AddOrUpdateSceneObject(goLoaded);
-
-                if (goLoaded.IsSimulationParticipant)
-                    SimSpace.Add(goLoaded.SimulationObject);
-
             }
 
             DirectLight dirLight = manifest.KeyLight;
@@ -261,13 +248,15 @@ namespace Mechadrone1.Gameplay
 
         public void HandleInput(GameTime gameTime, InputManager input)
         {
-            foreach (KeyValuePair<PlayerIndex, GameObject> kvp in avatars)
+            // Player-controlled objects need to update animation state machines,
+            // perform shape cast queries for movement, and such.
+            foreach (KeyValuePair<PlayerIndex, GameObject> kvp in Avatars)
             {
-                kvp.Value.HandleInput(gameTime, input, kvp.Key, GetCamera(kvp.Key));
+                kvp.Value.HandleInput(gameTime, input, kvp.Key);
             }
 
             // TODO: remove temp code:
-            GetGameObject("Suzanne").HandleInput(gameTime, input, PlayerIndex.One, GetCamera(PlayerIndex.One));
+            //GetGameObject("Suzanne").HandleInput(gameTime, input, PlayerIndex.One);
         }
 
 
@@ -275,23 +264,31 @@ namespace Mechadrone1.Gameplay
         {
             float elapsedTime = (float)(gameTime.ElapsedGameTime.TotalSeconds);
 
+            // These first seven update steps must be carefully organized, because they are highly
+            // interdependent.
+
+            // 1. Pre-animation update. Game-driven objects should update their position now.
+            OnPreAnimationUpdateStep(gameTime);
+
+            // 2. Update object animations here.
+
+            // 3. Adjust poses as needed. Update physics models with game object positions.
+
+            // 4. Step the physics sim:
             SimSpace.Update(elapsedTime);
 
-            for (int i = 0; i < GameObjects.Count; i++)
-            {
-                if (GameObjects[i].Dynamic)
-                    GameObjects[i].Update(gameTime);
-            }
+            // 5. Ragdoll update.
 
-            foreach (KeyValuePair<PlayerIndex, GameObject> kvp in avatars)
-            {
-                // update cameras
-                cameras[kvp.Key].ChasePosition = kvp.Value.CameraAnchor.Translation;
-                cameras[kvp.Key].ChaseDirection = kvp.Value.CameraAnchor.Forward;
-                cameras[kvp.Key].Up = kvp.Value.CameraAnchor.Up;
-                cameras[kvp.Key].Update(elapsedTime);
-            }
+            // 6. Post-physics update. Update game objects with physics model positions:
+            OnPostPhysicsUpdateStep(gameTime);
 
+            // 7. Finalize animations here.
+
+            // 8. Misc updates:
+            foreach (GameObject go in Avatars.Values)
+            {
+                go.UpdateCamera(elapsedTime);
+            }
 
             // update animated projectiles
             projectile.Update(elapsedTime);
@@ -359,30 +356,35 @@ namespace Mechadrone1.Gameplay
         }
 
 
+        private void OnPreAnimationUpdateStep(GameTime gameTime)
+        {
+            PreAnimationUpdateStep(this, new UpdateEventArgs(gameTime));
+        }
+
+
+        private void OnPostPhysicsUpdateStep(GameTime gameTime)
+        {
+            PostPhysicsUpdateStep(this, new UpdateEventArgs(gameTime));
+        }
+
+
         public void AddPlayer(PlayerIndex player, string avatarName)
         {
-            avatars.Add(player, GetGameObject(avatarName));
-            ChaseCamera newCam = new ChaseCamera(this);
-
-            newCam.DesiredPositionOffset = GameOptions.CameraOffset;
-            newCam.LookAtOffset = GameOptions.CameraTargetOffset;
-            newCam.Stiffness = GameOptions.CameraStiffness;
-            newCam.Damping = GameOptions.CameraDamping;
-            newCam.Mass = GameOptions.CameraMass;
-            newCam.FieldOfView = MathHelper.ToRadians(45.0f);
-
-            newCam.ChasePosition = avatars[player].CameraAnchor.Translation;
-            newCam.ChaseDirection = avatars[player].CameraAnchor.Forward;
-            newCam.Up = avatars[player].CameraAnchor.Up;
-            newCam.Reset();
-
-            cameras.Add(player, newCam);
+            GameObject avatar = GetGameObject(avatarName);
+            Avatars.Add(player, avatar);
+            avatar.CreateCamera();
         }
 
 
         public void RemovePlayer(PlayerIndex player)
         {
             throw new NotImplementedException();
+        }
+
+
+        public ICamera GetCamera(PlayerIndex player)
+        {
+            return Avatars[player].Camera;
         }
 
 
@@ -407,7 +409,7 @@ namespace Mechadrone1.Gameplay
 
             DirectLight fill = new DirectLight();
             fill.Ambient = Vector4.Zero;
-            Matrix complementary = Matrix.CreateFromAxisAngle(Vector3.One * SlagformCommon.MathHelper.INV_SQRT_3, MathHelper.Pi);
+            Matrix complementary = Matrix.CreateFromAxisAngle(Vector3.One * SlagformCommon.SlagMath.INV_SQRT_3, MathHelper.Pi);
             Vector3 diffuse = new Vector3(ShadowCastingLight.Diffuse.X, ShadowCastingLight.Diffuse.Y, ShadowCastingLight.Diffuse.Z);
             diffuse = Vector3.Transform(diffuse, complementary);
             fill.Diffuse.X = diffuse.X / 7.0f;
@@ -445,7 +447,7 @@ namespace Mechadrone1.Gameplay
 
                 DirectLight fill = new DirectLight();
                 fill.Ambient = Vector4.Zero;
-                Matrix complementary = Matrix.CreateFromAxisAngle(Vector3.One * SlagformCommon.MathHelper.INV_SQRT_3, MathHelper.Pi);
+                Matrix complementary = Matrix.CreateFromAxisAngle(Vector3.One * SlagformCommon.SlagMath.INV_SQRT_3, MathHelper.Pi);
                 Vector3 diffuse = new Vector3(ShadowCastingLight.Diffuse.X, ShadowCastingLight.Diffuse.Y, ShadowCastingLight.Diffuse.Z);
                 diffuse = Vector3.Transform(diffuse, complementary);
                 fill.Diffuse.X = diffuse.X / 5.0f;
@@ -479,14 +481,11 @@ namespace Mechadrone1.Gameplay
             // get distance from sound to closest player
             float minimumDistance = float.MaxValue;
 
-            foreach (KeyValuePair<PlayerIndex, GameObject> player in avatars)
+            foreach (KeyValuePair<PlayerIndex, GameObject> player in Avatars)
             {
-                if (player.Value.IsAlive)
-                {
-                    float dist = (position - player.Value.Position).LengthSquared();
-                    if (dist < minimumDistance)
-                        minimumDistance = dist;
-                }
+                float dist = (position - player.Value.Position).LengthSquared();
+                if (dist < minimumDistance)
+                    minimumDistance = dist;
             }
 
             // create a new sound instance

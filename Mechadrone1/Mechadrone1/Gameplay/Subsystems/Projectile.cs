@@ -148,7 +148,7 @@ namespace Mechadrone1.Gameplay
                         explosionPosition, explosionDamageRadius);
 
                 // if exploded on a player add contact damage
-                if (playerHit != -1 && gmOwner.GetPlayer(playerHit).IsAlive)
+                if (playerHit != -1)
                     gmOwner.AddDamage(player, playerHit, contactDamage, 
                         Vector3.Normalize(destinationPosition - sourcePosition));
 

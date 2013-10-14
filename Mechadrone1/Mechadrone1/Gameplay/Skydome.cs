@@ -13,15 +13,17 @@ namespace Mechadrone1.Gameplay
         Effect effect;
         GraphicsDevice gd;
         DepthStencilState dsSky;
-        EffectParameter wvp;
+        EffectParameter wvpParam;
+
 
         public Skydome(TextureCube skyTexture, Model skyModel, Effect skyFx)
+            : base(null)
         {
             VisualModel = skyModel;
             gd = skyTexture.GraphicsDevice;
             effect = skyFx;
             effect.Parameters["skybox"].SetValue(skyTexture);
-            wvp = effect.Parameters["worldViewProj"];
+            wvpParam = effect.Parameters["worldViewProj"];
 
             dsSky = new DepthStencilState();
             dsSky.DepthBufferFunction = CompareFunction.LessEqual;
@@ -59,7 +61,7 @@ namespace Mechadrone1.Gameplay
 
         public override void Draw(Rendering.RenderEntry re)
         {
-            wvp.SetValue(Matrix.CreateTranslation(re.CameraTransform.Translation) * re.View * re.Projection);
+            wvpParam.SetValue(Matrix.CreateTranslation(re.CameraTransform.Translation) * re.View * re.Projection);
 
             effect.CurrentTechnique.Passes[0].Apply();
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Mechadrone1.Gameplay;
 using Mechadrone1.Gameplay.Helpers;
 using Mechadrone1.Rendering;
 
@@ -6,10 +7,10 @@ namespace Mechadrone1.Gameplay.Prefabs
 {
     class FreeFlyer : GameObject
     {
-
         FloatMovement mover;
 
-        public FreeFlyer()
+
+        public FreeFlyer(IGameManager owner) : base(owner)
         {
             FloatMovementHandlingDesc handlingDesc;
             handlingDesc.DampingForce = 65.0f;
@@ -23,6 +24,7 @@ namespace Mechadrone1.Gameplay.Prefabs
             mover.Reset(Matrix.CreateFromQuaternion(Orientation) * Matrix.CreateTranslation(Position));
         }
 
+
         public override void Initialize()
         {
             base.Initialize();
@@ -30,16 +32,26 @@ namespace Mechadrone1.Gameplay.Prefabs
             mover.Reset(Matrix.CreateFromQuaternion(Orientation) * Matrix.CreateTranslation(Position));
         }
 
-        public override void HandleInput(Microsoft.Xna.Framework.GameTime gameTime, InputManager input, PlayerIndex player, ICamera camera)
+
+        public override void RegisterUpdateHandlers()
+        {
+            owner.PreAnimationUpdateStep += PreAnimationUpdate;
+        }
+
+
+        public override void HandleInput(Microsoft.Xna.Framework.GameTime gameTime, InputManager input, PlayerIndex player)
         {
             mover.ProcessInput((float)(gameTime.ElapsedGameTime.TotalSeconds), input.CurrentState, (int)player);
         }
 
-        public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
+
+        public void PreAnimationUpdate(object sender, UpdateEventArgs e)
         {
-            mover.Update((float)(gameTime.ElapsedGameTime.TotalSeconds));
-            Position = mover.position;
-            Orientation = Quaternion.CreateFromRotationMatrix(mover.rotation);
+            mover.Update((float)(e.GameTime.ElapsedGameTime.TotalSeconds));
+            Position = mover.Position;
+            Orientation = Quaternion.CreateFromRotationMatrix(mover.Rotation);
+
+            UpdateQuadTree();
         }
     }
 }

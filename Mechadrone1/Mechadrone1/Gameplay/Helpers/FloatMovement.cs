@@ -20,16 +20,16 @@ namespace Mechadrone1.Gameplay.Helpers
 {
     class FloatMovement
     {
-        public Vector3 position;       // player position
-        public Vector3 velocity;       // velocity in local player space
-        public Vector3 force;          // forces in local player space
+        public Vector3 Position;       // player position
+        public Vector3 Velocity;       // velocity in local player space
+        public Vector3 Force;          // forces in local player space
 
         // player rotation
-        public Matrix rotation;                 
+        public Matrix Rotation;
         // rotation velocities around each local player axis
-        public Vector3 rotationVelocityAxis;
+        public Vector3 RotationVelocityAxis;
         // rotation forces around each local player axis
-        public Vector3 rotationForce;
+        public Vector3 RotationForce;
 
         FloatMovementHandlingDesc handling;
 
@@ -38,13 +38,13 @@ namespace Mechadrone1.Gameplay.Helpers
         /// </summary>
         public FloatMovement(FloatMovementHandlingDesc handlingDesc)
         {
-            position = Vector3.Zero;
-            velocity = Vector3.Zero;
-            force = Vector3.Zero;
+            Position = Vector3.Zero;
+            Velocity = Vector3.Zero;
+            Force = Vector3.Zero;
 
-            rotation = Matrix.Identity;
-            rotationVelocityAxis = Vector3.Zero;
-            rotationForce = Vector3.Zero;
+            Rotation = Matrix.Identity;
+            RotationVelocityAxis = Vector3.Zero;
+            RotationForce = Vector3.Zero;
 
             handling = handlingDesc;
         }
@@ -54,14 +54,14 @@ namespace Mechadrone1.Gameplay.Helpers
         /// </summary>
         public void Reset(Matrix transfrom)
         {
-            rotation = transfrom;
-            position = transfrom.Translation;
+            Rotation = transfrom;
+            Position = transfrom.Translation;
 
-            velocity = Vector3.Zero;
-            force = Vector3.Zero;
+            Velocity = Vector3.Zero;
+            Force = Vector3.Zero;
             
-            rotationVelocityAxis = Vector3.Zero;
-            rotationForce = Vector3.Zero;
+            RotationVelocityAxis = Vector3.Zero;
+            RotationForce = Vector3.Zero;
         }
 
         /// <summary>
@@ -74,10 +74,10 @@ namespace Mechadrone1.Gameplay.Helpers
                 Matrix transform;
 
                 // set rotation
-                transform = rotation;
+                transform = Rotation;
 
                 // set translation
-                transform.Translation = position;
+                transform.Translation = Position;
 
                 return transform;
             }
@@ -88,7 +88,7 @@ namespace Mechadrone1.Gameplay.Helpers
         /// </summary>
         public float VelocityFactor
         {
-            get { return velocity.Length() / handling.MaxVelocity; }
+            get { return Velocity.Length() / handling.MaxVelocity; }
         }
 
         /// <summary>
@@ -99,15 +99,15 @@ namespace Mechadrone1.Gameplay.Helpers
             // transform local velocity to world space
             get
             {
-                return velocity.X * rotation.Right +
-                velocity.Y * rotation.Up + velocity.Z * rotation.Forward;
+                return Velocity.X * Rotation.Right +
+                Velocity.Y * Rotation.Up + Velocity.Z * Rotation.Forward;
             }
             set
             {
                 // transform world velocity into local space
-                velocity.X = Vector3.Dot(rotation.Right, value);
-                velocity.Y = Vector3.Dot(rotation.Up, value);
-                velocity.Z = Vector3.Dot(rotation.Forward, value);
+                Velocity.X = Vector3.Dot(Rotation.Right, value);
+                Velocity.Y = Vector3.Dot(Rotation.Up, value);
+                Velocity.Z = Vector3.Dot(Rotation.Forward, value);
             }
         }
 
@@ -117,156 +117,156 @@ namespace Mechadrone1.Gameplay.Helpers
         public void ProcessInput(float elapsedTime, InputState current, int player)
         {
             // camera rotation
-            rotationForce.X =
+            RotationForce.X =
                 handling.InputRotationForce * current.PadState[player].ThumbSticks.Right.Y;
-            rotationForce.Y =
+            RotationForce.Y =
                 -handling.InputRotationForce * current.PadState[player].ThumbSticks.Right.X;
-            rotationForce.Z = 0.0f;
+            RotationForce.Z = 0.0f;
 
             // camera bank
             if (current.PadState[player].Buttons.RightShoulder == ButtonState.Pressed)
-                rotationForce.Z += handling.InputRotationForce;
+                RotationForce.Z += handling.InputRotationForce;
             if (current.PadState[player].Buttons.LeftShoulder == ButtonState.Pressed)
-                rotationForce.Z -= handling.InputRotationForce;
+                RotationForce.Z -= handling.InputRotationForce;
 
             // move forward/backward
-            force.X = handling.InputForce * current.PadState[player].ThumbSticks.Left.X;
+            Force.X = handling.InputForce * current.PadState[player].ThumbSticks.Left.X;
 
             if (current.PadState[player].Buttons.RightStick == ButtonState.Pressed)
             {
                 // slide up/down
-                force.Y = handling.InputForce * current.PadState[player].ThumbSticks.Left.Y;
-                force.Z = 0.0f;
+                Force.Y = handling.InputForce * current.PadState[player].ThumbSticks.Left.Y;
+                Force.Z = 0.0f;
             }
             else
             {
                 // slide left/right
-                force.Y = 0.0f;
-                force.Z = handling.InputForce * current.PadState[player].ThumbSticks.Left.Y;
+                Force.Y = 0.0f;
+                Force.Z = handling.InputForce * current.PadState[player].ThumbSticks.Left.Y;
             }
 
             // keyboard camera rotation
             if (current.KeyState[player].IsKeyDown(Keys.Down))
-                rotationForce.X = handling.InputRotationForce;
+                RotationForce.X = handling.InputRotationForce;
             if (current.KeyState[player].IsKeyDown(Keys.Up))
-                rotationForce.X = -handling.InputRotationForce;
+                RotationForce.X = -handling.InputRotationForce;
             if (current.KeyState[player].IsKeyDown(Keys.Left))
-                rotationForce.Y = handling.InputRotationForce;
+                RotationForce.Y = handling.InputRotationForce;
             if (current.KeyState[player].IsKeyDown(Keys.Right))
-                rotationForce.Y = -handling.InputRotationForce;
+                RotationForce.Y = -handling.InputRotationForce;
             // keyboard camera bank
             if (current.KeyState[player].IsKeyDown(Keys.Q))
-                rotationForce.Z = -handling.InputRotationForce;
+                RotationForce.Z = -handling.InputRotationForce;
             if (current.KeyState[player].IsKeyDown(Keys.E))
-                rotationForce.Z = handling.InputRotationForce;
+                RotationForce.Z = handling.InputRotationForce;
             // move forward/backward
             if (current.KeyState[player].IsKeyDown(Keys.W))
-                force.Z = handling.InputForce;
+                Force.Z = handling.InputForce;
             if (current.KeyState[player].IsKeyDown(Keys.S))
-                force.Z = -handling.InputForce;
+                Force.Z = -handling.InputForce;
             // slide left/right
             if (current.KeyState[player].IsKeyDown(Keys.A))
-                force.X = -handling.InputForce / 2.0f;
+                Force.X = -handling.InputForce / 2.0f;
             if (current.KeyState[player].IsKeyDown(Keys.D))
-                force.X = handling.InputForce / 2.0f;
+                Force.X = handling.InputForce / 2.0f;
             // slide up/down
             if (current.KeyState[player].IsKeyDown(Keys.X))
-                force.Y = -handling.InputForce / 2.0f;
+                Force.Y = -handling.InputForce / 2.0f;
             if (current.KeyState[player].IsKeyDown(Keys.D2))
-                force.Y = handling.InputForce / 2.0f;
+                Force.Y = handling.InputForce / 2.0f;
         }
 
         public void Update(float elapsedTime)
         {
             // apply force
-            velocity += force * elapsedTime;
+            Velocity += Force * elapsedTime;
 
             // apply damping
-            if (force.X > -0.001f && force.X < 0.001f)
-                if (velocity.X > 0)
-                    velocity.X = Math.Max(0.0f, velocity.X - handling.DampingForce * elapsedTime);
+            if (Force.X > -0.001f && Force.X < 0.001f)
+                if (Velocity.X > 0)
+                    Velocity.X = Math.Max(0.0f, Velocity.X - handling.DampingForce * elapsedTime);
                 else
-                    velocity.X = Math.Min(0.0f, velocity.X + handling.DampingForce * elapsedTime);
-            if (force.Y > -0.001f && force.Y < 0.001f)
-                if (velocity.Y > 0)
-                    velocity.Y = Math.Max(0.0f, velocity.Y - handling.DampingForce * elapsedTime);
+                    Velocity.X = Math.Min(0.0f, Velocity.X + handling.DampingForce * elapsedTime);
+            if (Force.Y > -0.001f && Force.Y < 0.001f)
+                if (Velocity.Y > 0)
+                    Velocity.Y = Math.Max(0.0f, Velocity.Y - handling.DampingForce * elapsedTime);
                 else
-                    velocity.Y = Math.Min(0.0f, velocity.Y + handling.DampingForce * elapsedTime);
-            if (force.Z > -0.001f && force.Z < 0.001f)
-                if (velocity.Z > 0)
-                    velocity.Z = Math.Max(0.0f, velocity.Z - handling.DampingForce * elapsedTime);
+                    Velocity.Y = Math.Min(0.0f, Velocity.Y + handling.DampingForce * elapsedTime);
+            if (Force.Z > -0.001f && Force.Z < 0.001f)
+                if (Velocity.Z > 0)
+                    Velocity.Z = Math.Max(0.0f, Velocity.Z - handling.DampingForce * elapsedTime);
                 else
-                    velocity.Z = Math.Min(0.0f, velocity.Z + handling.DampingForce * elapsedTime);
+                    Velocity.Z = Math.Min(0.0f, Velocity.Z + handling.DampingForce * elapsedTime);
 
             // crop with maximum velocity
-            float velocityLength = velocity.Length();
+            float velocityLength = Velocity.Length();
             if (velocityLength > handling.MaxVelocity)
-                velocity = Vector3.Normalize(velocity) * handling.MaxVelocity;
+                Velocity = Vector3.Normalize(Velocity) * handling.MaxVelocity;
 
             // apply velocity
-            position += rotation.Right * velocity.X * elapsedTime;
-            position += rotation.Up * velocity.Y * elapsedTime;
-            position += rotation.Forward * velocity.Z * elapsedTime;
+            Position += Rotation.Right * Velocity.X * elapsedTime;
+            Position += Rotation.Up * Velocity.Y * elapsedTime;
+            Position += Rotation.Forward * Velocity.Z * elapsedTime;
             
             // apply rot force
-            rotationVelocityAxis += rotationForce * elapsedTime;
+            RotationVelocityAxis += RotationForce * elapsedTime;
 
             // apply rot damping
-            if (rotationForce.X > -0.001f && rotationForce.X < 0.001f)
-                if (rotationVelocityAxis.X > 0)
-                    rotationVelocityAxis.X = Math.Max(0.0f, 
-                                    rotationVelocityAxis.X -
+            if (RotationForce.X > -0.001f && RotationForce.X < 0.001f)
+                if (RotationVelocityAxis.X > 0)
+                    RotationVelocityAxis.X = Math.Max(0.0f, 
+                                    RotationVelocityAxis.X -
                                     handling.DampingRotationForce * elapsedTime);
                 else
-                    rotationVelocityAxis.X = Math.Min(0.0f, 
-                                    rotationVelocityAxis.X +
+                    RotationVelocityAxis.X = Math.Min(0.0f, 
+                                    RotationVelocityAxis.X +
                                     handling.DampingRotationForce * elapsedTime);
             
-            if (rotationForce.Y > -0.001f && rotationForce.Y < 0.001f)
-                if (rotationVelocityAxis.Y > 0)
-                    rotationVelocityAxis.Y = Math.Max(0.0f, 
-                                    rotationVelocityAxis.Y -
+            if (RotationForce.Y > -0.001f && RotationForce.Y < 0.001f)
+                if (RotationVelocityAxis.Y > 0)
+                    RotationVelocityAxis.Y = Math.Max(0.0f, 
+                                    RotationVelocityAxis.Y -
                                     handling.DampingRotationForce * elapsedTime);
                 else
-                    rotationVelocityAxis.Y = Math.Min(0.0f, 
-                                    rotationVelocityAxis.Y +
+                    RotationVelocityAxis.Y = Math.Min(0.0f, 
+                                    RotationVelocityAxis.Y +
                                     handling.DampingRotationForce * elapsedTime);
             
-            if (rotationForce.Z > -0.001f && rotationForce.Z < 0.001f)
-                if (rotationVelocityAxis.Z > 0)
-                    rotationVelocityAxis.Z = Math.Max(0.0f, 
-                                    rotationVelocityAxis.Z -
+            if (RotationForce.Z > -0.001f && RotationForce.Z < 0.001f)
+                if (RotationVelocityAxis.Z > 0)
+                    RotationVelocityAxis.Z = Math.Max(0.0f, 
+                                    RotationVelocityAxis.Z -
                                     handling.DampingRotationForce * elapsedTime);
                 else
-                    rotationVelocityAxis.Z = Math.Min(0.0f, 
-                                    rotationVelocityAxis.Z +
+                    RotationVelocityAxis.Z = Math.Min(0.0f, 
+                                    RotationVelocityAxis.Z +
                                     handling.DampingRotationForce * elapsedTime);
 
             // crop with maximum rot velocity
-            float rotationVelocityLength = rotationVelocityAxis.Length();
+            float rotationVelocityLength = RotationVelocityAxis.Length();
             if (rotationVelocityLength > handling.MaxRotationVelocity)
-                rotationVelocityAxis = Vector3.Normalize(rotationVelocityAxis) *
+                RotationVelocityAxis = Vector3.Normalize(RotationVelocityAxis) *
                     handling.MaxRotationVelocity;
 
             // apply rot vel
             Matrix rotationVelocity = Matrix.Identity;
 
-            if (rotationVelocityAxis.X < -0.001f || rotationVelocityAxis.X > 0.001f)
+            if (RotationVelocityAxis.X < -0.001f || RotationVelocityAxis.X > 0.001f)
                 rotationVelocity = rotationVelocity * 
-                    Matrix.CreateFromAxisAngle(rotation.Right, 
-                    rotationVelocityAxis.X * elapsedTime);
+                    Matrix.CreateFromAxisAngle(Rotation.Right, 
+                    RotationVelocityAxis.X * elapsedTime);
 
-            if (rotationVelocityAxis.Y < -0.001f || rotationVelocityAxis.Y > 0.001f)
+            if (RotationVelocityAxis.Y < -0.001f || RotationVelocityAxis.Y > 0.001f)
                 rotationVelocity = rotationVelocity * 
-                    Matrix.CreateFromAxisAngle(rotation.Up, 
-                    rotationVelocityAxis.Y * elapsedTime);
+                    Matrix.CreateFromAxisAngle(Rotation.Up, 
+                    RotationVelocityAxis.Y * elapsedTime);
 
-            if (rotationVelocityAxis.Z < -0.001f || rotationVelocityAxis.Z > 0.001f)
+            if (RotationVelocityAxis.Z < -0.001f || RotationVelocityAxis.Z > 0.001f)
                 rotationVelocity = rotationVelocity * 
-                    Matrix.CreateFromAxisAngle(rotation.Forward, 
-                    rotationVelocityAxis.Z * elapsedTime);
+                    Matrix.CreateFromAxisAngle(Rotation.Forward, 
+                    RotationVelocityAxis.Z * elapsedTime);
 
-            rotation = rotation * rotationVelocity;
+            Rotation = Rotation * rotationVelocity;
         }
     }
 

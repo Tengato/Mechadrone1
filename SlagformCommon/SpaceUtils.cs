@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace SlagformCommon
 {
-    public static class Space
+    public static class SpaceUtils
     {
         public static BoundingBox CombineBBoxes(BoundingBox a, BoundingBox b)
         {

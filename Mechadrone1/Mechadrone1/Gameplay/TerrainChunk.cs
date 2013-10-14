@@ -7,7 +7,8 @@ using Microsoft.Xna.Framework;
 using Mechadrone1.Rendering;
 using Microsoft.Xna.Framework.Graphics;
 using Manifracture;
-using BEPUphysics.MathExtensions;
+using BepuTerrain = BEPUphysics.BroadPhaseEntries.Terrain;
+using SlagformCommon;
 
 namespace Mechadrone1.Gameplay
 {
@@ -25,7 +26,7 @@ namespace Mechadrone1.Gameplay
 
         public TerrainSector[,] Sectors { get; private set; }
 
-        public BEPUphysics.Collidables.Terrain SimulationObject { get; private set; }
+        public BepuTerrain SimulationObject { get; private set; }
 
         private int readyBatchId;
         private Matrix world;
@@ -84,7 +85,10 @@ namespace Mechadrone1.Gameplay
 
             readyBatchId = -1;
 
-            SimulationObject = new BEPUphysics.Collidables.Terrain(heightVals, new AffineTransform(new Vector3(BaseTerrain.XZScale, 1.0f, BaseTerrain.XZScale), Quaternion.Identity, Position + BaseTerrain.TransformForGeometry));
+            SimulationObject = new BepuTerrain(heightVals,
+                new BEPUutilities.AffineTransform(new BEPUutilities.Vector3(BaseTerrain.XZScale, 1.0f, BaseTerrain.XZScale),
+                BEPUutilities.Quaternion.Identity,
+                BepuConverter.Convert(Position + BaseTerrain.TransformForGeometry)));
             SimulationObject.Material.Bounciness = 0.60f;
             SimulationObject.Material.StaticFriction = 1.0f;
             SimulationObject.Material.KineticFriction = 1.0f;

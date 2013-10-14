@@ -22,6 +22,9 @@
     <RootNamespace>Mechadrone1Content</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BEPUutilities">
+      <HintPath>..\..\..\BEPU\BEPUutilities\bin\x86\Release\BEPUutilities.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.EffectImporter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.FBXImporter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.TextureImporter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL" />

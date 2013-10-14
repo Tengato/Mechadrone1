@@ -19,7 +19,7 @@ namespace Mechadrone1.Gameplay.Prefabs
         public bool ShowGrid { get; set; }
         public bool ShowAxes { get; set; }
 
-        public Grid(BasicEffect basicEffect)
+        public Grid(BasicEffect basicEffect) : base(null)
         {
             wireframeEffect = basicEffect;
             wireframeEffect.VertexColorEnabled = true;

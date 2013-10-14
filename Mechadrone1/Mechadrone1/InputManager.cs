@@ -15,8 +15,9 @@ namespace Mechadrone1
     {
         InputState currentState;   // current frame input
         InputState lastState;      // last frame input
+        Vector2 mouseDragStart;
+        MouseButtons? mouseDragButton;
 
-        public int KeyboardUser;
 
         /// <summary>
         /// Create a new input manager
@@ -25,6 +26,7 @@ namespace Mechadrone1
         {
             currentState = new InputState();
             lastState = new InputState();
+            mouseDragButton = null;
         }
 
 
@@ -35,6 +37,49 @@ namespace Mechadrone1
         {
             lastState.CopyInput(currentState);
             currentState.ReadInput();
+            if (mouseDragButton == null)
+            {
+                if (currentState.MouseState.LeftButton == ButtonState.Pressed &&
+                    lastState.MouseState.LeftButton == ButtonState.Pressed)
+                {
+                    mouseDragButton = MouseButtons.Left;
+                }
+                else if (currentState.MouseState.RightButton == ButtonState.Pressed &&
+                    lastState.MouseState.RightButton == ButtonState.Pressed)
+                {
+                    mouseDragButton = MouseButtons.Right;
+                }
+                else if (currentState.MouseState.MiddleButton == ButtonState.Pressed &&
+                    lastState.MouseState.MiddleButton == ButtonState.Pressed)
+                {
+                    mouseDragButton = MouseButtons.Middle;
+                }
+
+                if (mouseDragButton != null)
+                {
+                    mouseDragStart.X = lastState.MouseState.X;
+                    mouseDragStart.Y = lastState.MouseState.Y;
+                    Mouse.SetPosition((int)(mouseDragStart.X), (int)(mouseDragStart.Y));
+                }
+
+            }
+            else
+            {
+
+                if (mouseDragButton == MouseButtons.Left &&
+                    currentState.MouseState.LeftButton != ButtonState.Pressed ||
+                    mouseDragButton == MouseButtons.Middle &&
+                    currentState.MouseState.MiddleButton != ButtonState.Pressed ||
+                    mouseDragButton == MouseButtons.Right &&
+                    currentState.MouseState.RightButton != ButtonState.Pressed)
+                {
+                    mouseDragButton = null;
+                }
+                else
+                {
+                    Mouse.SetPosition((int)(mouseDragStart.X), (int)(mouseDragStart.Y));
+                }
+            }
         }
 
 
@@ -47,20 +92,6 @@ namespace Mechadrone1
         public InputState LastState
         {
             get { return lastState; }
-        }
-
-
-        public PlayerIndex KeyboardUserPI
-        {
-            get { return (PlayerIndex)KeyboardUser; }
-            set
-            {
-                for (KeyboardUser = 0; KeyboardUser < InputState.MAX_PLAYERS; KeyboardUser++)
-                {
-                    if ((PlayerIndex)KeyboardUser == value)
-                        break;
-                }
-            }
         }
 
 
@@ -121,6 +152,22 @@ namespace Mechadrone1
                         IsNewButtonPress(button, PlayerIndex.Three, out playerIndex) ||
                         IsNewButtonPress(button, PlayerIndex.Four, out playerIndex));
             }
+        }
+
+
+        public bool IsMouseDragging(MouseButtons button, PlayerIndex? controllingPlayer,
+            out PlayerIndex playerIndex, out Vector2 displacement)
+        {
+            playerIndex = (PlayerIndex)(InputState.MouseUser);
+            displacement = new Vector2(currentState.MouseState.X, currentState.MouseState.Y) -
+                mouseDragStart;
+
+            if (controllingPlayer == (PlayerIndex)(InputState.MouseUser) || controllingPlayer == null)
+            {
+                return button == mouseDragButton;
+            }
+
+            return false;
         }
 
 
@@ -197,6 +244,15 @@ namespace Mechadrone1
                    IsNewButtonPress(Buttons.Start, controllingPlayer, out playerIndex);
         }
 
+    }
 
+
+    public enum MouseButtons
+    {
+        Left,
+        Middle,
+        Right,
+        XButton1,
+        XButton2
     }
 }

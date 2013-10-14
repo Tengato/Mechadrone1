@@ -9,9 +9,24 @@ namespace Mechadrone1.Gameplay.Prefabs
         public Color Color { get; set; }
         public Vector3 Center { get; set; }
 
-        public override void Update(GameTime gameTime)
+
+        public OrbitingLightbulb(IGameManager owner)
+            : base(owner)
         {
-            Position = Center + Vector3.Transform(Position - Center, Matrix.CreateFromAxisAngle(Vector3.Up, (float)(gameTime.ElapsedGameTime.TotalSeconds)));
+        }
+
+
+        public override void RegisterUpdateHandlers()
+        {
+            owner.PreAnimationUpdateStep += PreAnimationUpdate;
+        }
+
+
+        public void PreAnimationUpdate(object sender, UpdateEventArgs e)
+        {
+            Position = Center + Vector3.Transform(Position - Center, Matrix.CreateFromAxisAngle(Vector3.Up, (float)(e.GameTime.ElapsedGameTime.TotalSeconds)));
+
+            UpdateQuadTree();
         }
     }
 }

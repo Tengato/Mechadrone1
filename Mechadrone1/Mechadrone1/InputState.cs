@@ -9,6 +9,9 @@ namespace Mechadrone1
     {
         public GamePadState[] PadState;
         public KeyboardState[] KeyState;
+        public MouseState MouseState;
+
+        public static int MouseUser = 0;
 
         public const int MAX_PLAYERS = 4;
 
@@ -26,6 +29,8 @@ namespace Mechadrone1
                 PadState[i] = GamePad.GetState((PlayerIndex)i);
                 KeyState[i] = Keyboard.GetState((PlayerIndex)i);
             }
+
+            MouseState = Mouse.GetState();
         }
 
         public void CopyInput(InputState state)
@@ -35,6 +40,16 @@ namespace Mechadrone1
                 PadState[i] = state.PadState[i];
                 KeyState[i] = state.KeyState[i];
             }
+
+            MouseState = state.MouseState;
+        }
+
+        public MouseState GetMouseState(int playerIndex)
+        {
+            if (playerIndex == MouseUser)
+                return MouseState;
+            else
+                return new MouseState();
         }
     }
 

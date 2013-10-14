@@ -81,7 +81,10 @@
   <ItemGroup>
     <Reference Include="BEPUphysics, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31f6a8732a21de19, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\External\Windows\BEPUphysics.dll</HintPath>
+      <HintPath>..\..\..\BEPU\BEPUphysics\bin\x86\Release\BEPUphysics.dll</HintPath>
+    </Reference>
+    <Reference Include="BEPUutilities">
+      <HintPath>..\..\..\BEPU\BEPUphysics\bin\x86\Release\BEPUutilities.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
@@ -96,6 +99,15 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Gameplay\Helpers\CharacterController.cs" />
+    <Compile Include="Gameplay\Helpers\HorizontalMotionConstraint.cs" />
+    <Compile Include="Gameplay\Helpers\ICharacterTag.cs" />
+    <Compile Include="Gameplay\Helpers\QueryManager.cs" />
+    <Compile Include="Gameplay\Helpers\StanceManager.cs" />
+    <Compile Include="Gameplay\Helpers\StepManager.cs" />
+    <Compile Include="Gameplay\Helpers\SupportFinder.cs" />
+    <Compile Include="Gameplay\Helpers\VerticalMotionConstraint.cs" />
+    <Compile Include="Gameplay\IGameManager.cs" />
     <Compile Include="Gameplay\Prefabs\Bouncer.cs" />
     <Compile Include="Gameplay\Decorators\IAudible.cs" />
     <Compile Include="Gameplay\Prefabs\FreeFlyer.cs" />
@@ -103,8 +115,10 @@
     <Compile Include="Gameplay\Helpers\FloatMovement.cs" />
     <Compile Include="Gameplay\Prefabs\Grid.cs" />
     <Compile Include="Gameplay\Prefabs\OrbitingLightbulb.cs" />
+    <Compile Include="Gameplay\Prefabs\TPPedestrian.cs" />
     <Compile Include="Gameplay\Prefabs\QuadWheel.cs" />
     <Compile Include="Gameplay\Prefabs\Roller.cs" />
+    <Compile Include="Gameplay\SimulatedGameObject.cs" />
     <Compile Include="Gameplay\Skydome.cs" />
     <Compile Include="Gameplay\Prefabs\WireBox.cs" />
     <Compile Include="Gameplay\TerrainChunk.cs" />
@@ -113,6 +127,7 @@
     <Compile Include="BlurManager.cs" />
     <Compile Include="ChaseCamera.cs" />
     <Compile Include="Gameplay\TerrainSector.cs" />
+    <Compile Include="Gameplay\UpdateEventHandlers.cs" />
     <Compile Include="InputManager.cs" />
     <Compile Include="InputState.cs" />
     <Compile Include="Rendering\EffectRegistry.cs" />
@@ -125,6 +140,7 @@
     <Compile Include="Rendering\QuadTreeRect.cs" />
     <Compile Include="Rendering\RenderEntry.cs" />
     <Compile Include="Rendering\RenderQueue.cs" />
+    <Compile Include="ArcBallCamera.cs" />
     <Compile Include="Screens\HelpScreen.cs" />
     <Compile Include="StateManagement\FontManager.cs" />
     <Compile Include="Gameplay\Game1Manager.cs" />

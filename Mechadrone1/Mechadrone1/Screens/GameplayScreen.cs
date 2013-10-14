@@ -60,7 +60,7 @@ namespace Mechadrone1.Screens
 
             gameMan = new Game1Manager(ScreenManager.SoundBank);
             gameMan.LoadContent(ScreenManager.GraphicsDevice, content, manifest);
-            gameMan.AddPlayer((PlayerIndex)ControllingPlayer, "CameraTarget");
+            gameMan.AddPlayer((PlayerIndex)ControllingPlayer, "Soldier");
             sceneMan = new SceneManager(ScreenManager.GraphicsDevice);
             sceneMan.LoadContent(gameMan, content);
 
