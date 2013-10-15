@@ -7,6 +7,7 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace Mechadrone1
 {
@@ -244,9 +245,53 @@ namespace Mechadrone1
                    IsNewButtonPress(Buttons.Start, controllingPlayer, out playerIndex);
         }
 
+
+        public bool IsNewMouseButtonPress(MouseButtons buttons, PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
+        {
+            if (controllingPlayer.HasValue)
+            {
+                // Read input from the specified player.
+                playerIndex = controllingPlayer.Value;
+
+                if (controllingPlayer != (PlayerIndex)(InputState.MouseUser))
+                    return false;
+
+                MouseButtons newPresses = 0;
+
+                if ((CurrentState.MouseState.LeftButton == ButtonState.Pressed &&
+                LastState.MouseState.LeftButton == ButtonState.Released))
+                    newPresses |= MouseButtons.Left;
+
+                if ((CurrentState.MouseState.MiddleButton == ButtonState.Pressed &&
+                LastState.MouseState.MiddleButton == ButtonState.Released))
+                    newPresses |= MouseButtons.Middle;
+
+                if ((CurrentState.MouseState.RightButton == ButtonState.Pressed &&
+                LastState.MouseState.RightButton == ButtonState.Released))
+                    newPresses |= MouseButtons.Right;
+
+                if ((CurrentState.MouseState.XButton1 == ButtonState.Pressed &&
+                LastState.MouseState.XButton1 == ButtonState.Released))
+                    newPresses |= MouseButtons.XButton1;
+
+                if ((CurrentState.MouseState.XButton2 == ButtonState.Pressed &&
+                LastState.MouseState.XButton2 == ButtonState.Released))
+                    newPresses |= MouseButtons.XButton2;
+
+                return newPresses == buttons;
+            }
+            else
+            {
+                // Accept input from any player.
+                return (IsNewMouseButtonPress(buttons, PlayerIndex.One, out playerIndex) ||
+                        IsNewMouseButtonPress(buttons, PlayerIndex.Two, out playerIndex) ||
+                        IsNewMouseButtonPress(buttons, PlayerIndex.Three, out playerIndex) ||
+                        IsNewMouseButtonPress(buttons, PlayerIndex.Four, out playerIndex));
+            }
+        }
     }
 
-
+    [Flags]
     public enum MouseButtons
     {
         Left,

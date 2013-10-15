@@ -11,8 +11,9 @@ namespace Mechadrone1.Gameplay
     {
         GameObject GetGameObject(string name);
         Dictionary<PlayerIndex, GameObject> Avatars { get; }
-        event PreAnimationUpdateEventHandler PreAnimationUpdateStep;
-        event PostPhysicsUpdateEventHandler PostPhysicsUpdateStep;
+        event UpdateStepEventHandler PreAnimationUpdateStep;
+        event UpdateStepEventHandler PostPhysicsUpdateStep;
+        event UpdateStepEventHandler BotControlUpdateStep;
         Space SimSpace { get; }
     }
 }

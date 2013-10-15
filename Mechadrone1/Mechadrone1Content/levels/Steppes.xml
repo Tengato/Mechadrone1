@@ -63,6 +63,47 @@
                 </Properties>
             </Item>
             <Item>
+                <TypeFullName>Mechadrone1.Gameplay.Prefabs.SimpleBot, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                <Properties>
+                    <Item>
+                        <Key>Name</Key>
+                        <Value Type="string">Follower</Value>
+                    </Item>
+                    <Item>
+                        <Key>VisualModel</Key>
+                        <Value Type="string">models\soldier\soldier_LOD0</Value>
+                    </Item>
+                    <Item>
+                        <Key>Position</Key>
+                        <Value Type="Framework:Vector3">30 16 -4.5</Value>
+                    </Item>
+                    <Item>
+                        <Key>Orientation</Key>
+                        <Value Type="Framework:Quaternion">0 0 0 1</Value>
+                    </Item>
+                    <Item>
+                        <Key>Scale</Key>
+                        <Value Type="float">1</Value>
+                    </Item>
+                    <Item>
+                        <Key>RunSpeed</Key>
+                        <Value Type="float">9</Value>
+                    </Item>
+                    <Item>
+                        <Key>CameraOffset</Key>
+                        <Value Type="Framework:Vector3">0 15 -24</Value>
+                    </Item>
+                    <Item>
+                        <Key>CameraTargetOffset</Key>
+                        <Value Type="Framework:Vector3">0 10 0</Value>
+                    </Item>
+                    <Item>
+                        <Key>CastsShadow</Key>
+                        <Value Type="bool">true</Value>
+                    </Item>
+                </Properties>
+            </Item>
+            <Item>
                 <TypeFullName>Mechadrone1.Gameplay.Prefabs.OrbitingLightbulb, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
                 <Properties>
                     <Item>

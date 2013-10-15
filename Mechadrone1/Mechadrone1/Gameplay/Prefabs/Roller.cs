@@ -48,7 +48,7 @@ namespace Mechadrone1.Gameplay.Prefabs
 
             cameraPitch = MathHelper.Clamp(cameraPitch, -2.0f * MathHelper.Pi / 5.0f, 2.0f * MathHelper.Pi / 5.0f);
 
-            Entity soEnt = SimulationObject as Entity;
+            Entity soEnt = simulationObject as Entity;
 
             Vector3 controlForceDir = new Vector3();
             controlForceDir.X = input.CurrentState.PadState[(int)player].ThumbSticks.Left.X;

@@ -45,7 +45,7 @@ namespace Mechadrone1.Gameplay.Prefabs
         }
 
 
-        public void PreAnimationUpdate(object sender, UpdateEventArgs e)
+        public void PreAnimationUpdate(object sender, UpdateStepEventArgs e)
         {
             mover.Update((float)(e.GameTime.ElapsedGameTime.TotalSeconds));
             Position = mover.Position;

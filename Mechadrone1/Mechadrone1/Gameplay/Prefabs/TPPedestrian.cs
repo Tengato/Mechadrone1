@@ -14,17 +14,23 @@ namespace Mechadrone1.Gameplay.Prefabs
 {
     class TPPedestrian : GameObject
     {
-        private CharacterController character;
-        private const float INPUT_FORCE = 1.0f;
-        private const float INPUT_ROTATION_FORCE = 0.003f;
-        private const float INPUT_MOUSE_LOOK_RATE = 0.002f;
+        public float Height { get; set; }
+        public float Radius { get; set; }
+        public float Mass { get; set; }
+        public float JumpSpeed { get; set; }
+        public float RunSpeed { get; set; }
+
+        protected CharacterController character;
+        protected const float INPUT_FORCE = 1.0f;
+        protected const float INPUT_ROTATION_FORCE = 0.003f;
+        protected const float INPUT_MOUSE_LOOK_RATE = 0.002f;
 
         // TODO: This should be part of an input customization system.
         public int LookFactor { get; set; }
 
         // Override CameraAnchor because we want to look around without moving the object's orientation.
-        private float cameraYaw;
-        private float cameraPitch;
+        protected float cameraYaw;
+        protected float cameraPitch;
 
 
         [NotInitializable]
@@ -64,18 +70,26 @@ namespace Mechadrone1.Gameplay.Prefabs
             cameraYaw = 0.0f;
             cameraPitch = 0.0f;
             LookFactor = -1;
+
+            // Default values for the CharacterController:
+            Height = 9.3f;
+            Radius = 1.0f;
+            Mass = 17.0f;
+            JumpSpeed = 35.0f;
+            RunSpeed = 32.0f;
+
+            // TODO: Tweak friction and mass.
         }
 
         public override void Initialize()
         {
             base.Initialize();
 
-            float height = 3.1f;
+            character = new CharacterController(BepuConverter.Convert(Position + Vector3.Up * Height / 2.0f), Height, Height / 2.0f, Radius, Mass);
 
-            character = new CharacterController(BepuConverter.Convert(Position + Vector3.Up * height / 2.0f), height, height / 2.0f, 1.0f, 17.0f);
-
-            character.JumpSpeed = 35.0f;
-            character.HorizontalMotionConstraint.SpeedScale = 6.0f;
+            character.JumpSpeed = JumpSpeed;
+            character.HorizontalMotionConstraint.Speed = RunSpeed;
+            character.HorizontalMotionConstraint.SpeedScale = 1.0f;
 
             owner.PostPhysicsUpdateStep += PostPhysicsUpdate;
 
@@ -95,7 +109,7 @@ namespace Mechadrone1.Gameplay.Prefabs
         }
 
 
-        public override void HandleInput(Microsoft.Xna.Framework.GameTime gameTime, InputManager input, PlayerIndex player)
+        public override void HandleInput(GameTime gameTime, InputManager input, PlayerIndex player)
         {
             base.HandleInput(gameTime, input, player);
 
@@ -120,7 +134,6 @@ namespace Mechadrone1.Gameplay.Prefabs
             // Gamepad camera & object orientation:
             Orientation *= Quaternion.CreateFromAxisAngle(Vector3.Up, -input.CurrentState.PadState[(int)player].ThumbSticks.Right.X *
                 INPUT_ROTATION_FORCE * (float)(gameTime.ElapsedGameTime.TotalMilliseconds));
-            Orientation = Quaternion.Normalize(Orientation);
 
             cameraPitch += LookFactor * -input.CurrentState.PadState[(int)player].ThumbSticks.Right.Y *
                 INPUT_ROTATION_FORCE * (float)(gameTime.ElapsedGameTime.TotalMilliseconds);
@@ -128,6 +141,17 @@ namespace Mechadrone1.Gameplay.Prefabs
             cameraPitch = MathHelper.Clamp(cameraPitch, -2.0f * MathHelper.Pi / 5.0f, 2.0f * MathHelper.Pi / 5.0f);
 
             cameraYaw = cameraYaw % MathHelper.TwoPi;
+
+            // Special mouse right-click reorientation:
+            if (input.IsNewMouseButtonPress(MouseButtons.Right, player, out dummyPlayerIndex))
+            {
+                // Bake the camera yaw into the orientation:
+                Orientation *= Quaternion.CreateFromAxisAngle(Vector3.Up, cameraYaw);
+                cameraYaw = 0.0f;
+            }
+
+            // It's good practice to make sure floating point errors don't accumulate on the unit quaternions:
+            Orientation = Quaternion.Normalize(Orientation);
 
             // Movement:
             BEPUutilities.Vector2 totalMovement = BEPUutilities.Vector2.Zero;
@@ -187,7 +211,7 @@ namespace Mechadrone1.Gameplay.Prefabs
         }
 
 
-        public void PostPhysicsUpdate(object sender, UpdateEventArgs e)
+        public void PostPhysicsUpdate(object sender, UpdateStepEventArgs e)
         {
             SimulationPosition = BepuConverter.Convert(character.Body.Position);
             float viewAngle = (float)(Math.Atan2(character.ViewDirection.X, character.ViewDirection.Z));

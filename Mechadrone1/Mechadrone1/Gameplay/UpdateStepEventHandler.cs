@@ -7,14 +7,13 @@ using Microsoft.Xna.Framework;
 namespace Mechadrone1.Gameplay
 {
 
-    delegate void PreAnimationUpdateEventHandler(object sender, UpdateEventArgs e);
-    delegate void PostPhysicsUpdateEventHandler(object sender, UpdateEventArgs e);
+    delegate void UpdateStepEventHandler(object sender, UpdateStepEventArgs e);
 
-    class UpdateEventArgs : EventArgs
+    class UpdateStepEventArgs : EventArgs
     {
         public GameTime GameTime { get; set; }
 
-        public UpdateEventArgs(GameTime gameTime) : base()
+        public UpdateStepEventArgs(GameTime gameTime) : base()
         {
             this.GameTime = gameTime;
         }

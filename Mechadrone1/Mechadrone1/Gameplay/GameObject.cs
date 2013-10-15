@@ -186,7 +186,9 @@ namespace Mechadrone1.Gameplay
             CameraTargetOffset = new Vector3(0, 3, 0);
         }
 
-
+        /// <summary>
+        /// Performs additional processing of the object once all properties have been set from the level manifest.
+        /// </summary>
         public virtual void Initialize()
         {
             RegisterUpdateHandlers();
@@ -202,6 +204,8 @@ namespace Mechadrone1.Gameplay
                             EffectRegistry.Add(mmp.Effect, (RenderOptions)(mmp.Tag));
                         }
                     }
+
+                    EffectRegistry.RegisteredModels.Add(VisualModel);
                 }
             }
             else

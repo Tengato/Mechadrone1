@@ -15,27 +15,26 @@ namespace Mechadrone1.Gameplay
 {
     class SimulatedGameObject : GameObject
     {
-        // TODO: The CollisionModel property (not currently supported) could belong to a subclass that needs a special collidable shape.
+        // TODO: The CollisionModel property (not currently supported) could be pushed down to a subclass that wants a special collidable shape.
         [LoadedAsset]
         public Model CollisionModel { get; set; }
         public string SimulationObjectTypeFullName { get; set; }
-        [NotInitializable]
-        public Type SimulationObjectType { get; set; }
+        private Type simulationObjectType { get; set; }
         public object[] SimulationObjectCtorParams { get; set; }
-        [NotInitializable]
-        public ISpaceObject SimulationObject { get; set; }
+        // simulationObject is an abstract type to allow instances to choose from a few primitive shape types.
+        protected ISpaceObject simulationObject { get; set; }
 
         [NotInitializable]
         public virtual Vector3 SimulationPosition
         {
             get
             {
-                Box soBox = SimulationObject as Box;
+                Box soBox = simulationObject as Box;
                 if (soBox != null)
                 {
                     return Position + Matrix.CreateFromQuaternion(Orientation).Up * soBox.HalfHeight;
                 }
-                // TODO: Somewhat hacky...
+                // TODO: Define calculations for all supported shape types. (Somewhat hacky...)
                 else
                     return Position;
 
@@ -44,13 +43,13 @@ namespace Mechadrone1.Gameplay
 
             set
             {
-                Box soBox = SimulationObject as Box;
+                Box soBox = simulationObject as Box;
                 if (soBox != null)
                 {
                     Position = value - Matrix.CreateFromQuaternion(Orientation).Up * soBox.HalfHeight;
                     return;
                 }
-                // TODO: Somewhat hacky...
+                // TODO: Define calculations for all supported shape types. (Somewhat hacky...)
 
                 Position = value;
             }
@@ -63,14 +62,14 @@ namespace Mechadrone1.Gameplay
         }
 
 
-        public virtual void Initialize()
+        public override void Initialize()
         {
             base.Initialize();
 
-            SimulationObjectType = Type.GetType(SimulationObjectTypeFullName);
-            SimulationObject = Activator.CreateInstance(SimulationObjectType, SimulationObjectCtorParams) as ISpaceObject;
+            simulationObjectType = Type.GetType(SimulationObjectTypeFullName);
+            simulationObject = Activator.CreateInstance(simulationObjectType, SimulationObjectCtorParams) as ISpaceObject;
 
-            Entity soEnt = SimulationObject as Entity;
+            Entity soEnt = simulationObject as Entity;
 
             if (soEnt != null)
             {
@@ -81,7 +80,7 @@ namespace Mechadrone1.Gameplay
                 soEnt.Material.KineticFriction = 0.3f;
             }
 
-            owner.SimSpace.Add(SimulationObject);
+            owner.SimSpace.Add(simulationObject);
         }
 
 
@@ -91,9 +90,9 @@ namespace Mechadrone1.Gameplay
         }
 
 
-        public virtual void PostPhysicsUpdate(object sender, UpdateEventArgs e)
+        public virtual void PostPhysicsUpdate(object sender, UpdateStepEventArgs e)
         {
-            Entity soEnt = SimulationObject as Entity;
+            Entity soEnt = simulationObject as Entity;
             if (soEnt != null)
             {
                 if (soEnt.IsDynamic)

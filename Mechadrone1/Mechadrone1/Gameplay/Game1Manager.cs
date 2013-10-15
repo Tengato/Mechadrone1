@@ -58,8 +58,9 @@ namespace Mechadrone1.Gameplay
 
         public Space SimSpace { get; private set; }
 
-        public event PreAnimationUpdateEventHandler PreAnimationUpdateStep;
-        public event PostPhysicsUpdateEventHandler PostPhysicsUpdateStep;
+        public event UpdateStepEventHandler BotControlUpdateStep;
+        public event UpdateStepEventHandler PreAnimationUpdateStep;
+        public event UpdateStepEventHandler PostPhysicsUpdateStep;
 
         public PowerupManager powerup;
         public ProjectileManager projectile;
@@ -264,7 +265,7 @@ namespace Mechadrone1.Gameplay
         {
             float elapsedTime = (float)(gameTime.ElapsedGameTime.TotalSeconds);
 
-            // These first seven update steps must be carefully organized, because they are highly
+            // These seven update steps must be carefully organized, because they are highly
             // interdependent.
 
             // 1. Pre-animation update. Game-driven objects should update their position now.
@@ -358,13 +359,16 @@ namespace Mechadrone1.Gameplay
 
         private void OnPreAnimationUpdateStep(GameTime gameTime)
         {
-            PreAnimationUpdateStep(this, new UpdateEventArgs(gameTime));
+            PreAnimationUpdateStep(this, new UpdateStepEventArgs(gameTime));
+
+            // This event is a temporary stand-in for a real AI system.
+            BotControlUpdateStep(this, new UpdateStepEventArgs(gameTime));
         }
 
 
         private void OnPostPhysicsUpdateStep(GameTime gameTime)
         {
-            PostPhysicsUpdateStep(this, new UpdateEventArgs(gameTime));
+            PostPhysicsUpdateStep(this, new UpdateStepEventArgs(gameTime));
         }
 
 

@@ -23,7 +23,7 @@ namespace Mechadrone1.Gameplay.Prefabs
         {
             base.HandleInput(gameTime, input, player);
 
-            Entity soEnt = SimulationObject as Entity;
+            Entity soEnt = simulationObject as Entity;
 
             if (soEnt != null)
             {

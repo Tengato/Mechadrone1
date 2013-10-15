@@ -22,7 +22,7 @@ namespace Mechadrone1.Gameplay.Prefabs
         }
 
 
-        public void PreAnimationUpdate(object sender, UpdateEventArgs e)
+        public void PreAnimationUpdate(object sender, UpdateStepEventArgs e)
         {
             Position = Center + Vector3.Transform(Position - Center, Matrix.CreateFromAxisAngle(Vector3.Up, (float)(e.GameTime.ElapsedGameTime.TotalSeconds)));
 
