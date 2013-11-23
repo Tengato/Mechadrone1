@@ -21,6 +21,7 @@ using Skelemator;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Linq;
+using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Intermediate;
 #endregion
 
 namespace SkelematorPipeline
@@ -35,7 +36,7 @@ namespace SkelematorPipeline
         #region Properties & Fields
 
         // Location of an XML file that describes how to import animation clips.
-        public virtual string ClipDataFilePath { get; set; }
+        public virtual string AnimationPackageDataFilePath { get; set; }
 
         // Location of an XML file that describes which materials to use.
         public virtual string MaterialDataFilePath { get; set; }
@@ -52,6 +53,7 @@ namespace SkelematorPipeline
         /// </summary>
         public override ModelContent Process(NodeContent input, ContentProcessorContext context)
         {
+            //System.Diagnostics.Debugger.Launch();
             ValidateMesh(input, context, null);
 
             // Find the skeleton.
@@ -91,25 +93,24 @@ namespace SkelematorPipeline
 
             using (XmlReader reader = XmlReader.Create(MaterialDataFilePath))
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(List<MaterialData>));
-                incomingMaterials = (List<MaterialData>)serializer.Deserialize(reader);
+                incomingMaterials = IntermediateSerializer.Deserialize<List<MaterialData>>(reader, null);
             }
+            context.AddDependency(Path.Combine(Environment.CurrentDirectory, MaterialDataFilePath));
 
+            // Placeholder for when you could perform other ModelMeshPart/GeometryContent processing:
             //TraverseGeometryContents(input);
 
-            List<ClipData> incomingClips;
+            AnimationPackageData incomingAnimation;
 
-            using (XmlReader reader = XmlReader.Create(ClipDataFilePath))
+            using (XmlReader reader = XmlReader.Create(AnimationPackageDataFilePath))
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(List<ClipData>));
-
-                // Use the Deserialize method to restore the object's state.
-                incomingClips = (List<ClipData>)serializer.Deserialize(reader);
+                incomingAnimation = IntermediateSerializer.Deserialize<AnimationPackageData>(reader, null);
             }
+            context.AddDependency(Path.Combine(Environment.CurrentDirectory, AnimationPackageDataFilePath));
 
             // Convert animation data to our runtime format.
-            Dictionary<string, AnimationClip> animationClips;
-            animationClips = ProcessAnimations(skeleton.Animations, bones, incomingClips);
+            Dictionary<string, Clip> animationClips;
+            animationClips = ProcessAnimations(skeleton.Animations, bones, incomingAnimation.Clips);
 
             // Chain to the base ModelProcessor class so it can convert the model data.
             ModelContent model = base.Process(input, context);
@@ -136,7 +137,14 @@ namespace SkelematorPipeline
             }
 
             // Store our custom animation data in the Tag property of the model.
-            model.Tag = new SkinningData(animationClips, bindPose, inverseBindPose, skeletonHierarchy, modelMaxWeightsPerVert);
+            SkinningData skinningData = new SkinningData(animationClips, bindPose, inverseBindPose, skeletonHierarchy, modelMaxWeightsPerVert);
+
+            model.Tag = new AnimationPackage(
+                skinningData,
+                incomingAnimation.AnimationStateDescriptions,
+                incomingAnimation.AnimationNodeDescriptions,
+                incomingAnimation.InitialStateName,
+                incomingAnimation.Transitions);
 
             return model;
         }
@@ -164,7 +172,7 @@ namespace SkelematorPipeline
         /// Converts an intermediate format content pipeline AnimationContentDictionary
         /// object to our runtime AnimationClip format.
         /// </summary>
-        static Dictionary<string, AnimationClip> ProcessAnimations(
+        static Dictionary<string, Clip> ProcessAnimations(
             AnimationContentDictionary animations,
             IList<BoneContent> bones,
             List<ClipData> clipInfo)
@@ -181,11 +189,10 @@ namespace SkelematorPipeline
             }
 
             // Convert each animation in turn.
-            Dictionary<string, AnimationClip> animationClips = new Dictionary<string, AnimationClip>();
-
+            Dictionary<string, Clip> animationClips = new Dictionary<string, Clip>();
             foreach (ClipData clip in clipInfo)
             {
-                AnimationClip processed = ProcessAnimation(animations[clip.SourceTake], boneMap, clip.FirstFrame, clip.LastFrame);
+                Clip processed = ProcessAnimation(animations[clip.SourceTake], boneMap, clip);
 
                 animationClips.Add(clip.Alias, processed);
             }
@@ -203,13 +210,17 @@ namespace SkelematorPipeline
         /// Converts an intermediate format content pipeline AnimationContent
         /// object to our runtime AnimationClip format.
         /// </summary>
-        static AnimationClip ProcessAnimation(
+        static Clip ProcessAnimation(
             AnimationContent animation,
             Dictionary<string, int> boneMap,
-            int firstFrame,
-            int lastFrame)
+            ClipData clipData)
         {
             List<Keyframe> keyframes = new List<Keyframe>();
+            Dictionary<TimeSpan, AnimationControlEvents> controlEvents = new Dictionary<TimeSpan,AnimationControlEvents>();
+
+            bool frameTimesFilled = false;
+            TimeSpan[] frameTimes = new TimeSpan[clipData.LastFrame - clipData.FirstFrame + 1];
+            TimeSpan syncTime = TimeSpan.Zero;
 
             // For each input animation channel.
             foreach (KeyValuePair<string, AnimationChannel> channel in animation.Channels)
@@ -219,16 +230,54 @@ namespace SkelematorPipeline
 
                 if (!boneMap.TryGetValue(channel.Key, out boneIndex))
                 {
-                    throw new InvalidContentException(string.Format(
-                        "Found animation for bone '{0}', which is not part of the skeleton.", channel.Key));
+                    // string.Format("Found animation for bone '{0}', which is not part of the skeleton.", channel.Key));
+
+                    // We can just ignore these channels.
+                    continue;
                 }
 
-                TimeSpan startTime = channel.Value[firstFrame].Time;
+                if (!frameTimesFilled)
+                {
+                    // I guess the frames in the ClipData are specified with a 0-based index?
+                    TimeSpan startTime = channel.Value[clipData.FirstFrame].Time;
+
+                    for (int i = clipData.FirstFrame; i <= clipData.LastFrame; i++)
+                    {
+                        frameTimes[i - clipData.FirstFrame] = channel.Value[i].Time - startTime;
+                        // Also, let's get the times for the events:
+                        foreach (KeyValuePair<int, AnimationControlEvents> ace in clipData.Events)
+                        {
+                            if (ace.Key == i)
+                            {
+                                controlEvents.Add(frameTimes[i - clipData.FirstFrame], ace.Value);
+                            }
+                        }
+
+                        // Don't forget to convert the sync frame offset into a time:
+                        if (clipData.SyncFrameOffset == i - clipData.FirstFrame)
+                            syncTime = frameTimes[i - clipData.FirstFrame];
+                    }
+
+                    if (controlEvents.Count != clipData.Events.Count)
+                        throw new InvalidContentException("The time index of some control events could not be determined.");
+
+                    frameTimesFilled = true;
+                }
 
                 // Convert the keyframe data.
-                for (int i = firstFrame; i <= lastFrame; i++)
+                for (int i = clipData.FirstFrame; i <= clipData.LastFrame; i++)
                 {
-                    keyframes.Add(new Keyframe(boneIndex, channel.Value[i].Time - startTime, channel.Value[i].Transform));
+                    Matrix boneTransform;
+                    if (channel.Value.Count <= i)
+                    {
+                        boneTransform = channel.Value[channel.Value.Count - 1].Transform;
+                    }
+                    else
+                    {
+                        boneTransform = channel.Value[i].Transform;
+                    }
+
+                    keyframes.Add(new Keyframe(boneIndex, frameTimes[i - clipData.FirstFrame], boneTransform));
                 }
 
             }
@@ -248,7 +297,7 @@ namespace SkelematorPipeline
             if (duration <= TimeSpan.Zero)
                 throw new InvalidContentException("Animation has a zero duration.");
 
-            return new AnimationClip(duration, keyframes);
+            return new Clip(duration, keyframes, clipData.Loopable, controlEvents, syncTime);
         }
 
 
@@ -352,10 +401,18 @@ namespace SkelematorPipeline
             EffectMaterialContent emc = new EffectMaterialContent();
             emc.Effect = new ExternalReference<EffectContent>(Path.Combine(contentPath, mat.CustomEffect));
             emc.Name = material.Name;
+            emc.Identity = material.Identity;
 
             foreach (KeyValuePair<String, ExternalReference<TextureContent>> texture in material.Textures)
             {
-                emc.Textures.Add(texture.Key, texture.Value);
+                if (texture.Key == "Texture")
+                {
+                    emc.Textures.Add(texture.Key, texture.Value);
+                }
+                else
+                {
+                    context.Logger.LogWarning(null, material.Identity, "There were some other textures referenced by the model, but we can't properly assign them to the correct effect parameter.");
+                }
             }
 
             foreach (EffectParam ep in mat.EffectParams)

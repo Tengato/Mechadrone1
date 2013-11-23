@@ -110,6 +110,7 @@
     <Compile Include="Gameplay\IGameManager.cs" />
     <Compile Include="Gameplay\Prefabs\Bouncer.cs" />
     <Compile Include="Gameplay\Decorators\IAudible.cs" />
+    <Compile Include="Gameplay\Prefabs\Axes.cs" />
     <Compile Include="Gameplay\Prefabs\FreeFlyer.cs" />
     <Compile Include="Gameplay\GameObject.cs" />
     <Compile Include="Gameplay\Helpers\FloatMovement.cs" />
@@ -132,6 +133,7 @@
     <Compile Include="InputManager.cs" />
     <Compile Include="InputState.cs" />
     <Compile Include="Rendering\EffectRegistry.cs" />
+    <Compile Include="Rendering\FringeMap.cs" />
     <Compile Include="Rendering\ICamera.cs" />
     <Compile Include="Rendering\ILight.cs" />
     <Compile Include="Rendering\IRenderableScene.cs" />
@@ -225,6 +227,7 @@
     <None Include="Mechadrone1_TemporaryKey.pfx" />
     <None Include="Properties\app.manifest" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
   <!--

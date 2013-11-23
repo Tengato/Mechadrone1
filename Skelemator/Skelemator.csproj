@@ -59,13 +59,33 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnimationClip.cs" />
-    <Compile Include="AnimationPlayer.cs" />
+    <Compile Include="Animation\Clip.cs" />
+    <Compile Include="Animation\ClipPlayer.cs" />
+    <Compile Include="Animation\State\AnimationNode.cs" />
+    <Compile Include="Animation\StateDescriptions\AnimationNodeDescription.cs" />
+    <Compile Include="Animation\AnimationPackage.cs" />
+    <Compile Include="Animation\State\AnimationState.cs" />
+    <Compile Include="Animation\StateDescriptions\AnimationStateDescription.cs" />
+    <Compile Include="Animation\State\AnimationStateMachine.cs" />
+    <Compile Include="Animation\State\ClipNode.cs" />
+    <Compile Include="Animation\State\BinaryLerpBlendNode.cs" />
+    <Compile Include="Animation\State\BinaryAdditiveBlendNode.cs" />
+    <Compile Include="Animation\State\General1DPositionalBlendNode.cs" />
+    <Compile Include="Animation\State\TernaryLerpBlendNode.cs" />
+    <Compile Include="Animation\ISkinnedSkeletonPoser.cs" />
+    <Compile Include="Animation\State\TransitionInfo.cs" />
     <Compile Include="Keyframe.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SkinningData.cs" />
     <Compile Include="RenderOptions.cs" />
+    <Compile Include="Animation\State\General2DPositionalBlendNode.cs" />
     <Compile Include="Terrain.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SlagformCommon\SlagformCommon.csproj">
+      <Project>{8F94C145-E7DD-47F5-912E-3D2311CDB8AF}</Project>
+      <Name>SlagformCommon</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

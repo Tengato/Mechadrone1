@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Mechadrone1.Rendering;
+using Skelemator;
 
 namespace Mechadrone1.Gameplay.Prefabs
 {
@@ -14,17 +15,18 @@ namespace Mechadrone1.Gameplay.Prefabs
         // Wireframe stuff
         const int NUM_GRIDLINES = 11;
         VertexPositionColor[] gridGeometry;
-        BasicEffect wireframeEffect;
+        GraphicsDevice gd;
+        BasicEffect effect;
 
-        public bool ShowGrid { get; set; }
-        public bool ShowAxes { get; set; }
-
-        public Grid(BasicEffect basicEffect) : base(null)
+        public Grid(GraphicsDevice device)
+            : base(null)
         {
-            wireframeEffect = basicEffect;
-            wireframeEffect.VertexColorEnabled = true;
+            gd = device;
 
-            gridGeometry = new VertexPositionColor[NUM_GRIDLINES * 4 + 6];
+            effect = new BasicEffect(gd);
+            effect.VertexColorEnabled = true;
+
+            gridGeometry = new VertexPositionColor[NUM_GRIDLINES * 4];
 
             int gridRadius = (NUM_GRIDLINES - 1) / 2;
 
@@ -39,52 +41,62 @@ namespace Mechadrone1.Gameplay.Prefabs
                 gridGeometry[4 * i + 3].Position = new Vector3(-gridRadius + i, 0.0f, gridRadius);
                 gridGeometry[4 * i + 3].Color = Color.LightGray;
             }
-
-            gridGeometry[NUM_GRIDLINES * 4].Position = Vector3.Zero;
-            gridGeometry[NUM_GRIDLINES * 4].Color = Color.Red;
-            gridGeometry[NUM_GRIDLINES * 4 + 1].Position = Vector3.Right;
-            gridGeometry[NUM_GRIDLINES * 4 + 1].Color = Color.Red;
-            gridGeometry[NUM_GRIDLINES * 4 + 2].Position = Vector3.Zero;
-            gridGeometry[NUM_GRIDLINES * 4 + 2].Color = Color.Green;
-            gridGeometry[NUM_GRIDLINES * 4 + 3].Position = Vector3.Up;
-            gridGeometry[NUM_GRIDLINES * 4 + 3].Color = Color.Green;
-            gridGeometry[NUM_GRIDLINES * 4 + 4].Position = Vector3.Zero;
-            gridGeometry[NUM_GRIDLINES * 4 + 4].Color = Color.Blue;
-            gridGeometry[NUM_GRIDLINES * 4 + 5].Position = Vector3.Backward;
-            gridGeometry[NUM_GRIDLINES * 4 + 5].Color = Color.Blue;
-
         }
 
 
         public override List<RenderEntry> GetRenderEntries(
-            int frame,
+            int batchId,
             RenderStep step,
             Matrix view,
             Matrix projection,
             Matrix cameraTransform,
             Matrix shadowCastingLightView,
-            Matrix shadowCastingLightFrustum,
+            Matrix shadowCastingLightProjection,
             RenderTarget2D shadowMap,
             List<Manifracture.DirectLight> lights)
         {
-            List<RenderEntry> results = new List<RenderEntry>();
+            world = Matrix.CreateScale(Scale) * Matrix.CreateFromQuaternion(Orientation) * Matrix.CreateTranslation(Position);
 
+            List<RenderEntry> results = new List<RenderEntry>();
             RenderEntry re = new RenderEntry();
 
-            // Draw grid
-            re.DepthStencilState = DepthStencilState.None;
-            re.Effect = wireframeEffect;
-            //re.World = Matrix.Identity;
+            re.VertexBuffer = null;
+            re.NumVertices = 24;
+            re.IndexBuffer = null;
+            re.VertexOffset = 0;
+            re.StartIndex = 0;
+            re.RenderOptions = RenderOptions.None;
+            re.PrimitiveCount = 12;
+
             re.View = view;
             re.Projection = projection;
+            re.ShadowCastingLightView = shadowCastingLightView;
+            re.ShadowCastingLightProjection = shadowCastingLightProjection;
+            re.ShadowMap = shadowMap;
+            re.CameraTransform = cameraTransform;
+            re.SceneObject = this;
+            re.Lights = lights;
 
-            throw new NotImplementedException();
+            re.DrawCallback = Draw;
+            re.Effect = effect;
+            re.Pass = effect.CurrentTechnique.Passes[0];
+
+            results.Add(re);
+
+            return results;
         }
 
 
         public override void Draw(RenderEntry re)
         {
-            re.Effect.GraphicsDevice.DrawUserPrimitives(PrimitiveType.LineList, gridGeometry, gridGeometry.Length - 6, 3);
+
+            effect.World = world;
+            effect.View = re.View;
+            effect.Projection = re.Projection;
+
+            effect.CurrentTechnique.Passes[0].Apply();
+
+            gd.DrawUserPrimitives(PrimitiveType.LineList, gridGeometry, 0, NUM_GRIDLINES * 2);
         }
     }
 }

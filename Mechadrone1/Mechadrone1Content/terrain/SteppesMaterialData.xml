@@ -1,80 +1,72 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ArrayOfMaterialData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    <MaterialData>
-        <Name>SteppesShader</Name>
-        <CustomEffect>shaders\TerrainPhongShadow.fx</CustomEffect>
-        <EffectParams>
-            <EffectParam>
-                <string>TextureFlatBlend</string>
-                <EffectParamCategory>Texture</EffectParamCategory>
-                <string>System.String</string>
-                <string>textures\Terrain Gravel.tga</string>
-            </EffectParam>
-            <EffectParam>
-                <string>TextureFlatBase</string>
-                <EffectParamCategory>Texture</EffectParamCategory>
-                <string>System.String</string>
-                <string>textures\Swamp.tga</string>
-            </EffectParam>
-            <EffectParam>
-                <string>TextureSteep</string>
-                <EffectParamCategory>Texture</EffectParamCategory>
-                <string>System.String</string>
-                <string>textures\Terrain Boulder.tga</string>
-            </EffectParam>
-            <EffectParam>
-                <string>TextureSteepNormal</string>
-                <EffectParamCategory>Texture</EffectParamCategory>
-                <string>System.String</string>
-                <string>textures\Terrain Boulder Normal.jpg</string>
-            </EffectParam>
-            <EffectParam>
-                <string>TextureLowFreq</string>
-                <EffectParamCategory>Texture</EffectParamCategory>
-                <string>System.String</string>
-                <string>textures\Terrain Blend 01.tga</string>
-            </EffectParam>
-            <EffectParam>
-                <string>LargeTileLength</string>
-                <EffectParamCategory>OpaqueData</EffectParamCategory>
-                <string>System.Single</string>
-                <float>3072</float>
-            </EffectParam>
-            <EffectParam>
-                <string>MedTileLength</string>
-                <EffectParamCategory>OpaqueData</EffectParamCategory>
-                <string>System.Single</string>
-                <float>93</float>
-            </EffectParam>
-            <EffectParam>
-                <string>SmallTileLength</string>
-                <EffectParamCategory>OpaqueData</EffectParamCategory>
-                <string>System.Single</string>
-                <float>32</float>
-            </EffectParam>
-            <EffectParam>
-                <string>MatSpecColor</string>
-                <EffectParamCategory>OpaqueData</EffectParamCategory>
-                <string>Microsoft.Xna.Framework.Vector4, Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553</string>
-                <Vector4>
-                    <X>0.02</X>
-                    <Y>0.02</Y>
-                    <Z>0.02</Z>
-                    <W>20.0</W>
-                </Vector4>
-            </EffectParam>
-            <EffectParam>
-                <string>LargeTexCoordOffset</string>
-                <EffectParamCategory>OpaqueData</EffectParamCategory>
-                <string>Microsoft.Xna.Framework.Vector2, Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553</string>
-                <Vector2>
-                    <X>1536.0</X>
-                    <Y>1536.0</Y>
-                </Vector2>
-            </EffectParam>
-        </EffectParams>
-        <HandlingFlags>
-            RequiresShadowMap
-        </HandlingFlags>
-    </MaterialData>
-</ArrayOfMaterialData>
+<XnaContent xmlns:Generic="System.Collections.Generic" xmlns:Framework="Microsoft.Xna.Framework">
+  <Asset Type="Generic:List[SkelematorPipeline.MaterialData]">
+    <Item>
+      <Name>SteppesShader</Name>
+      <CustomEffect>shaders\TerrainPhongShadow.fx</CustomEffect>
+      <EffectParams>
+        <Item>
+          <Name>TextureFlatBlend</Name>
+          <Category>Texture</Category>
+          <ValueTypeFullName>System.String</ValueTypeFullName>
+          <Value Type="string">textures\Terrain Gravel.tga</Value>
+        </Item>
+        <Item>
+          <Name>TextureFlatBase</Name>
+          <Category>Texture</Category>
+          <ValueTypeFullName>System.String</ValueTypeFullName>
+          <Value Type="string">textures\Swamp.tga</Value>
+        </Item>
+        <Item>
+          <Name>TextureSteep</Name>
+          <Category>Texture</Category>
+          <ValueTypeFullName>System.String</ValueTypeFullName>
+          <Value Type="string">textures\Terrain Boulder.tga</Value>
+        </Item>
+        <Item>
+          <Name>TextureSteepNormal</Name>
+          <Category>Texture</Category>
+          <ValueTypeFullName>System.String</ValueTypeFullName>
+          <Value Type="string">textures\Terrain Boulder Normal.jpg</Value>
+        </Item>
+        <Item>
+          <Name>TextureLowFreq</Name>
+          <Category>Texture</Category>
+          <ValueTypeFullName>System.String</ValueTypeFullName>
+          <Value Type="string">textures\Terrain Blend 01.tga</Value>
+        </Item>
+        <Item>
+          <Name>LargeTileLength</Name>
+          <Category>OpaqueData</Category>
+          <ValueTypeFullName>System.Single</ValueTypeFullName>
+          <Value Type="float">3072</Value>
+        </Item>
+        <Item>
+          <Name>MedTileLength</Name>
+          <Category>OpaqueData</Category>
+          <ValueTypeFullName>System.Single</ValueTypeFullName>
+          <Value Type="float">93</Value>
+        </Item>
+        <Item>
+          <Name>SmallTileLength</Name>
+          <Category>OpaqueData</Category>
+          <ValueTypeFullName>System.Single</ValueTypeFullName>
+          <Value Type="float">32</Value>
+        </Item>
+        <Item>
+          <Name>MatSpecColor</Name>
+          <Category>OpaqueData</Category>
+          <ValueTypeFullName>Microsoft.Xna.Framework.Vector4, Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553</ValueTypeFullName>
+          <Value Type="Framework:Vector4">0.02 0.02 0.02 20</Value>
+        </Item>
+        <Item>
+          <Name>LargeTexCoordOffset</Name>
+          <Category>OpaqueData</Category>
+          <ValueTypeFullName>Microsoft.Xna.Framework.Vector2, Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553</ValueTypeFullName>
+          <Value Type="Framework:Vector2">1536 1536</Value>
+        </Item>
+      </EffectParams>
+      <HandlingFlags>RequiresShadowMap</HandlingFlags>
+    </Item>
+  </Asset>
+</XnaContent>

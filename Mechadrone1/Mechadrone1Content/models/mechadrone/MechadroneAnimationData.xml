@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent>
+    <Asset Type="SkelematorPipeline.AnimationPackageData">
+        <Clips>
+            <Item>
+                <SourceTake>Walk2</SourceTake>
+                <Alias>walk</Alias>
+                <FirstFrame>101</FirstFrame>
+                <LastFrame>220</LastFrame>
+                <SyncFrameOffset>0</SyncFrameOffset>
+                <Loopable>true</Loopable>
+                <Events/>
+            </Item>
+        </Clips>
+        <AnimationStateDescriptions>
+            <Item>
+                <Name>Moving</Name>
+                <MinDurationInSeconds>0.4</MinDurationInSeconds>
+                <BlendTreeNodeName>WalkClip</BlendTreeNodeName>
+            </Item>
+        </AnimationStateDescriptions>
+        <AnimationNodeDescriptions>
+            <Item Type="Skelemator.ClipNodeDescription">
+                <Name>WalkClip</Name>
+                <PlaybackRate>1</PlaybackRate>
+                <ClipName>Walk</ClipName>
+            </Item>
+        </AnimationNodeDescriptions>
+        <InitialStateName>Moving</InitialStateName>
+        <Transitions>
+            <Item>
+                <SourceStateFilter>.*</SourceStateFilter>
+                <DestinationStateFilter>.*</DestinationStateFilter>
+                <Type>Frozen</Type>
+                <DurationInSeconds>0.2</DurationInSeconds>
+                <UseSmoothStep>true</UseSmoothStep>
+            </Item>
+        </Transitions>
+    </Asset>
+</XnaContent>
+        

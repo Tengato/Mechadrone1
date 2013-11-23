@@ -172,6 +172,12 @@ namespace Mechadrone1
         }
 
 
+        public int ScrollWheelDiff()
+        {
+            return currentState.MouseState.ScrollWheelValue - lastState.MouseState.ScrollWheelValue;
+        }
+
+
         /// <summary>
         /// Checks for a "menu select" input action.
         /// The controllingPlayer parameter specifies which player to read input for.

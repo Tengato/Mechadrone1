@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using BEPUphysics;
+using Mechadrone1.Gameplay.Prefabs;
 
 namespace Mechadrone1.Gameplay
 {
@@ -12,8 +13,10 @@ namespace Mechadrone1.Gameplay
         GameObject GetGameObject(string name);
         Dictionary<PlayerIndex, GameObject> Avatars { get; }
         event UpdateStepEventHandler PreAnimationUpdateStep;
+        event UpdateStepEventHandler AnimationUpdateStep;
         event UpdateStepEventHandler PostPhysicsUpdateStep;
         event UpdateStepEventHandler BotControlUpdateStep;
         Space SimSpace { get; }
+        List<Axes> DebugAxes { get; }
     }
 }

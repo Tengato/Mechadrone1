@@ -9,6 +9,8 @@ using Mechadrone1.Gameplay.Helpers;
 using BEPUphysicsDemos.AlternateMovement.Character;
 using SlagformCommon;
 using Manifracture;
+using Skelemator;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Mechadrone1.Gameplay.Prefabs
 {
@@ -24,6 +26,10 @@ namespace Mechadrone1.Gameplay.Prefabs
         protected const float INPUT_FORCE = 1.0f;
         protected const float INPUT_ROTATION_FORCE = 0.003f;
         protected const float INPUT_MOUSE_LOOK_RATE = 0.002f;
+        protected const float INPUT_PAD_CAM_DIST_MOVE_RATE = 0.03f;
+        protected const float INPUT_SCROLLWHEEL_CAM_DIST_MOVE_RATE = 0.008f;
+
+        protected AnimationStateMachine animationStateMachine;
 
         // TODO: This should be part of an input customization system.
         public int LookFactor { get; set; }
@@ -31,6 +37,7 @@ namespace Mechadrone1.Gameplay.Prefabs
         // Override CameraAnchor because we want to look around without moving the object's orientation.
         protected float cameraYaw;
         protected float cameraPitch;
+        protected float cameraDist;
 
 
         [NotInitializable]
@@ -64,22 +71,57 @@ namespace Mechadrone1.Gameplay.Prefabs
             }
         }
 
+        [LoadedAsset]
+        public override Model VisualModel
+        {
+            get
+            {
+                return visualModel;
+            }
+            set
+            {
+                visualModel = value;
+                AnimationPackage ap = visualModel.Tag as AnimationPackage;
+                if (ap != null)
+                {
+                    Animations = ap.SkinningData;
+                    if (ap.SkinningData != null)
+                    {
+                        animationStateMachine = new AnimationStateMachine(ap);
+                        AnimationPlayer = animationStateMachine;
+                    }
+                }
+            }
+        }
+
+
+        [Flags]
+        protected enum BipedStates
+        {
+            Idle = 0x00,
+            Crouching = 0x01,
+            Walking = 0x02,
+            Jumping = 0x04,
+        }
+
+        protected BipedStates desiredState;
+
 
         public TPPedestrian(IGameManager owner) : base(owner)
         {
             cameraYaw = 0.0f;
             cameraPitch = 0.0f;
             LookFactor = -1;
+            desiredState = BipedStates.Idle;
 
             // Default values for the CharacterController:
             Height = 9.3f;
             Radius = 1.0f;
-            Mass = 17.0f;
+            Mass = 9.0f;
             JumpSpeed = 35.0f;
             RunSpeed = 32.0f;
-
-            // TODO: Tweak friction and mass.
         }
+
 
         public override void Initialize()
         {
@@ -97,6 +139,14 @@ namespace Mechadrone1.Gameplay.Prefabs
         }
 
 
+        public override void RegisterUpdateHandlers()
+        {
+            owner.PreAnimationUpdateStep += PreAnimationUpdate;
+            owner.PostPhysicsUpdateStep += PostPhysicsUpdate;
+            owner.AnimationUpdateStep += AnimationUpdate;
+        }
+
+
         public override void CreateCamera()
         {
             ArcBallCamera newCam = new ArcBallCamera(ArcBallCameraMode.RollConstrained);
@@ -106,12 +156,15 @@ namespace Mechadrone1.Gameplay.Prefabs
                 Vector3.Up);
 
             Camera = newCam;
+            cameraDist = newCam.Distance;
         }
 
 
         public override void HandleInput(GameTime gameTime, InputManager input, PlayerIndex player)
         {
             base.HandleInput(gameTime, input, player);
+
+            float dTimeMs = (float)(gameTime.ElapsedGameTime.TotalMilliseconds);
 
             // Mouse camera & object orientation:
             PlayerIndex dummyPlayerIndex;
@@ -120,37 +173,48 @@ namespace Mechadrone1.Gameplay.Prefabs
             // Check for 'drag' condition:
             if (input.IsMouseDragging(MouseButtons.Left, player, out dummyPlayerIndex, out mouseDragDisplacement))
             {
-                //Mouse.SetPosition(input.LastState.GetMouseState((int)player).X, input.LastState.GetMouseState((int)player).Y);
                 cameraYaw += -mouseDragDisplacement.X * INPUT_MOUSE_LOOK_RATE;
                 cameraPitch += LookFactor * mouseDragDisplacement.Y * INPUT_MOUSE_LOOK_RATE;
             }
             else if (input.IsMouseDragging(MouseButtons.Right, player, out dummyPlayerIndex, out mouseDragDisplacement))
             {
-                //Mouse.SetPosition(input.LastState.GetMouseState((int)player).X, input.LastState.GetMouseState((int)player).Y);
                 Orientation *= Quaternion.CreateFromAxisAngle(Vector3.Up, -mouseDragDisplacement.X * INPUT_MOUSE_LOOK_RATE);
                 cameraPitch += LookFactor * mouseDragDisplacement.Y * INPUT_MOUSE_LOOK_RATE;
             }
 
             // Gamepad camera & object orientation:
             Orientation *= Quaternion.CreateFromAxisAngle(Vector3.Up, -input.CurrentState.PadState[(int)player].ThumbSticks.Right.X *
-                INPUT_ROTATION_FORCE * (float)(gameTime.ElapsedGameTime.TotalMilliseconds));
+                INPUT_ROTATION_FORCE * dTimeMs);
 
             cameraPitch += LookFactor * -input.CurrentState.PadState[(int)player].ThumbSticks.Right.Y *
-                INPUT_ROTATION_FORCE * (float)(gameTime.ElapsedGameTime.TotalMilliseconds);
+                INPUT_ROTATION_FORCE * dTimeMs;
 
             cameraPitch = MathHelper.Clamp(cameraPitch, -2.0f * MathHelper.Pi / 5.0f, 2.0f * MathHelper.Pi / 5.0f);
 
             cameraYaw = cameraYaw % MathHelper.TwoPi;
 
-            // Special mouse right-click reorientation:
-            if (input.IsNewMouseButtonPress(MouseButtons.Right, player, out dummyPlayerIndex))
+            BEPUutilities.Vector2 padMovement = new BEPUutilities.Vector2(
+                input.CurrentState.PadState[(int)player].ThumbSticks.Left.X,
+                input.CurrentState.PadState[(int)player].ThumbSticks.Left.Y);
+
+            // Special mouse right-click or pad movement reorientation:
+            if (input.IsNewMouseButtonPress(MouseButtons.Right, player, out dummyPlayerIndex) ||
+                padMovement.LengthSquared() > 0.0f)
             {
                 // Bake the camera yaw into the orientation:
                 Orientation *= Quaternion.CreateFromAxisAngle(Vector3.Up, cameraYaw);
                 cameraYaw = 0.0f;
             }
 
-            // It's good practice to make sure floating point errors don't accumulate on the unit quaternions:
+            // Camera distance:
+            cameraDist += input.CurrentState.PadState[(int)player].Triggers.Right * dTimeMs * INPUT_PAD_CAM_DIST_MOVE_RATE;
+            cameraDist -= input.CurrentState.PadState[(int)player].Triggers.Left * dTimeMs * INPUT_PAD_CAM_DIST_MOVE_RATE;
+
+            cameraDist -= (float)input.ScrollWheelDiff() * INPUT_SCROLLWHEEL_CAM_DIST_MOVE_RATE;
+
+            if (cameraDist < .001f) cameraDist = .001f;
+
+            // It's good practice to make sure floating point errors don't accumulate and change the length of our unit quaternion:
             Orientation = Quaternion.Normalize(Orientation);
 
             // Movement:
@@ -175,22 +239,92 @@ namespace Mechadrone1.Gameplay.Prefabs
             }
 
             // Gamepad:
-            totalMovement += new BEPUutilities.Vector2(input.CurrentState.PadState[(int)player].ThumbSticks.Left.X,
-                    input.CurrentState.PadState[(int)player].ThumbSticks.Left.Y);
+            totalMovement += padMovement;
 
+            character.HorizontalMotionConstraint.MovementDirection = totalMovement;
             // Clamp the movement:
-            if (totalMovement.Length() > 1.0f)
-            {
-                character.HorizontalMotionConstraint.MovementDirection = BEPUutilities.Vector2.Normalize(totalMovement);
-            }
-            else
-            {
-                character.HorizontalMotionConstraint.MovementDirection = totalMovement;
-            }
+            character.HorizontalMotionConstraint.SpeedScale = Math.Min(1.0f, totalMovement.Length());
+
 
             // Crouching:
             if (input.CurrentState.KeyState[(int)player].IsKeyDown(Keys.LeftShift) ||
-                input.IsNewButtonPress(Buttons.LeftStick, player, out dummyPlayerIndex))
+                input.CurrentState.PadState[(int)player].IsButtonDown(Buttons.LeftStick))
+            {
+                desiredState |= BipedStates.Crouching;
+            }
+            else
+            {
+                desiredState &= ~BipedStates.Crouching;
+            }
+
+            // Jumping:
+            if (input.CurrentState.KeyState[(int)player].IsKeyDown(Keys.Space) ||
+                input.IsNewButtonPress(Buttons.A, player, out dummyPlayerIndex))
+            {
+                desiredState |= BipedStates.Jumping;
+            }
+            else
+            {
+                desiredState &= ~BipedStates.Jumping;
+            }
+
+            character.ViewDirection = BepuConverter.Convert(Vector3.Transform(Vector3.Backward, Orientation));
+
+        }
+
+
+        public void PreAnimationUpdate(object sender, UpdateStepEventArgs e)
+        {
+            // look at desiredState flags and convey the appropiate state to the animation controller.
+
+            if (character.SupportFinder.HasSupport)
+            {
+                Vector2 horizontalMovement = BepuConverter.Convert(character.HorizontalMotionConstraint.MovementDirection)
+                    * character.HorizontalMotionConstraint.SpeedScale;
+
+                if ((desiredState & BipedStates.Jumping) > 0)
+                {
+                    animationStateMachine.DesiredStateName = "Jumping";
+                }
+                else if ((desiredState & BipedStates.Crouching) > 0)
+                {
+                    if (horizontalMovement.LengthSquared() > 0.0f)
+                    {
+                        animationStateMachine.HorizontalMovement = horizontalMovement;
+                        animationStateMachine.DesiredStateName = "CrouchMoving";
+                    }
+                    else
+                    {
+                        animationStateMachine.DesiredStateName = "Crouching";
+                    }
+                }
+                else if (horizontalMovement.LengthSquared() > 0.0f)
+                {
+                    animationStateMachine.HorizontalMovement = horizontalMovement;
+                    animationStateMachine.DesiredStateName = "Moving";
+                }
+                else
+                {
+                    animationStateMachine.DesiredStateName = "Standing";
+                }
+            }
+            else
+            {
+                animationStateMachine.DesiredStateName = "Falling";
+            }
+
+            DebugMessage = String.Format("{0}{1}  ->  {2}",
+                animationStateMachine.CurrentState.Name,
+                animationStateMachine.ActiveTransition != null ? "*" : "",
+                animationStateMachine.DesiredStateName);
+        }
+
+
+        public void AnimationUpdate(object sender, UpdateStepEventArgs e)
+        {
+            List<AnimationControlEvents> animationControlEvents = animationStateMachine.Update(e.GameTime);
+
+            if (animationStateMachine.CurrentState.Name == "Crouching")
             {
                 character.StanceManager.DesiredStance = Stance.Crouching;
             }
@@ -199,15 +333,17 @@ namespace Mechadrone1.Gameplay.Prefabs
                 character.StanceManager.DesiredStance = Stance.Standing;
             }
 
-            // Jumping:
-            if (input.CurrentState.KeyState[(int)player].IsKeyDown(Keys.Space) ||
-                input.IsNewButtonPress(Buttons.A, player, out dummyPlayerIndex))
+            for (int v = 0; v < animationControlEvents.Count; v++)
             {
-                character.Jump();
+                switch (animationControlEvents[v])
+                {
+                    case AnimationControlEvents.Jump:
+                        character.Jump();
+                        break;
+                    default:
+                        throw new NotSupportedException();
+                }
             }
-
-            character.ViewDirection = BepuConverter.Convert(Vector3.Transform(Vector3.Backward, Orientation));
-
         }
 
 
@@ -227,6 +363,7 @@ namespace Mechadrone1.Gameplay.Prefabs
             arcBallCam.SetCamera(Vector3.Transform(CameraOffset, CameraAnchor),
                 Vector3.Transform(CameraTargetOffset, CameraAnchor),
                 Vector3.Up);
+            arcBallCam.Distance = cameraDist;
         }
     }
 }

@@ -9,6 +9,7 @@ using System.Xml;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.Linq;
+using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Intermediate;
 
 namespace SkelematorPipeline
 {
@@ -266,8 +267,7 @@ namespace SkelematorPipeline
         {
             using (XmlReader reader = XmlReader.Create(MaterialDataFilePath))
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(List<MaterialData>));
-                terrainMaterial = (List<MaterialData>)serializer.Deserialize(reader);
+                terrainMaterial = IntermediateSerializer.Deserialize<List<MaterialData>>(reader, null);
             }
 
             MaterialData tmSingle = terrainMaterial.Single();

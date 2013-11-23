@@ -36,9 +36,13 @@ namespace Mechadrone1.Gameplay
         public List<GameObject> GameObjects { get; private set; }
         public BoundingBox WorldBounds { get; private set; }
 
+        // Some debug tools:
+        public List<Axes> DebugAxes { get; private set; }
+
         public QuadTree QuadTree { get; private set; }
 
         public FogDesc Fog { get; set; }
+        public TextureCube EnvironmentMap { get; private set; }
 
         public Dictionary<PlayerIndex, GameObject> Avatars { get; set; }
 
@@ -60,6 +64,7 @@ namespace Mechadrone1.Gameplay
 
         public event UpdateStepEventHandler BotControlUpdateStep;
         public event UpdateStepEventHandler PreAnimationUpdateStep;
+        public event UpdateStepEventHandler AnimationUpdateStep;
         public event UpdateStepEventHandler PostPhysicsUpdateStep;
 
         public PowerupManager powerup;
@@ -88,6 +93,7 @@ namespace Mechadrone1.Gameplay
             this.soundBank = soundBank;
 
             GameObjects = new List<GameObject>();
+            DebugAxes = new List<Axes>();
 
             Avatars = new Dictionary<PlayerIndex, GameObject>();
 
@@ -202,6 +208,7 @@ namespace Mechadrone1.Gameplay
             ShadowCastingLight = dirLight;
 
             Fog = manifest.Fog;
+            EnvironmentMap = contentMan.Load<TextureCube>(manifest.SkydomeTextureName);
 
             // load particle textures
             if (particleTextures == null)
@@ -272,6 +279,7 @@ namespace Mechadrone1.Gameplay
             OnPreAnimationUpdateStep(gameTime);
 
             // 2. Update object animations here.
+            OnUpdateAnimationStep(gameTime); 
 
             // 3. Adjust poses as needed. Update physics models with game object positions.
 
@@ -359,16 +367,26 @@ namespace Mechadrone1.Gameplay
 
         private void OnPreAnimationUpdateStep(GameTime gameTime)
         {
-            PreAnimationUpdateStep(this, new UpdateStepEventArgs(gameTime));
+            if (PreAnimationUpdateStep != null)
+                PreAnimationUpdateStep(this, new UpdateStepEventArgs(gameTime));
 
             // This event is a temporary stand-in for a real AI system.
-            BotControlUpdateStep(this, new UpdateStepEventArgs(gameTime));
+            if (BotControlUpdateStep != null)
+                BotControlUpdateStep(this, new UpdateStepEventArgs(gameTime));
+        }
+
+
+        private void OnUpdateAnimationStep(GameTime gameTime)
+        {
+            if (AnimationUpdateStep != null)
+                AnimationUpdateStep(this, new UpdateStepEventArgs(gameTime));
         }
 
 
         private void OnPostPhysicsUpdateStep(GameTime gameTime)
         {
-            PostPhysicsUpdateStep(this, new UpdateStepEventArgs(gameTime));
+            if (PostPhysicsUpdateStep != null)
+                PostPhysicsUpdateStep(this, new UpdateStepEventArgs(gameTime));
         }
 
 
@@ -416,9 +434,9 @@ namespace Mechadrone1.Gameplay
             Matrix complementary = Matrix.CreateFromAxisAngle(Vector3.One * SlagformCommon.SlagMath.INV_SQRT_3, MathHelper.Pi);
             Vector3 diffuse = new Vector3(ShadowCastingLight.Diffuse.X, ShadowCastingLight.Diffuse.Y, ShadowCastingLight.Diffuse.Z);
             diffuse = Vector3.Transform(diffuse, complementary);
-            fill.Diffuse.X = diffuse.X / 7.0f;
-            fill.Diffuse.Y = diffuse.Y / 7.0f;
-            fill.Diffuse.Z = diffuse.Z / 7.0f;
+            fill.Diffuse.X = diffuse.X / 2.5f;
+            fill.Diffuse.Y = diffuse.Y / 2.5f;
+            fill.Diffuse.Z = diffuse.Z / 2.5f;
             fill.Diffuse.W = 1.0f;
             fill.Specular = Vector4.Zero;
             fill.Energy = ShadowCastingLight.Energy;
@@ -437,7 +455,7 @@ namespace Mechadrone1.Gameplay
 
             Matrix keyRot = Matrix.CreateFromAxisAngle(keyEyeCross, MathHelper.Pi / 6.0f);
             rim.Direction = Vector3.Normalize(Vector3.Transform(objToEye, keyRot));
-            lights.Add(rim);
+            //lights.Add(rim);
 
             return lights;
         }

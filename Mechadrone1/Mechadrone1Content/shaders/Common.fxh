@@ -62,7 +62,46 @@ void ComputeDirectionalLight(Material mat,
     {
         float3 specRay = reflect(-toLight, normal);
         float alignment = max(dot(specRay, toEye), 0.0f);
-        float specFactor = alignment > 0.0f ? pow(alignment, mat.Specular.w) : 0.0f;
+        float specFactor = alignment > 0.0f ? pow(alignment, 2.0f) : 0.0f;
+
+        diffuse = diffuseFactor * mat.Diffuse * dirLight.Diffuse * dirLight.Energy;
+        spec = specFactor * mat.Specular * dirLight.Specular * dirLight.Energy;
+    }
+}
+
+
+//---------------------------------------------------------------------------------------
+// Computes the ambient, diffuse, and specular terms in the lighting equation
+// from a directional light.  We need to output the terms separately because
+// later we may modify the individual terms.
+//---------------------------------------------------------------------------------------
+void ComputeDirectionalLightBlinn(Material mat,
+                                  DirectionalLight dirLight, 
+                                  float3 normal,
+                                  float3 toEye,
+                                  out float4 ambient,
+                                  out float4 diffuse,
+                                  out float4 spec)
+{
+    // The light vector aims opposite the direction the light rays travel.
+    float3 toLight = -dirLight.Direction;
+
+    // Add ambient term.
+    ambient = mat.Diffuse * dirLight.Ambient;
+
+    // Initialize outputs.
+    diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    spec    = float4(0.0f, 0.0f, 0.0f, 0.0f);
+
+    // Add diffuse and specular term, provided the surface is in 
+    // the line of sight of the light.
+    float diffuseFactor = dot(toLight, normal);
+
+    if( diffuseFactor > 0.0f )
+    {
+        float3 halfway = normalize(toLight + toEye);
+        float alignment = max(dot(halfway, normal), 0.0f);
+        float specFactor = alignment > 0.0f ? pow(alignment, 5.0f) : 0.0f;
 
         diffuse = diffuseFactor * mat.Diffuse * dirLight.Diffuse * dirLight.Energy;
         spec = specFactor * mat.Specular * dirLight.Specular * dirLight.Energy;

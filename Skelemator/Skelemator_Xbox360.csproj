@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{74bb1be3-8bc8-4d28-929e-ea660510b625}</ProjectGuid>
+    <ProjectGuid>{74BB1BE3-8BC8-4D28-929E-EA660510B625}</ProjectGuid>
     <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">Xbox 360</Platform>
@@ -41,10 +41,29 @@
     <DefineConstants>DEBUG;TRACE;XBOX;XBOX360</DefineConstants>
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Compile Include="AnimationClip.cs" />
-    <Compile Include="AnimationPlayer.cs" />
+    <ProjectReference Include="..\SlagformCommon\SlagformCommon_Xbox360.csproj">
+      <Project>{C2D25A8A-A14B-4F95-B722-FD3AB5A4A985}</Project>
+      <Name>SlagformCommon_Xbox360</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Animation\AnimationPackage.cs" />
+    <Compile Include="Animation\Clip.cs" />
+    <Compile Include="Animation\ClipPlayer.cs" />
+    <Compile Include="Animation\ISkinnedSkeletonPoser.cs" />
+    <Compile Include="Animation\StateDescriptions\AnimationNodeDescription.cs" />
+    <Compile Include="Animation\StateDescriptions\AnimationStateDescription.cs" />
+    <Compile Include="Animation\State\AnimationNode.cs" />
+    <Compile Include="Animation\State\AnimationState.cs" />
+    <Compile Include="Animation\State\AnimationStateMachine.cs" />
+    <Compile Include="Animation\State\BinaryAdditiveBlendNode.cs" />
+    <Compile Include="Animation\State\BinaryLerpBlendNode.cs" />
+    <Compile Include="Animation\State\ClipNode.cs" />
+    <Compile Include="Animation\State\General1DPositionalBlendNode.cs" />
+    <Compile Include="Animation\State\General2DPositionalBlendNode.cs" />
+    <Compile Include="Animation\State\TernaryLerpBlendNode.cs" />
+    <Compile Include="Animation\State\TransitionInfo.cs" />
     <Compile Include="Keyframe.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SkinningData.cs" />

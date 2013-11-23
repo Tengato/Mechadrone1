@@ -32,6 +32,9 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AssimpNet">
+      <HintPath>..\..\..\..\AssimpNet_3_2\AssimpNet\bin\x86\Release\AssimpNet.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
       <SpecificVersion>True</SpecificVersion>
     </Reference>
@@ -51,8 +54,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnimationPackageData.cs" />
     <Compile Include="Model\ClipData.cs" />
     <Compile Include="Model\ActorModelProcessor.cs" />
+    <Compile Include="Model\AssimpColladaImporter.cs" />
     <Compile Include="Terrain\RawTerrainImporter.cs" />
     <Compile Include="Model\StaticModelProcessor.cs" />
     <Compile Include="MaterialData.cs" />

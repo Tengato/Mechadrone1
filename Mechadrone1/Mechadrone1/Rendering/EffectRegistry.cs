@@ -31,6 +31,7 @@ namespace Mechadrone1.Rendering
         public const string SHADOWTRANSFORM_PARAM_NAME = "ShadowTransform";
         public const string SHADOWMAP_PARAM_NAME = "ShadowMap";
         public const string ENVIROMAP_PARAM_NAME = "EnviroMap";
+        public const string FRINGEMAP_PARAM_NAME = "FringeMap";
 
         readonly static string[] StandardParamNames = new string[8] {
             EYEPOSITION_PARAM_NAME,
@@ -95,12 +96,18 @@ namespace Mechadrone1.Rendering
             }
         }
 
+        private static Texture2D fringeMap;
+
+        private static List<EffectParameter> enviroMapParams;
+
 
         static EffectRegistry()
         {
             Params = new Dictionary<Effect,Dictionary<string, EffectParameter>>();
             StandardStructParamNames = new Dictionary<string, string[]>();
             StandardStructParamNames.Add(DIRLIGHT_STRUCT_NAME, DirLightStructParamNames);
+            fringeMap = null;
+            enviroMapParams = new List<EffectParameter>();
         }
 
         public static void Add(Effect fx, RenderOptions options)
@@ -150,6 +157,20 @@ namespace Mechadrone1.Rendering
                 standardParams.Add(SHADOWMAP_PARAM_NAME, fx.Parameters[SHADOWMAP_PARAM_NAME]);
             }
 
+            if ((options & RenderOptions.RequiresEnviroMap) > 0)
+            {
+                standardParams.Add(ENVIROMAP_PARAM_NAME, fx.Parameters[ENVIROMAP_PARAM_NAME]);
+                enviroMapParams.Add(fx.Parameters[ENVIROMAP_PARAM_NAME]);
+            }
+
+            if ((options & RenderOptions.RequiresFringeMap) > 0)
+            {
+                if (fringeMap == null)
+                    fringeMap = FringeMap.CreateFringeMap(fx.GraphicsDevice);
+
+                fx.Parameters[FRINGEMAP_PARAM_NAME].SetValue(fringeMap);
+            }
+
             Params.Add(fx, standardParams);
         }
 
@@ -182,10 +203,21 @@ namespace Mechadrone1.Rendering
             }
         }
 
+
+        public static void SetEnvironmentMap(TextureCube enviroMap)
+        {
+            foreach (EffectParameter fxp in enviroMapParams)
+            {
+                fxp.SetValue(enviroMap);
+            }
+        }
+
+
         public static void ClearRegistry()
         {
             Params.Clear();
             RegisteredModels.Clear();
+            enviroMapParams.Clear();
         }
 
     }

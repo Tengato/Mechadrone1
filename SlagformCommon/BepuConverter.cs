@@ -14,6 +14,12 @@ namespace SlagformCommon
         }
 
 
+        public static Vector2 Convert(BEPUutilities.Vector2 a)
+        {
+            return new Vector2(a.X, a.Y);
+        }
+
+
         public static Vector3 Convert(BEPUutilities.Vector3 a)
         {
             return new Vector3(a.X, a.Y, a.Z);

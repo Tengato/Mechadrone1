@@ -37,6 +37,7 @@
       <Name>Steppes</Name>
       <Importer>XmlImporter</Importer>
       <Processor>PassThroughProcessor</Processor>
+      <SubType>Designer</SubType>
     </Compile>
     <Compile Include="screens\intro_bg.tga">
       <Name>intro_bg</Name>
@@ -233,18 +234,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="models\soldier\soldier_LOD0.fbx">
-      <Name>soldier_LOD0</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ActorModelProcessor</Processor>
-      <ProcessorParameters_ClipDataFilePath>models\soldier\SoldierClipData.xml</ProcessorParameters_ClipDataFilePath>
-      <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
-      <ProcessorParameters_GenerateTangentFrames>True</ProcessorParameters_GenerateTangentFrames>
-      <ProcessorParameters_MaterialDataFilePath>models\soldier\SoldierMaterialData.xml</ProcessorParameters_MaterialDataFilePath>
-      <ProcessorParameters_PremultiplyTextureAlpha>False</ProcessorParameters_PremultiplyTextureAlpha>
-      <ProcessorParameters_TextureFormat>NoChange</ProcessorParameters_TextureFormat>
-      <SubType>Designer</SubType>
-    </Compile>
     <Compile Include="models\lightbulb\Icosphere.fbx">
       <Name>Icosphere</Name>
       <Importer>FbxImporter</Importer>
@@ -275,6 +264,31 @@
       <Name>SkyEllipsoid</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="models\mechadrone\Mechadrone.fbx">
+      <Name>Mechadrone</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ActorModelProcessor</Processor>
+      <ProcessorParameters_ClipDataFilePath>models\mechadrone\MechadroneClipData.xml</ProcessorParameters_ClipDataFilePath>
+      <ProcessorParameters_MaterialDataFilePath>models\mechadrone\MechadroneMaterialData.xml</ProcessorParameters_MaterialDataFilePath>
+      <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
+      <ProcessorParameters_GenerateTangentFrames>True</ProcessorParameters_GenerateTangentFrames>
+      <ProcessorParameters_PremultiplyTextureAlpha>False</ProcessorParameters_PremultiplyTextureAlpha>
+      <ProcessorParameters_TextureFormat>NoChange</ProcessorParameters_TextureFormat>
+      <SubType>Designer</SubType>
+      <ProcessorParameters_AnimationPackageDataFilePath>models\mechadrone\MechadroneAnimationData.xml</ProcessorParameters_AnimationPackageDataFilePath>
+    </Compile>
+    <Compile Include="models\soldierDAE\soldier_LOD0.dae">
+      <Name>soldierDAE_LOD0</Name>
+      <Importer>AssimpColladaImporter</Importer>
+      <Processor>ActorModelProcessor</Processor>
+      <ProcessorParameters_ClipDataFilePath>models\soldierDAE\SoldierClipData.xml</ProcessorParameters_ClipDataFilePath>
+      <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
+      <ProcessorParameters_GenerateTangentFrames>True</ProcessorParameters_GenerateTangentFrames>
+      <ProcessorParameters_MaterialDataFilePath>models\soldierDAE\SoldierMaterialData.xml</ProcessorParameters_MaterialDataFilePath>
+      <ProcessorParameters_PremultiplyTextureAlpha>False</ProcessorParameters_PremultiplyTextureAlpha>
+      <ProcessorParameters_TextureFormat>NoChange</ProcessorParameters_TextureFormat>
+      <ProcessorParameters_AnimationPackageDataFilePath>models\soldierDAE\SoldierAnimationData.xml</ProcessorParameters_AnimationPackageDataFilePath>
     </Compile>
     <None Include="shaders\Common.fxh">
       <Name>Common</Name>
@@ -449,6 +463,24 @@
       <Processor>EffectProcessor</Processor>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Assimp32.dll">
+      <Name>Assimp32</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Assimp64.dll">
+      <Name>Assimp64</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="shaders\Null.fx">
+      <Name>Null</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!--  To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

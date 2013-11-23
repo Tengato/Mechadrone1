@@ -61,7 +61,9 @@ namespace Mechadrone1.Rendering
 
             shadowCenterMarker = new WireBox(gd, 1.0f);
 
+            // TODO: we may want to change these during gameplay:
             EffectRegistry.SetFog(sceneModel.Fog);
+            EffectRegistry.SetEnvironmentMap(sceneModel.EnvironmentMap);
         }
 
 
@@ -150,16 +152,29 @@ namespace Mechadrone1.Rendering
             gd.Clear(Color.CornflowerBlue);
 
             shadowCenterMarker.Position = shadowedSurface.Center;
-            renderQueue.AddSceneObject(
-                shadowCenterMarker,
-                RenderStep.Default,
-                camera.View,
-                projection,
-                camera.Transform,
-                lightView,
-                lightProjection,
-                null,
-                null);
+            //renderQueue.AddSceneObject(
+            //    shadowCenterMarker,
+            //    RenderStep.Default,
+            //    camera.View,
+            //    projection,
+            //    camera.Transform,
+            //    lightView,
+            //    lightProjection,
+            //    null,
+            //    null);
+
+            for (int p = 0; p < sceneModel.DebugAxes.Count; p++)
+            {
+                renderQueue.AddSceneObject(sceneModel.DebugAxes[p],
+                    RenderStep.Default,
+                    camera.View,
+                    projection,
+                    camera.Transform,
+                    lightView,
+                    lightProjection,
+                    null,
+                    null);
+            }
 
             renderQueue.AddSceneObject(
                 sceneModel.Sky,

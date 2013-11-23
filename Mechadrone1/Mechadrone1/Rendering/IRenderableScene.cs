@@ -8,6 +8,7 @@ using Manifracture;
 using Skelemator;
 using BEPUphysics;
 using Microsoft.Xna.Framework.Graphics;
+using Mechadrone1.Gameplay.Prefabs;
 
 namespace Mechadrone1.Rendering
 {
@@ -21,7 +22,10 @@ namespace Mechadrone1.Rendering
         List<DirectLight> GetObjectLights(ISceneObject sceneObject, Vector3 eyePosition);
         DirectLight ShadowCastingLight { get; }
 
+        List<Axes> DebugAxes { get; }
+
         BoundingBox WorldBounds { get; }
         QuadTree QuadTree { get; }
+        TextureCube EnvironmentMap { get; }
     }
 }

@@ -111,8 +111,6 @@ namespace Mechadrone1.StateManagement
 
         public override void Update(GameTime gameTime)
         {
-            inputMan.ReadInput();
-
             // Make a copy of the master screen list, to avoid confusion if
             // the process of updating one screen adds or removes others.
             screensToUpdate.Clear();
@@ -127,6 +125,9 @@ namespace Mechadrone1.StateManagement
             bool isInputConsumed = false;
             bool coveredByOtherScreen = false;
             bool isCoveringUnderlyingScreens = false;
+
+            if (screenHasFocus)
+                inputMan.ReadInput();
 
             // Loop as long as there are screens waiting to be updated.
             while (screensToUpdate.Count > 0)

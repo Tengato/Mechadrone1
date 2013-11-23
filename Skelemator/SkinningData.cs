@@ -16,15 +16,16 @@ using Microsoft.Xna.Framework.Content;
 namespace Skelemator
 {
     /// <summary>
-    /// Combines all the data needed to render and animate a skinned object.
-    /// This is typically stored in the Tag property of the Model being animated.
+    /// Combines all the data (i.e. the skeleton and clips) needed to render and
+    /// animate a skinned object. This is typically stored in the Tag property of
+    /// the Model being animated.
     /// </summary>
     public class SkinningData
     {
         /// <summary>
         /// Constructs a new skinning data object.
         /// </summary>
-        public SkinningData(Dictionary<string, AnimationClip> animationClips,
+        public SkinningData(Dictionary<string, Clip> animationClips,
                             List<Matrix> bindPose, List<Matrix> inverseBindPose,
                             List<int> skeletonHierarchy, int weightsPerVert)
         {
@@ -50,7 +51,7 @@ namespace Skelemator
         /// "JumpReallyHigh", etc.
         /// </summary>
         [ContentSerializer]
-        public Dictionary<string, AnimationClip> AnimationClips { get; private set; }
+        public Dictionary<string, Clip> AnimationClips { get; private set; }
 
 
         /// <summary>

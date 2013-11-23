@@ -17,6 +17,7 @@ using System.Xml.Serialization;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
+using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Intermediate;
 #endregion
 
 namespace SkelematorPipeline
@@ -49,8 +50,7 @@ namespace SkelematorPipeline
 
             using (XmlReader reader = XmlReader.Create(MaterialDataFilePath))
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(List<MaterialData>));
-                incomingMaterials = (List<MaterialData>)serializer.Deserialize(reader);
+                incomingMaterials = IntermediateSerializer.Deserialize<List<MaterialData>>(reader, null);
             }
 
             // Chain to the base ModelProcessor class so it can convert the model data.

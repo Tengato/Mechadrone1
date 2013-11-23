@@ -60,7 +60,7 @@ namespace Mechadrone1.Screens
 
             gameMan = new Game1Manager(ScreenManager.SoundBank);
             gameMan.LoadContent(ScreenManager.GraphicsDevice, content, manifest);
-            gameMan.AddPlayer((PlayerIndex)ControllingPlayer, "Soldier");
+            gameMan.AddPlayer((PlayerIndex)ControllingPlayer, "Player1");
             sceneMan = new SceneManager(ScreenManager.GraphicsDevice);
             sceneMan.LoadContent(gameMan, content);
 
@@ -150,11 +150,13 @@ namespace Mechadrone1.Screens
             sceneMan.DrawScene((PlayerIndex)ControllingPlayer);
 
             string fps = string.Format("fps: {0}", frameRate);
+            string playerMsg = gameMan.GetGameObject("Player1").DebugMessage;
 
             Color fpsColor = gameTime.IsRunningSlowly == true ? Color.Orange : Color.White;
 
             ScreenManager.FontManager.BeginText();
             ScreenManager.FontManager.DrawText(FontType.ArialSmall, fps, new Vector2(32, 32), fpsColor, true);
+            ScreenManager.FontManager.DrawText(FontType.ArialSmall, playerMsg, new Vector2(32, 64), fpsColor, true);
             ScreenManager.FontManager.EndText();
 
             // If the game is transitioning on or off, fade it out to black.

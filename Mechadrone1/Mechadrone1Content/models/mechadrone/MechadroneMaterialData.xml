@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Generic="System.Collections.Generic" xmlns:Framework="Microsoft.Xna.Framework">
+  <Asset Type="Generic:List[SkelematorPipeline.MaterialData]">
+    <Item>
+      <Name>BodySkin__BodyColormap</Name>
+      <CustomEffect>shaders\NormSkinPhongReflectFilm.fx</CustomEffect>
+      <EffectParams>
+        <Item>
+          <Name>NormalMap</Name>
+          <Category>Texture</Category>
+          <ValueTypeFullName>System.String</ValueTypeFullName>
+          <Value Type="string">models\mechadrone\MechadroneBodyNormalMap.png</Value>
+        </Item>
+        <Item>
+          <Name>WeightsPerVert</Name>
+          <Category>OpaqueData</Category>
+          <ValueTypeFullName>System.Int32</ValueTypeFullName>
+          <Value Type="int">4</Value>
+        </Item>
+        <Item>
+          <Name>MatSpecColor</Name>
+          <Category>OpaqueData</Category>
+          <ValueTypeFullName>Microsoft.Xna.Framework.Vector4, Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553</ValueTypeFullName>
+          <Value Type="Framework:Vector4">0.5 0.5 0.5 20</Value>
+        </Item>
+        <Item>
+          <Name>FilmDepth</Name>
+          <Category>OpaqueData</Category>
+          <ValueTypeFullName>System.Single</ValueTypeFullName>
+          <Value Type="float">0.07</Value>
+        </Item>
+      </EffectParams>
+      <HandlingFlags>RequiresSkeletalPose, RequiresEnviroMap, RequiresFringeMap</HandlingFlags>
+    </Item>
+    <Item>
+      <Name>LegSkin__LegsColormap</Name>
+      <CustomEffect>shaders\NormSkinPhongReflectFilm.fx</CustomEffect>
+      <EffectParams>
+        <Item>
+          <Name>NormalMap</Name>
+          <Category>Texture</Category>
+          <ValueTypeFullName>System.String</ValueTypeFullName>
+          <Value Type="string">models\mechadrone\MechadroneLegsNormalMap.png</Value>
+        </Item>
+        <Item>
+          <Name>WeightsPerVert</Name>
+          <Category>OpaqueData</Category>
+          <ValueTypeFullName>System.Int32</ValueTypeFullName>
+          <Value Type="int">4</Value>
+        </Item>
+        <Item>
+          <Name>MatSpecColor</Name>
+          <Category>OpaqueData</Category>
+          <ValueTypeFullName>Microsoft.Xna.Framework.Vector4, Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553</ValueTypeFullName>
+          <Value Type="Framework:Vector4">0.5 0.5 0.5 20</Value>
+        </Item>
+        <Item>
+          <Name>FilmDepth</Name>
+          <Category>OpaqueData</Category>
+          <ValueTypeFullName>System.Single</ValueTypeFullName>
+          <Value Type="float">0.07</Value>
+        </Item>
+      </EffectParams>
+      <HandlingFlags>RequiresSkeletalPose, RequiresEnviroMap, RequiresFringeMap</HandlingFlags>
+    </Item>
+  </Asset>
+</XnaContent>

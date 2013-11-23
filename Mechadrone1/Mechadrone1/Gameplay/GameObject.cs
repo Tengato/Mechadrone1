@@ -19,8 +19,29 @@ namespace Mechadrone1.Gameplay
     {
         public string Name { get; set; }
 
+        protected Model visualModel;
         [LoadedAsset]
-        public Model VisualModel { get; set; }
+        public virtual Model VisualModel
+        {
+            get
+            {
+                return visualModel;
+            }
+            set
+            {
+                visualModel = value;
+                AnimationPackage ap = visualModel.Tag as AnimationPackage;
+                if (ap != null)
+                {
+                    Animations = ap.SkinningData;
+                    if (ap.SkinningData != null)
+                    {
+                        AnimationPlayer = new ClipPlayer(Animations);
+                    }
+                }
+            }
+        }
+
 
         protected IGameManager owner;
 
@@ -110,6 +131,7 @@ namespace Mechadrone1.Gameplay
             }
         }
 
+        public Quaternion ModelAdjustment { get; set; }
 
         protected float scale;
         public float Scale
@@ -156,10 +178,11 @@ namespace Mechadrone1.Gameplay
         static private Matrix[] bindPose;
 
         public SkinningData Animations { get; set; }
-        public AnimationPlayer AnimationPlayer { get; set; }
+        public ISkinnedSkeletonPoser AnimationPlayer { get; set; }
         public bool CastsShadow { get; set; }
         public bool Visible { get; set; }
         public event MakeSoundEventHandler MakeSound;
+        public string DebugMessage { get; set; }
 
 
         public GameObject(IGameManager owner)
@@ -179,11 +202,13 @@ namespace Mechadrone1.Gameplay
             // Set defaults:
             Position = Vector3.Zero;
             Orientation = Quaternion.Identity;
+            ModelAdjustment = Quaternion.Identity;
             Scale = 1.0f;
             CastsShadow = true;
             Visible = true;
             CameraOffset = new Vector3(0, 5, -5);
             CameraTargetOffset = new Vector3(0, 3, 0);
+            DebugMessage = String.Empty;
         }
 
         /// <summary>
@@ -201,7 +226,14 @@ namespace Mechadrone1.Gameplay
                     {
                         foreach (ModelMeshPart mmp in mesh.MeshParts)
                         {
-                            EffectRegistry.Add(mmp.Effect, (RenderOptions)(mmp.Tag));
+                            if (mmp.Tag != null)
+                            {
+                                EffectRegistry.Add(mmp.Effect, (RenderOptions)(mmp.Tag));
+                            }
+                            else
+                            {
+                                throw new ApplicationException("The model must be conditioned using a Skelemator processor.");
+                            }
                         }
                     }
 
@@ -290,7 +322,7 @@ namespace Mechadrone1.Gameplay
             RenderTarget2D shadowMap,
             List<DirectLight> lights)
         {
-            world = Matrix.CreateScale(Scale) * Matrix.CreateFromQuaternion(Orientation) * Matrix.CreateTranslation(Position);
+            world = Matrix.CreateScale(Scale) * Matrix.CreateFromQuaternion(Orientation * ModelAdjustment) * Matrix.CreateTranslation(Position);
 
             wvp = step == RenderStep.Shadows ?
                 world * shadowCastingLightView * shadowCastingLightProjection :
@@ -299,7 +331,7 @@ namespace Mechadrone1.Gameplay
 
             bones = bindPose;
 
-            if (Animations != null && AnimationPlayer != null && AnimationPlayer.CurrentClip != null)
+            if (Animations != null && AnimationPlayer != null && AnimationPlayer.IsActive != null)
             {
                 bones = AnimationPlayer.GetSkinTransforms();
             }

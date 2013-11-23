@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Generic="System.Collections.Generic">
+  <Asset Type="Generic:List[SkelematorPipeline.MaterialData]">
+    <Item>
+      <Name>VisualMaterial</Name>
+      <CustomEffect>shaders\NormSpecSkinPhong.fx</CustomEffect>
+      <EffectParams>
+        <Item>
+          <Name>SpecMap</Name>
+          <Category>Texture</Category>
+          <ValueTypeFullName>System.String</ValueTypeFullName>
+          <Value Type="string">models\soldierDAE\soldier_s3.tga</Value>
+        </Item>
+        <Item>
+          <Name>NormalMap</Name>
+          <Category>Texture</Category>
+          <ValueTypeFullName>System.String</ValueTypeFullName>
+          <Value Type="string">models\soldierDAE\soldier_n.tga</Value>
+        </Item>
+        <Item>
+          <Name>WeightsPerVert</Name>
+          <Category>OpaqueData</Category>
+          <ValueTypeFullName>System.Int32</ValueTypeFullName>
+          <Value Type="int">4</Value>
+        </Item>
+      </EffectParams>
+      <HandlingFlags>RequiresSkeletalPose</HandlingFlags>
+    </Item>
+    <Item>
+      <Name>VisualMaterial1</Name>
+      <CustomEffect>shaders\NormSpecSkinPhong.fx</CustomEffect>
+      <EffectParams>
+        <Item>
+          <Name>SpecMap</Name>
+          <Category>Texture</Category>
+          <ValueTypeFullName>System.String</ValueTypeFullName>
+          <Value Type="string">models\soldierDAE\gun_s2.tga</Value>
+        </Item>
+        <Item>
+          <Name>NormalMap</Name>
+          <Category>Texture</Category>
+          <ValueTypeFullName>System.String</ValueTypeFullName>
+          <Value Type="string">models\soldierDAE\gun_n.tga</Value>
+        </Item>
+        <Item>
+          <Name>WeightsPerVert</Name>
+          <Category>OpaqueData</Category>
+          <ValueTypeFullName>System.Int32</ValueTypeFullName>
+          <Value Type="int">4</Value>
+        </Item>
+      </EffectParams>
+      <HandlingFlags>RequiresSkeletalPose</HandlingFlags>
+    </Item>
+    <Item>
+      <Name>VisualMaterial2</Name>
+      <CustomEffect>shaders\Null.fx</CustomEffect>
+      <EffectParams />
+      <HandlingFlags>None</HandlingFlags>
+    </Item>
+  </Asset>
+</XnaContent>
