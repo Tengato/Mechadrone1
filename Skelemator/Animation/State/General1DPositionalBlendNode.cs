@@ -11,51 +11,59 @@ namespace Skelemator
 {
     public class General1DPositionalBlendNode : AnimationNode
     {
-        public Dictionary<float, AnimationNode> ChildrenByPosition { get; private set; }
+        public List<AnimationNode> children;
         public float BlendPosition;
-        public override IEnumerable<AnimationNode> Children { get { return ChildrenByPosition.Values.AsEnumerable(); } }
+        public override IEnumerable<AnimationNode> Children { get { return children.AsEnumerable(); } }
+        public Dictionary<string, Vector2> Partition;
+        public string SyncClipNodeName { get; set; }
 
 
         public General1DPositionalBlendNode(General1DPositionalBlendNodeDescription nodeDesc, AnimationPackage package)
         {
             Name = nodeDesc.Name;
             BlendPosition = nodeDesc.BlendPosition;
-            playbackRate = nodeDesc.PlaybackRate;
-            ChildrenByPosition = new Dictionary<float, AnimationNode>();
+            children = new List<AnimationNode>();
+            Partition = nodeDesc.ChildRangesByName;
+            SyncClipNodeName = nodeDesc.SyncClipNodeName;
 
-            for (int c = 0; c < nodeDesc.ChildNodeNames.Count; c++ )
+            for (int c = 0; c < nodeDesc.ChildNodeNames.Count; c++)
             {
-                AnimationNode childNode = AnimationNode.Create(package.NodeDescriptions[nodeDesc.ChildNodeNames[c]], package);
-                ChildrenByPosition.Add(nodeDesc.ChildPositionsByName[nodeDesc.ChildNodeNames[c]], childNode);
+                children.Add(AnimationNode.Create(package.NodeDescriptions[nodeDesc.ChildNodeNames[c]], package));
+            }
+
+            playbackRate = 1.0f;
+            PlaybackRate = nodeDesc.PlaybackRate;
+        }
+
+
+        public override void AdvanceTime(TimeSpan elapsedTime)
+        {
+            AnimationNode activeNode = GetActiveChild();
+            activeNode.AdvanceTime(elapsedTime);
+
+            foreach (AnimationNode an in Children)
+            {
+                if (an == activeNode)
+                    continue;
+
+                bool dummyNodeFound;
+                an.Synchronize(activeNode.GetNormalizedTime(SyncClipNodeName, out dummyNodeFound));
             }
         }
 
 
         public override Matrix[] GetSkinTransforms()
         {
-            // Pick an arbitrary node to 'prime' the refinement loop
-            float lowerBoundPosition = ChildrenByPosition.Keys.Min();
-            float upperBoundPosition = ChildrenByPosition.Keys.Max();
+            AnimationNode activeNode = GetActiveChild();
 
-            foreach (float position in ChildrenByPosition.Keys)
+            BinaryBlendAnimationNode binaryNode = activeNode as BinaryBlendAnimationNode;
+            if (binaryNode != null)
             {
-                if (position > lowerBoundPosition && position <= BlendPosition)
-                    lowerBoundPosition = position;
-
-                if (position < upperBoundPosition && position >= BlendPosition)
-                    upperBoundPosition = position;
+                Vector2 range = Partition[activeNode.Name];
+                binaryNode.BlendFactor = (BlendPosition - range.X) / (range.Y - range.X);
             }
 
-            Matrix[] lowerBoundTransforms = ChildrenByPosition[lowerBoundPosition].GetSkinTransforms();
-
-            if (lowerBoundPosition == upperBoundPosition)
-                return lowerBoundTransforms;
-
-            Matrix[] upperBoundTransforms = ChildrenByPosition[upperBoundPosition].GetSkinTransforms();
-            float blendFactor = (BlendPosition - lowerBoundPosition) /
-                (upperBoundPosition - lowerBoundPosition);
-
-            return SpaceUtils.LerpSkeletalPose(lowerBoundTransforms, upperBoundTransforms, blendFactor);
+            return activeNode.GetSkinTransforms();
         }
 
 
@@ -69,6 +77,21 @@ namespace Skelemator
             {
                 base.AdjustBlendParam(nodeName, blendInput);
             }
+        }
+
+
+        protected AnimationNode GetActiveChild()
+        {
+            foreach (AnimationNode an in children)
+            {
+                Vector2 range = Partition[an.Name];
+                if (BlendPosition >= range.X && BlendPosition <= range.Y)
+                {
+                    return an;
+                }
+            }
+
+            throw new InvalidOperationException("The partition does not contain the BlendPosition point");
         }
 
     }

@@ -72,11 +72,11 @@ namespace Skelemator
         }
 
 
-        public virtual void Synchronize()
+        public virtual void Synchronize(float normalizedTime)
         {
             foreach (AnimationNode an in Children)
             {
-                an.Synchronize();
+                an.Synchronize(normalizedTime);
             }
         }
 
@@ -93,47 +93,25 @@ namespace Skelemator
         }
 
 
+        public virtual float GetNormalizedTime(string nodeName, out bool nodeFound)
+        {
+            foreach (AnimationNode an in Children)
+            {
+                float anNormTime = an.GetNormalizedTime(nodeName, out nodeFound);
+                if (nodeFound)
+                    return anNormTime;
+            }
+
+            nodeFound = false;
+            return 0.0f;
+        }
+
+
         public static AnimationNode Create(AnimationNodeDescription animationNodeDescription, AnimationPackage package)
         {
-            AnimationNode result;
-
-            if (animationNodeDescription.GetType() == typeof(ClipNodeDescription))
-            {
-                ClipNodeDescription and = animationNodeDescription as ClipNodeDescription;
-                result = new ClipNode(and, package.SkinningData);
-            }
-            else if (animationNodeDescription.GetType() == typeof(BinaryLerpBlendNodeDescription))
-            {
-                BinaryLerpBlendNodeDescription and = animationNodeDescription as BinaryLerpBlendNodeDescription;
-                result = new BinaryLerpBlendNode(and, package);
-            }
-            else if (animationNodeDescription.GetType() == typeof(BinaryAdditiveBlendNodeDescription))
-            {
-                BinaryAdditiveBlendNodeDescription and = animationNodeDescription as BinaryAdditiveBlendNodeDescription;
-                result = new BinaryAdditiveBlendNode(and, package);
-            }
-            else if (animationNodeDescription.GetType() == typeof(TernaryLerpBlendNodeDescription))
-            {
-                TernaryLerpBlendNodeDescription and = animationNodeDescription as TernaryLerpBlendNodeDescription;
-                result = new TernaryLerpBlendNode(and, package);
-            }
-            else if (animationNodeDescription.GetType() == typeof(General2DPositionalBlendNodeDescription))
-            {
-                General2DPositionalBlendNodeDescription and = animationNodeDescription as General2DPositionalBlendNodeDescription;
-                result = new General2DPositionalBlendNode(and, package);
-            }
-            else if (animationNodeDescription.GetType() == typeof(General1DPositionalBlendNodeDescription))
-            {
-                General1DPositionalBlendNodeDescription and = animationNodeDescription as General1DPositionalBlendNodeDescription;
-                result = new General1DPositionalBlendNode(and, package);
-            }
-            else
-            {
-                // TODO: just use the Activator here to instantiate all these nodes...
-                throw new NotSupportedException();
-            }
-
-            return result;
+            Type nodeType = Type.GetType(animationNodeDescription.RuntimeTypeName);
+            object[] aniNodeCtorParams = new object[] { animationNodeDescription, package };
+            return Activator.CreateInstance(nodeType, aniNodeCtorParams) as AnimationNode;
         }
     }
 }

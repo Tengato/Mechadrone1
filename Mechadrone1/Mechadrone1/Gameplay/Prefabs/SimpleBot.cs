@@ -29,7 +29,7 @@ namespace Mechadrone1.Gameplay.Prefabs
 
             character.HorizontalMotionConstraint.MovementDirection = new BEPUutilities.Vector2(0.0f, 0.2f);
 
-            desiredState = BipedStates.Walking;
+            desiredState = BipedStates.Neutral;
         }
 
     }

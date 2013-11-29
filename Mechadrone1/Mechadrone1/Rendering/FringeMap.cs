@@ -41,7 +41,7 @@ namespace Mechadrone1.Rendering
             for (int i = 0; i < FRINGE_MAP_SIZE; i++)
             {
                 u = (float)i / (float)(FRINGE_MAP_SIZE - 1);
-                Vector4 rgb;
+                Vector4 rgb = Vector4.Zero;
                 rgb.X = 0.5f * (float)(Math.Sin(MathHelper.TwoPi * (u * vd) / lamRGB.X + MathHelper.PiOver2 + offsetRGB.X) + 1.0f);
                 rgb.Y = 0.5f * (float)(Math.Sin(MathHelper.TwoPi * (u * vd) / lamRGB.Y + MathHelper.PiOver2 + offsetRGB.Y) + 1.0f);
                 rgb.Z = 0.5f * (float)(Math.Sin(MathHelper.TwoPi * (u * vd) / lamRGB.Z + MathHelper.PiOver2 + offsetRGB.Z) + 1.0f);

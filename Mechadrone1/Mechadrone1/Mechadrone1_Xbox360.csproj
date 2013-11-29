@@ -88,6 +88,7 @@
     <Compile Include="Gameplay\Helpers\SupportFinder.cs" />
     <Compile Include="Gameplay\Helpers\VerticalMotionConstraint.cs" />
     <Compile Include="Gameplay\IGameManager.cs" />
+    <Compile Include="Gameplay\Prefabs\Axes.cs" />
     <Compile Include="Gameplay\Prefabs\Bouncer.cs" />
     <Compile Include="Gameplay\Decorators\IAudible.cs" />
     <Compile Include="Gameplay\Prefabs\FreeFlyer.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="Gameplay\Prefabs\OrbitingLightbulb.cs" />
     <Compile Include="Gameplay\Prefabs\QuadWheel.cs" />
     <Compile Include="Gameplay\Prefabs\Roller.cs" />
+    <Compile Include="Gameplay\Prefabs\SimpleBot.cs" />
     <Compile Include="Gameplay\Prefabs\TPPedestrian.cs" />
     <Compile Include="Gameplay\Prefabs\WireBox.cs" />
     <Compile Include="Gameplay\SimulatedGameObject.cs" />
@@ -107,10 +109,11 @@
     <Compile Include="BlurManager.cs" />
     <Compile Include="ChaseCamera.cs" />
     <Compile Include="Gameplay\TerrainSector.cs" />
-    <Compile Include="Gameplay\UpdateEventHandlers.cs" />
+    <Compile Include="Gameplay\UpdateStepEventHandler.cs" />
     <Compile Include="InputManager.cs" />
     <Compile Include="InputState.cs" />
     <Compile Include="Rendering\EffectRegistry.cs" />
+    <Compile Include="Rendering\FringeMap.cs" />
     <Compile Include="Rendering\ICamera.cs" />
     <Compile Include="Rendering\ILight.cs" />
     <Compile Include="Rendering\IRenderableScene.cs" />

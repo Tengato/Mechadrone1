@@ -84,7 +84,7 @@ namespace Skelemator
         public void Synchronize()
         {
             timeInState = TimeSpan.Zero;
-            blendTree.Synchronize();
+            blendTree.Synchronize(0.0f);
         }
     }
 }

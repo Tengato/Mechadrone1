@@ -34,14 +34,6 @@
                     </Item>
                     <Item>
                         <Key>VisualModel</Key>
-                        <!--
-                        <Value Type="string">models\mechadrone\Mechadrone</Value>
-                        <Value Type="string">models\bikinigirl\Bikini_Girl</Value>
-                        <Value Type="string">models\torqueguy\TorqueGuy</Value>
-                        <Value Type="string">models\soldier\soldier_LOD0</Value>
-                        <Value Type="string">models\marcus\marcus</Value>
-                        <Value Type="string">models\xnadude\dude</Value>
-                        -->
                         <Value Type="string">models\soldierDAE\soldierDAE_LOD0</Value>
                     </Item>
                     <Item>
@@ -50,8 +42,6 @@
                     </Item>
                     <Item>
                         <Key>ModelAdjustment</Key>
-                        <!--<Value Type="Framework:Quaternion">0.707106781 0 0 -0.707106781</Value>
-                        <Value Type="Framework:Quaternion">1 0 0 -4.371139e-08</Value>-->
                         <Value Type="Framework:Quaternion">0 0 0 1</Value>
                     </Item>
                     <Item>

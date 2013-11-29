@@ -9,12 +9,10 @@ using SlagformCommon;
 
 namespace Skelemator
 {
-    public class BinaryLerpBlendNode : AnimationNode
+    public class BinaryLerpBlendNode : BinaryBlendAnimationNode
     {
         AnimationNode child1;
         AnimationNode child2;
-        public float BlendFactor;
-
 
         public override IEnumerable<AnimationNode> Children
         {
@@ -34,6 +32,7 @@ namespace Skelemator
             child1 = AnimationNode.Create(package.NodeDescriptions[nodeDesc.Child1NodeName], package);
             child2 = AnimationNode.Create(package.NodeDescriptions[nodeDesc.Child2NodeName], package);
 
+            playbackRate = 1.0f;
             PlaybackRate = nodeDesc.PlaybackRate;   // Make sure the child nodes are populated so this value can propagate down.
         }
 
@@ -59,15 +58,5 @@ namespace Skelemator
             }
         }
 
-
-        public override List<AnimationControlEvents> GetActiveControlEvents()
-        {
-            List<AnimationControlEvents> events = new List<AnimationControlEvents>();
-
-            events.AddRange(child1.GetActiveControlEvents());
-            events.AddRange(child2.GetActiveControlEvents());
-
-            return events;
-        }
     }
 }

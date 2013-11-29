@@ -51,8 +51,8 @@ void ComputeDirectionalLight(Material mat,
     ambient = mat.Diffuse * dirLight.Ambient;
 
     // Initialize outputs.
-    diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    spec    = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    diffuse = VECTOR4_ZERO;
+    spec    = VECTOR4_ZERO;
 
     // Add diffuse and specular term, provided the surface is in 
     // the line of sight of the light.
@@ -90,8 +90,8 @@ void ComputeDirectionalLightBlinn(Material mat,
     ambient = mat.Diffuse * dirLight.Ambient;
 
     // Initialize outputs.
-    diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    spec    = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    diffuse = VECTOR4_ZERO;
+    spec    = VECTOR4_ZERO;
 
     // Add diffuse and specular term, provided the surface is in 
     // the line of sight of the light.

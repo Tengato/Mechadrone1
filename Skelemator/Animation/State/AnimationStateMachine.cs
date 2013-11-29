@@ -41,12 +41,14 @@ namespace Skelemator
 
                 // TODO: some of these details are specific to bipeds and ought to be refactored out...
                 CurrentState.AdjustBlendParam("2DWalk", angle);
-                CurrentState.AdjustBlendParam("SlowMove", horizMovement.Length());
+                CurrentState.AdjustBlendParam("Fast2DWalk", angle);
+                CurrentState.AdjustBlendParam("SpeedBlendedMove", horizMovement.Length());
 
                 if (nextState != null)
                 {
                     nextState.AdjustBlendParam("2DWalk", angle);
-                    nextState.AdjustBlendParam("SlowMove", horizMovement.Length());
+                    nextState.AdjustBlendParam("Fast2DWalk", angle);
+                    nextState.AdjustBlendParam("SpeedBlendedMove", horizMovement.Length());
                 }
             }
         }

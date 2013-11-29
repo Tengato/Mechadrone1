@@ -70,7 +70,10 @@
     <Compile Include="Animation\State\ClipNode.cs" />
     <Compile Include="Animation\State\BinaryLerpBlendNode.cs" />
     <Compile Include="Animation\State\BinaryAdditiveBlendNode.cs" />
+    <Compile Include="Animation\State\Continuous1DLerpBlendNode.cs" />
     <Compile Include="Animation\State\General1DPositionalBlendNode.cs" />
+    <Compile Include="Animation\State\BinaryBlendAnimationNode.cs" />
+    <Compile Include="Animation\State\BinaryRateRampBlendNode.cs" />
     <Compile Include="Animation\State\TernaryLerpBlendNode.cs" />
     <Compile Include="Animation\ISkinnedSkeletonPoser.cs" />
     <Compile Include="Animation\State\TransitionInfo.cs" />

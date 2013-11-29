@@ -232,7 +232,7 @@ namespace Mechadrone1.Gameplay
                             }
                             else
                             {
-                                throw new ApplicationException("The model must be conditioned using a Skelemator processor.");
+                                throw new InvalidOperationException("The model must be conditioned using a Skelemator processor.");
                             }
                         }
                     }
@@ -331,7 +331,7 @@ namespace Mechadrone1.Gameplay
 
             bones = bindPose;
 
-            if (Animations != null && AnimationPlayer != null && AnimationPlayer.IsActive != null)
+            if (Animations != null && AnimationPlayer != null && AnimationPlayer.IsActive == true)
             {
                 bones = AnimationPlayer.GetSkinTransforms();
             }

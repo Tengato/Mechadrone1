@@ -4,7 +4,7 @@
         <Clips>
             <Item>
                 <SourceTake>Walk2</SourceTake>
-                <Alias>walk</Alias>
+                <Alias>Walk</Alias>
                 <FirstFrame>101</FirstFrame>
                 <LastFrame>220</LastFrame>
                 <SyncFrameOffset>0</SyncFrameOffset>

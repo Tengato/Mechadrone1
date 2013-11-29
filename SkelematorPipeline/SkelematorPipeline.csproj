@@ -38,6 +38,7 @@
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
       <SpecificVersion>True</SpecificVersion>
     </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
       <SpecificVersion>True</SpecificVersion>
     </Reference>
@@ -55,9 +56,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnimationPackageData.cs" />
+    <Compile Include="FXProcessor.cs" />
     <Compile Include="Model\ClipData.cs" />
     <Compile Include="Model\ActorModelProcessor.cs" />
     <Compile Include="Model\AssimpColladaImporter.cs" />
+    <Compile Include="FxcMaterialProcessor.cs" />
     <Compile Include="Terrain\RawTerrainImporter.cs" />
     <Compile Include="Model\StaticModelProcessor.cs" />
     <Compile Include="MaterialData.cs" />

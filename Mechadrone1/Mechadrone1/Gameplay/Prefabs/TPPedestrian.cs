@@ -98,9 +98,8 @@ namespace Mechadrone1.Gameplay.Prefabs
         [Flags]
         protected enum BipedStates
         {
-            Idle = 0x00,
+            Neutral = 0x00,
             Crouching = 0x01,
-            Walking = 0x02,
             Jumping = 0x04,
         }
 
@@ -112,7 +111,7 @@ namespace Mechadrone1.Gameplay.Prefabs
             cameraYaw = 0.0f;
             cameraPitch = 0.0f;
             LookFactor = -1;
-            desiredState = BipedStates.Idle;
+            desiredState = BipedStates.Neutral;
 
             // Default values for the CharacterController:
             Height = 9.3f;
@@ -131,6 +130,7 @@ namespace Mechadrone1.Gameplay.Prefabs
 
             character.JumpSpeed = JumpSpeed;
             character.HorizontalMotionConstraint.Speed = RunSpeed;
+            character.HorizontalMotionConstraint.CrouchingSpeed = RunSpeed * 0.5f;
             character.HorizontalMotionConstraint.SpeedScale = 1.0f;
 
             owner.PostPhysicsUpdateStep += PostPhysicsUpdate;
@@ -193,11 +193,12 @@ namespace Mechadrone1.Gameplay.Prefabs
 
             cameraYaw = cameraYaw % MathHelper.TwoPi;
 
+            // Collect gamepad movement a bit early, we need it for the following step:
             BEPUutilities.Vector2 padMovement = new BEPUutilities.Vector2(
                 input.CurrentState.PadState[(int)player].ThumbSticks.Left.X,
                 input.CurrentState.PadState[(int)player].ThumbSticks.Left.Y);
 
-            // Special mouse right-click or pad movement reorientation:
+            // Special case for reorientation upon mouse right-click or pad movement:
             if (input.IsNewMouseButtonPress(MouseButtons.Right, player, out dummyPlayerIndex) ||
                 padMovement.LengthSquared() > 0.0f)
             {
@@ -205,6 +206,9 @@ namespace Mechadrone1.Gameplay.Prefabs
                 Orientation *= Quaternion.CreateFromAxisAngle(Vector3.Up, cameraYaw);
                 cameraYaw = 0.0f;
             }
+
+            // Update the body's orientation:
+            character.ViewDirection = BepuConverter.Convert(Vector3.Transform(Vector3.Backward, Orientation));
 
             // Camera distance:
             cameraDist += input.CurrentState.PadState[(int)player].Triggers.Right * dTimeMs * INPUT_PAD_CAM_DIST_MOVE_RATE;
@@ -217,35 +221,48 @@ namespace Mechadrone1.Gameplay.Prefabs
             // It's good practice to make sure floating point errors don't accumulate and change the length of our unit quaternion:
             Orientation = Quaternion.Normalize(Orientation);
 
-            // Movement:
-            BEPUutilities.Vector2 totalMovement = BEPUutilities.Vector2.Zero;
+            // Process movement:
+            BEPUutilities.Vector2 rawMovement = BEPUutilities.Vector2.Zero;
 
             // Keyboard:
             if (input.CurrentState.KeyState[(int)player].IsKeyDown(Keys.W))
             {
-                totalMovement += new BEPUutilities.Vector2(0, 1);
+                rawMovement += new BEPUutilities.Vector2(0, 1);
             }
             if (input.CurrentState.KeyState[(int)player].IsKeyDown(Keys.S))
             {
-                totalMovement += new BEPUutilities.Vector2(0, -1);
+                rawMovement += new BEPUutilities.Vector2(0, -1);
             }
             if (input.CurrentState.KeyState[(int)player].IsKeyDown(Keys.A))
             {
-                totalMovement += new BEPUutilities.Vector2(-1, 0);
+                rawMovement += new BEPUutilities.Vector2(-1, 0);
             }
             if (input.CurrentState.KeyState[(int)player].IsKeyDown(Keys.D))
             {
-                totalMovement += new BEPUutilities.Vector2(1, 0);
+                rawMovement += new BEPUutilities.Vector2(1, 0);
             }
 
             // Gamepad:
-            totalMovement += padMovement;
+            rawMovement += padMovement;
 
-            character.HorizontalMotionConstraint.MovementDirection = totalMovement;
-            // Clamp the movement:
-            character.HorizontalMotionConstraint.SpeedScale = Math.Min(1.0f, totalMovement.Length());
+            // Map raw movement vector into our 2D movement space:
+            if (rawMovement.Y > 0.0f)
+            {
+                double rawMovementTheta = Math.Atan2(rawMovement.Y, rawMovement.X);
+                float maxRadius = (float)GetMaxFwdMoveLength(rawMovementTheta);
+                float totalMovementLength = rawMovement.Length() * maxRadius;
+                // Clamp the movement:
+                character.HorizontalMotionConstraint.SpeedScale = 0.5f * Math.Min(maxRadius, totalMovementLength);
+            }
+            else
+            {
+                // Clamp the movement:
+                character.HorizontalMotionConstraint.SpeedScale = 0.5f * Math.Min(1.0f, rawMovement.Length());
+            }
 
+            character.HorizontalMotionConstraint.MovementDirection = rawMovement;
 
+            // Stance changes and other actions:
             // Crouching:
             if (input.CurrentState.KeyState[(int)player].IsKeyDown(Keys.LeftShift) ||
                 input.CurrentState.PadState[(int)player].IsButtonDown(Buttons.LeftStick))
@@ -267,9 +284,12 @@ namespace Mechadrone1.Gameplay.Prefabs
             {
                 desiredState &= ~BipedStates.Jumping;
             }
+        }
 
-            character.ViewDirection = BepuConverter.Convert(Vector3.Transform(Vector3.Backward, Orientation));
 
+        private double GetMaxFwdMoveLength(double theta)
+        {
+            return 2.0d / Math.Sqrt(4.0d * Math.Cos(theta) * Math.Cos(theta) + Math.Sin(theta) * Math.Sin(theta));
         }
 
 
@@ -324,7 +344,8 @@ namespace Mechadrone1.Gameplay.Prefabs
         {
             List<AnimationControlEvents> animationControlEvents = animationStateMachine.Update(e.GameTime);
 
-            if (animationStateMachine.CurrentState.Name == "Crouching")
+            if (animationStateMachine.CurrentState.Name == "Crouching" ||
+                animationStateMachine.CurrentState.Name == "CrouchMoving")
             {
                 character.StanceManager.DesiredStance = Stance.Crouching;
             }

@@ -23,7 +23,6 @@ namespace Skelemator
         {
             Name = nodeDesc.Name;
             BlendPosition = nodeDesc.BlendPosition;
-            playbackRate = nodeDesc.PlaybackRate;
             Triangulation = new List<TernaryLerpBlendNode>();
 
             foreach (string triNodeName in nodeDesc.TriangleNodeNames)
@@ -37,6 +36,9 @@ namespace Skelemator
             {
                 children[c] = Triangulation[c];
             }
+
+            playbackRate = 1.0f;
+            PlaybackRate = nodeDesc.PlaybackRate;
         }
 
 

@@ -53,7 +53,6 @@ namespace SkelematorPipeline
         /// </summary>
         public override ModelContent Process(NodeContent input, ContentProcessorContext context)
         {
-            //System.Diagnostics.Debugger.Launch();
             ValidateMesh(input, context, null);
 
             // Find the skeleton.

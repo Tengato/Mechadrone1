@@ -292,7 +292,12 @@ namespace SkelematorPipeline
 
             outputTC.Tag = tmSingle.HandlingFlags;
 
+#if XBOX
             outputTC.MaterialContent = context.Convert<MaterialContent, MaterialContent>(emc, "MaterialProcessor");
+#else
+            outputTC.MaterialContent = context.Convert<MaterialContent, MaterialContent>(emc, "FxcMaterialProcessor");
+#endif
+
         }
 
     }

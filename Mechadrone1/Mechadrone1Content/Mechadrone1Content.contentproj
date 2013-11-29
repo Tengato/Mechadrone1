@@ -44,11 +44,11 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="shaders\PhongShadow.fx">
+    <None Include="shaders\PhongShadow.fx">
       <Name>PhongShadow</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
-    </Compile>
+    </None>
     <Compile Include="textures\blank.png">
       <Name>blank</Name>
       <Importer>TextureImporter</Importer>
@@ -61,11 +61,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="shaders\Blur.fx">
+    <None Include="shaders\Blur.fx">
       <Name>Blur</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
-    </Compile>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="screens\cursor_anim.tga">
@@ -227,11 +227,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="shaders\NormSpecSkinPhong.fx">
+    <None Include="shaders\NormSpecSkinPhong.fx">
       <Name>NormSpecSkinPhong</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
-    </Compile>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="models\lightbulb\Icosphere.fbx">
@@ -366,25 +366,25 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="shaders\NormSpecSkinPhongReflect.fx">
+    <None Include="shaders\NormSpecSkinPhongReflect.fx">
       <Name>NormSpecSkinPhongReflect</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
-    </Compile>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="shaders\NormSpecPhongReflect.fx">
+    <None Include="shaders\NormSpecPhongReflect.fx">
       <Name>NormSpecPhongReflect</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
-    </Compile>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="shaders\NormSpecPhong.fx">
+    <None Include="shaders\NormSpecPhong.fx">
       <Name>NormSpecPhong</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
-    </Compile>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="shaders\DepthOnly.fx">
@@ -408,18 +408,18 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="shaders\NormPhongReflectFilm.fx">
+    <None Include="shaders\NormPhongReflectFilm.fx">
       <Name>NormPhongReflectFilm</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
-    </Compile>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="shaders\NormSkinPhongReflectFilm.fx">
+    <None Include="shaders\NormSkinPhongReflectFilm.fx">
       <Name>NormSkinPhongReflectFilm</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
-    </Compile>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="sounds\Mechadrone1.xap">
@@ -429,25 +429,25 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="shaders\FlatColor.fx">
+    <None Include="shaders\FlatColor.fx">
       <Name>FlatColor</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
-    </Compile>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="shaders\TerrainPhongShadow.fx">
+    <None Include="shaders\TerrainPhongShadow.fx">
       <Name>TerrainPhongShadow</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
-    </Compile>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="shaders\Phong.fx">
+    <None Include="shaders\Phong.fx">
       <Name>Phong</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
-    </Compile>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="textures\sci fi thing by rich4rt.jpg">
@@ -474,11 +474,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="shaders\Null.fx">
+    <None Include="shaders\Null.fx">
       <Name>Null</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
-    </Compile>
+    </None>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

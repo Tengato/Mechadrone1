@@ -41,24 +41,9 @@ sampler2D ShadowMapSampler = sampler_state
     AddressV = CLAMP;
 };
 
-texture2D Border;
-sampler2D BorderSampler = sampler_state
-{
-    Texture = <Border>;
-    MinFilter = LINEAR;
-    MagFilter = LINEAR;
-    MipFilter = LINEAR;
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-};
-
 
 float CalculateShadowFactor(float4 smapTexCoord)
 {
-    smapTexCoord.xyz /= smapTexCoord.w;
-
-    float percentLit = 0.0f;
-
     const float2 offset[9] =
     {
         float2(-InvShadowMapSize, InvShadowMapSize),
@@ -72,17 +57,33 @@ float CalculateShadowFactor(float4 smapTexCoord)
         float2(InvShadowMapSize, -InvShadowMapSize)
     };
 
-    float smapDepth;
+    smapTexCoord.xyz /= smapTexCoord.w;
 
-    for (int i = 0; i < 9; i++)
+    float smapInfluence = smoothstep(0.0f, 0.1f, smapTexCoord.x) *
+                      smoothstep(1.0f, 0.9f, smapTexCoord.x) *
+                      smoothstep(0.0f, 0.1f, smapTexCoord.y) *
+                      smoothstep(1.0f, 0.9f, smapTexCoord.y);
+
+    float shadowFactor = 1.0;
+
+    if (smapInfluence >= 0.005f)
     {
-        smapDepth = tex2D(ShadowMapSampler, smapTexCoord.xy + offset[i]);
-        percentLit += smapTexCoord.z <= smapDepth ? 1.0f : 0.0f;
+        float percentLit = 0.0f;
+
+        for (int i = 0; i < 9; i++)
+        {
+            float smapDepth = tex2D(ShadowMapSampler, smapTexCoord.xy + offset[i]);
+
+            if (smapTexCoord.z <= smapDepth)
+                percentLit += 1.0f;
+        }
+
+        percentLit /= 9.0f;
+
+        shadowFactor = lerp(1.0f, percentLit, smapInfluence);
     }
 
-    float borderColor = tex2D(BorderSampler, smapTexCoord.xy);
-
-    return lerp(percentLit / 9.0f, 1.0f, borderColor);
+    return shadowFactor;
 }
 
 
@@ -123,7 +124,7 @@ void PixelProc(float3   normal          : NORMAL,
     float eyeDistance = length(eyeDisplacement);
 
     // Start with a sum of zero.
-    oColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    oColor = VECTOR4_ZERO;
 
     float shadowFactor = CalculateShadowFactor(shadowMapPos);
 

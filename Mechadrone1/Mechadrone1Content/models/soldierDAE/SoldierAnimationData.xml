@@ -189,7 +189,7 @@
             <Item>
                 <Name>Moving</Name>
                 <MinDurationInSeconds>0.0</MinDurationInSeconds>
-                <BlendTreeNodeName>SlowMove</BlendTreeNodeName>
+                <BlendTreeNodeName>SpeedBlendedMove</BlendTreeNodeName>
             </Item>
             <Item>
                 <Name>Falling</Name>
@@ -220,7 +220,7 @@
             </Item>
             <Item Type="Skelemator.ClipNodeDescription">
                 <Name>WalkClip</Name>
-                <PlaybackRate>1.6621621621621621621621621621622</PlaybackRate>
+                <PlaybackRate>1.6621621621621621621621621621622</PlaybackRate> <!-- 41 * 1.5 / 37-->
                 <ClipName>Walk</ClipName>
             </Item>
             <Item Type="Skelemator.ClipNodeDescription">
@@ -265,7 +265,7 @@
             </Item>
             <Item Type="Skelemator.ClipNodeDescription">
                 <Name>BackpedalClip</Name>
-                <PlaybackRate>1.6621621621621621621621621621622</PlaybackRate>
+                <PlaybackRate>1.6621621621621621621621621621622</PlaybackRate> <!-- 41 * 1.5 / 37-->
                 <ClipName>Backpedal</ClipName>
             </Item>
             <Item Type="Skelemator.ClipNodeDescription">
@@ -313,14 +313,47 @@
                 <PlaybackRate>1</PlaybackRate>
                 <ClipName>Falling</ClipName>
             </Item>
+            <Item Type="Skelemator.General1DPositionalBlendNodeDescription">
+                <Name>SpeedBlendedMove</Name>
+                <PlaybackRate>1</PlaybackRate>
+                <ChildNodeNames>
+                    <Item>SlowWalk</Item>
+                    <Item>Quicken2DWalk</Item>
+                    <Item>RunClip</Item>
+                </ChildNodeNames>
+                <ChildRangesByName>
+                    <Item>
+                        <Key>SlowWalk</Key>
+                        <Value>0 0.5</Value>
+                    </Item>
+                    <Item>
+                        <Key>Quicken2DWalk</Key>
+                        <Value>0.5 0.75</Value>
+                    </Item>
+                    <Item>
+                        <Key>RunClip</Key> <!-- Walk to run is a difficult transition because the animations don't lerp together very well...-->
+                        <Value>0.75 1</Value>
+                    </Item>
+                </ChildRangesByName>
+                <BlendPosition>0</BlendPosition>
+                <SyncClipNodeName>WalkClip</SyncClipNodeName>
+            </Item>
             <Item Type="Skelemator.BinaryLerpBlendNodeDescription">
-                <Name>SlowMove</Name>
+                <Name>SlowWalk</Name>
                 <PlaybackRate>1</PlaybackRate>
                 <Child1NodeName>IdleReadyClip</Child1NodeName>
                 <Child2NodeName>2DWalk</Child2NodeName>
                 <BlendFactor>0</BlendFactor>
             </Item>
-            <Item Type="Skelemator.General1DPositionalBlendNodeDescription">
+            <Item Type="Skelemator.BinaryRateRampBlendNodeDescription">
+                <Name>Quicken2DWalk</Name>
+                <PlaybackRate>1</PlaybackRate>
+                <ChildNodeName>2DWalk</ChildNodeName>
+                <Rate1>1</Rate1>
+                <Rate2>1.1746031746031746031746031746032</Rate2> <!-- 24.666667 / 21 -->
+                <BlendFactor>0</BlendFactor>
+            </Item>
+            <Item Type="Skelemator.Continuous1DLerpBlendNodeDescription">
                 <Name>2DWalk</Name>
                 <PlaybackRate>1</PlaybackRate>
                 <ChildNodeNames>

@@ -37,7 +37,7 @@ void VertexProc(float3 position  : POSITION,
 void PixelProc(float  depth  : TEXCOORD,
            out float4 oColor : COLOR)
 {
-    oColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    oColor = VECTOR4_ZERO;
     clip(-1);
 }
 

@@ -26,10 +26,12 @@ namespace Skelemator
         public BinaryAdditiveBlendNode(BinaryAdditiveBlendNodeDescription nodeDesc, AnimationPackage package)
         {
             Name = nodeDesc.Name;
-            playbackRate = nodeDesc.PlaybackRate;
 
             targetPose = AnimationNode.Create(package.NodeDescriptions[nodeDesc.TargetNodeName], package);
             differencePose = AnimationNode.Create(package.NodeDescriptions[nodeDesc.DifferenceNodeName], package);
+
+            playbackRate = 1.0f;
+            PlaybackRate = nodeDesc.PlaybackRate;
         }
 
 

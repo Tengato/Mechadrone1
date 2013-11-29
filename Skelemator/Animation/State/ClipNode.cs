@@ -19,12 +19,12 @@ namespace Skelemator
         }
 
 
-        public ClipNode(ClipNodeDescription nodeDesc, SkinningData sd)
+        public ClipNode(ClipNodeDescription nodeDesc, AnimationPackage package)
         {
             Name = nodeDesc.Name;
             PlaybackRate = nodeDesc.PlaybackRate;
-            clipPlayer = new ClipPlayer(sd);
-            clipPlayer.StartClip(sd.AnimationClips[nodeDesc.ClipName]);
+            clipPlayer = new ClipPlayer(package.SkinningData);
+            clipPlayer.StartClip(package.SkinningData.AnimationClips[nodeDesc.ClipName]);
         }
 
 
@@ -41,9 +41,12 @@ namespace Skelemator
         }
 
 
-        public override void Synchronize()
+        public override void Synchronize(float normalizedTime)
         {
-            clipPlayer.Update(clipPlayer.CurrentClip.SyncTime, false, Matrix.Identity);
+            TimeSpan localTime = TimeSpan.FromTicks((long)(normalizedTime * (float)(clipPlayer.CurrentClip.Duration.Ticks)))
+                + clipPlayer.CurrentClip.SyncTime;
+
+            clipPlayer.Update(localTime, false, Matrix.Identity);
         }
 
 
@@ -56,6 +59,23 @@ namespace Skelemator
         public override List<AnimationControlEvents> GetActiveControlEvents()
         {
             return clipPlayer.ActiveControlEvents;
+        }
+
+
+        public override float GetNormalizedTime(string nodeName, out bool nodeFound)
+        {
+            if (nodeName == Name)
+            {
+                nodeFound = true;
+                return (float)((clipPlayer.CurrentTime - clipPlayer.CurrentClip.SyncTime).Ticks %
+                    clipPlayer.CurrentClip.Duration.Ticks) /
+                    (float)(clipPlayer.CurrentClip.Duration.Ticks);
+            }
+            else
+            {
+                nodeFound = false;
+                return 0.0f;
+            }
         }
     }
 }

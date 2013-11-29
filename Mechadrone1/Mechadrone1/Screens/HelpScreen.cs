@@ -44,11 +44,15 @@ namespace Mechadrone1.Screens
 
             const string textCol1 = "Move\n" +
                                     "Look\n" +
-                                    "Jump";
+                                    "Jump\n" +
+                                    "Crouch\n" +
+                                    "Zoom";
 
             const string textCol2 = "WASD, Left Stick\n" +
                                     "Drag Mouse, Right Stick\n" +
-                                    "Space";
+                                    "Space, A Button\n" +
+                                    "LShift, Left Stick Button\n" +
+                                    "Mouse Wheel, Left/Right Triggers\n";
 
             Vector2 position1 = new Vector2(400.0f, 320.0f);
             Vector2 position2 = new Vector2(670.0f, 320.0f);

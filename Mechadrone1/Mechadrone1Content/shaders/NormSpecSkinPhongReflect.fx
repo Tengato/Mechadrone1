@@ -127,7 +127,7 @@ void PixelProc(float2   texCoord        : TEXCOORD0,
     float eyeDistance = length(eyeDisplacement);
 
     // Start with a sum of zero.
-    oColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    oColor = VECTOR4_ZERO;
 
     // Sum the light contribution from each light source.
     float4 ambientPiece, diffusePiece, specularPiece;

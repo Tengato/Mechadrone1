@@ -30,7 +30,6 @@ namespace Skelemator
         {
             Name = nodeDesc.Name;
             BlendPosition = nodeDesc.BlendPosition;
-            playbackRate = nodeDesc.PlaybackRate;
             Child1Position = nodeDesc.Child1NodePosition;
             Child2Position = nodeDesc.Child2NodePosition;
             Child3Position = nodeDesc.Child3NodePosition;
@@ -38,6 +37,9 @@ namespace Skelemator
             child1 = AnimationNode.Create(package.NodeDescriptions[nodeDesc.Child1NodeName], package);
             child2 = AnimationNode.Create(package.NodeDescriptions[nodeDesc.Child2NodeName], package);
             child3 = AnimationNode.Create(package.NodeDescriptions[nodeDesc.Child3NodeName], package);
+
+            playbackRate = 1.0f;
+            PlaybackRate = nodeDesc.PlaybackRate;
         }
 
 
