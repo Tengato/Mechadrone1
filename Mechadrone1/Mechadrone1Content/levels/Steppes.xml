@@ -91,7 +91,7 @@
                     </Item>
                     <Item>
                         <Key>RunSpeed</Key>
-                        <Value Type="float">9</Value>
+                        <Value Type="float">32</Value>
                     </Item>
                     <Item>
                         <Key>CameraOffset</Key>

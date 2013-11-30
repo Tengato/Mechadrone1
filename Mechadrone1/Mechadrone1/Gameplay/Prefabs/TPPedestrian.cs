@@ -245,22 +245,7 @@ namespace Mechadrone1.Gameplay.Prefabs
             // Gamepad:
             rawMovement += padMovement;
 
-            // Map raw movement vector into our 2D movement space:
-            if (rawMovement.Y > 0.0f)
-            {
-                double rawMovementTheta = Math.Atan2(rawMovement.Y, rawMovement.X);
-                float maxRadius = (float)GetMaxFwdMoveLength(rawMovementTheta);
-                float totalMovementLength = rawMovement.Length() * maxRadius;
-                // Clamp the movement:
-                character.HorizontalMotionConstraint.SpeedScale = 0.5f * Math.Min(maxRadius, totalMovementLength);
-            }
-            else
-            {
-                // Clamp the movement:
-                character.HorizontalMotionConstraint.SpeedScale = 0.5f * Math.Min(1.0f, rawMovement.Length());
-            }
-
-            character.HorizontalMotionConstraint.MovementDirection = rawMovement;
+            ConditionAndSetMovement(rawMovement);
 
             // Stance changes and other actions:
             // Crouching:
@@ -284,6 +269,29 @@ namespace Mechadrone1.Gameplay.Prefabs
             {
                 desiredState &= ~BipedStates.Jumping;
             }
+        }
+
+
+        // Clamps and scales the movement into the desired shape (kind of an egg in this case), then
+        // updates the physics body.
+        protected void ConditionAndSetMovement(BEPUutilities.Vector2 rawMovement)
+        {
+            // Map raw movement vector into our 2D movement space:
+            if (rawMovement.Y > 0.0f)
+            {
+                double rawMovementTheta = Math.Atan2(rawMovement.Y, rawMovement.X);
+                float maxRadius = (float)GetMaxFwdMoveLength(rawMovementTheta);
+                float totalMovementLength = rawMovement.Length() * maxRadius;
+                // Clamp the movement:
+                character.HorizontalMotionConstraint.SpeedScale = 0.5f * Math.Min(maxRadius, totalMovementLength);
+            }
+            else
+            {
+                // Clamp the movement:
+                character.HorizontalMotionConstraint.SpeedScale = 0.5f * Math.Min(1.0f, rawMovement.Length());
+            }
+
+            character.HorizontalMotionConstraint.MovementDirection = rawMovement;
         }
 
 

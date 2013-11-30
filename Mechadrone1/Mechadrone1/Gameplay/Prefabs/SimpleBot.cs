@@ -27,7 +27,7 @@ namespace Mechadrone1.Gameplay.Prefabs
             Vector3 targetPosition = owner.GetGameObject("Suzanne").Position - Position;
             character.ViewDirection = BepuConverter.Convert(targetPosition);
 
-            character.HorizontalMotionConstraint.MovementDirection = new BEPUutilities.Vector2(0.0f, 0.2f);
+            ConditionAndSetMovement(new BEPUutilities.Vector2(0.0f, 0.33f));
 
             desiredState = BipedStates.Neutral;
         }
