@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Generic="System.Collections.Generic" xmlns:Framework="Microsoft.Xna.Framework">
+  <Asset Type="Generic:List[SkelematorPipeline.MaterialData]">
+    <Item>
+      <Name>PlasmaFire__BlasterBolt_tga</Name>
+      <CustomEffect>shaders\DirectTexture.fx</CustomEffect>
+      <EffectParams>
+      </EffectParams>
+      <HandlingFlags>None</HandlingFlags>
+    </Item>
+  </Asset>
+</XnaContent>

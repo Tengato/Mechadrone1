@@ -79,7 +79,7 @@ namespace Mechadrone1.Rendering
             BoundingBox cameraRect = BoundingBox.CreateFromPoints(cameraFrustum.GetCorners());
 
             // TODO: Put stuff into separate threads
-            List<ISceneObject> visibleObjectsCamera = sceneModel.QuadTree.Search(cameraRect, cameraFrustum);
+            List<ISceneObject> visibleObjectsFromCamera = sceneModel.QuadTree.Search(cameraRect, cameraFrustum);
 
             // Build the shadow map. The main light will cast the shadow.
             // First, find the space to put into the shadow map:
@@ -188,7 +188,7 @@ namespace Mechadrone1.Rendering
                 null);
 
             // Draw objects:
-            foreach (ISceneObject sObj in visibleObjectsCamera)
+            foreach (ISceneObject sObj in visibleObjectsFromCamera)
             {
                 renderQueue.AddSceneObject(
                     sObj,

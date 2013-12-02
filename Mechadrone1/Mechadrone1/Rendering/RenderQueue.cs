@@ -53,35 +53,35 @@ namespace Mechadrone1.Rendering
 
             entries.Sort(reComparer);
 
-            RenderEntry lastEntry = entries[0];
+            RenderEntry previousEntry = entries[0];
 
-            GraphicsDevice gd = lastEntry.Effect.GraphicsDevice;
+            GraphicsDevice gd = previousEntry.Effect.GraphicsDevice;
 
-            gd.BlendState = lastEntry.BlendState;
-            gd.DepthStencilState = lastEntry.DepthStencilState;
-            gd.RasterizerState = lastEntry.RasterizerState;
-            gd.SetVertexBuffer(lastEntry.VertexBuffer);
-            gd.Indices = lastEntry.IndexBuffer;
+            gd.BlendState = previousEntry.BlendState;
+            gd.DepthStencilState = previousEntry.DepthStencilState;
+            gd.RasterizerState = previousEntry.RasterizerState;
+            gd.SetVertexBuffer(previousEntry.VertexBuffer);
+            gd.Indices = previousEntry.IndexBuffer;
 
             for (int i = 0; i < entries.Count; i++)
             {
-                if (lastEntry.BlendState != entries[i].BlendState)
+                if (previousEntry.BlendState != entries[i].BlendState)
                     gd.BlendState = entries[i].BlendState;
 
-                if (lastEntry.DepthStencilState != entries[i].DepthStencilState)
+                if (previousEntry.DepthStencilState != entries[i].DepthStencilState)
                     gd.DepthStencilState = entries[i].DepthStencilState;
 
-                if (lastEntry.RasterizerState != entries[i].RasterizerState)
+                if (previousEntry.RasterizerState != entries[i].RasterizerState)
                     gd.RasterizerState = entries[i].RasterizerState;
 
-                if (lastEntry.VertexBuffer != entries[i].VertexBuffer)
+                if (previousEntry.VertexBuffer != entries[i].VertexBuffer)
                     gd.SetVertexBuffer(entries[i].VertexBuffer);
 
-                if (lastEntry.IndexBuffer != entries[i].IndexBuffer)
+                if (previousEntry.IndexBuffer != entries[i].IndexBuffer)
                     gd.Indices = entries[i].IndexBuffer;
 
                 entries[i].Draw();
-                lastEntry = entries[i];
+                previousEntry = entries[i];
             }
 
             entries.Clear();

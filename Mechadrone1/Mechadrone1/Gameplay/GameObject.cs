@@ -175,7 +175,7 @@ namespace Mechadrone1.Gameplay
         public Vector3 CameraTargetOffset { get; set; }
 
         // Default pose
-        static private Matrix[] bindPose;
+        static protected Matrix[] bindPose;
 
         public SkinningData Animations { get; set; }
         public ISkinnedSkeletonPoser AnimationPlayer { get; set; }

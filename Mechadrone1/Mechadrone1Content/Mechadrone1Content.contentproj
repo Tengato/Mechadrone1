@@ -44,6 +44,14 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
+    <Compile Include="models\blasterbolt\BlasterBolt.fbx">
+      <Name>BlasterBolt</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>StaticModelProcessor</Processor>
+      <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
+      <ProcessorParameters_MaterialDataFilePath>models\blasterbolt\BlasterBoltMaterialData.xml</ProcessorParameters_MaterialDataFilePath>
+      <ProcessorParameters_PremultiplyTextureAlpha>False</ProcessorParameters_PremultiplyTextureAlpha>
+    </Compile>
     <None Include="shaders\PhongShadow.fx">
       <Name>PhongShadow</Name>
       <Importer>EffectImporter</Importer>
@@ -480,7 +488,13 @@
       <Processor>EffectProcessor</Processor>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="shaders\DirectTexture.fx">
+      <Name>DirectTexture</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!--  To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

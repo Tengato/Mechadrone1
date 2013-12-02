@@ -120,7 +120,7 @@
                     </Item>
                     <Item>
                         <Key>Position</Key>
-                        <Value Type="Framework:Vector3">8 2.0 -4.5</Value>
+                        <Value Type="Framework:Vector3">8 2 -4.5</Value>
                     </Item>
                     <Item>
                         <Key>Orientation</Key>
@@ -141,6 +141,31 @@
                     <Item>
                         <Key>Center</Key>
                         <Value Type="Framework:Vector3">3 0 -4.5</Value>
+                    </Item>
+                </Properties>
+            </Item>
+            <Item>
+                <TypeFullName>Mechadrone1.Gameplay.Prefabs.BlasterBolt, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                <Properties>
+                    <Item>
+                        <Key>Name</Key>
+                        <Value Type="string">Pew</Value>
+                    </Item>
+                    <Item>
+                        <Key>VisualModel</Key>
+                        <Value Type="string">models\blasterbolt\BlasterBolt</Value>
+                    </Item>
+                    <Item>
+                        <Key>Position</Key>
+                        <Value Type="Framework:Vector3">17.1228523 23 84</Value>
+                    </Item>
+                    <Item>
+                        <Key>ModelAdjustment</Key>
+                        <Value Type="Framework:Quaternion">-0.7071068 0 0 0.7071068</Value>
+                    </Item>
+                    <Item>
+                        <Key>Scale</Key>
+                        <Value Type="float">1</Value>
                     </Item>
                 </Properties>
             </Item>

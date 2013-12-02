@@ -108,6 +108,7 @@
     <Compile Include="Gameplay\Helpers\SupportFinder.cs" />
     <Compile Include="Gameplay\Helpers\VerticalMotionConstraint.cs" />
     <Compile Include="Gameplay\IGameManager.cs" />
+    <Compile Include="Gameplay\Prefabs\BlasterBolt.cs" />
     <Compile Include="Gameplay\Prefabs\Bouncer.cs" />
     <Compile Include="Gameplay\Decorators\IAudible.cs" />
     <Compile Include="Gameplay\Prefabs\Axes.cs" />

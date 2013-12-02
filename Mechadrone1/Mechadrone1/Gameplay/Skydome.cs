@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Mechadrone1.Rendering;
 using Microsoft.Xna.Framework;
+using Manifracture;
 
 namespace Mechadrone1.Gameplay
 {
@@ -30,7 +31,16 @@ namespace Mechadrone1.Gameplay
         }
 
 
-        public override List<Rendering.RenderEntry> GetRenderEntries(int batchId, Rendering.RenderStep step, Microsoft.Xna.Framework.Matrix view, Microsoft.Xna.Framework.Matrix projection, Microsoft.Xna.Framework.Matrix cameraTransform, Microsoft.Xna.Framework.Matrix shadowCastingLightView, Microsoft.Xna.Framework.Matrix shadowCastingLightProjection, RenderTarget2D shadowMap, List<Manifracture.DirectLight> lights)
+        public override List<Rendering.RenderEntry> GetRenderEntries(
+            int batchId,
+            RenderStep step,
+            Matrix view,
+            Matrix projection,
+            Matrix cameraTransform,
+            Matrix shadowCastingLightView,
+            Matrix shadowCastingLightProjection,
+            RenderTarget2D shadowMap,
+            List<DirectLight> lights)
         {
             List<RenderEntry> results = new List<RenderEntry>();
 
