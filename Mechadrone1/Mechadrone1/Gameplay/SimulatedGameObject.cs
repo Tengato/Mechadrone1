@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Mechadrone1.Gameplay
 {
-    class SimulatedGameObject : GameObject
+    class SimulatedGameObject : GameObject, ISimulationParticipant
     {
         // TODO: The CollisionModel property (not currently supported) could be pushed down to a subclass that wants a special collidable shape.
         [LoadedAsset]
@@ -21,15 +21,15 @@ namespace Mechadrone1.Gameplay
         public string SimulationObjectTypeFullName { get; set; }
         private Type simulationObjectType { get; set; }
         public object[] SimulationObjectCtorParams { get; set; }
-        // simulationObject is an abstract type to allow instances to choose from a few primitive shape types.
-        protected ISpaceObject simulationObject { get; set; }
+        // SimulationObject is an abstract type to allow instances to choose from a few primitive shape types.
+        public virtual ISpaceObject SimulationObject { get; protected set; }
 
         [NotInitializable]
         public virtual Vector3 SimulationPosition
         {
             get
             {
-                Box soBox = simulationObject as Box;
+                Box soBox = SimulationObject as Box;
                 if (soBox != null)
                 {
                     return Position + Matrix.CreateFromQuaternion(Orientation).Up * soBox.HalfHeight;
@@ -43,7 +43,7 @@ namespace Mechadrone1.Gameplay
 
             set
             {
-                Box soBox = simulationObject as Box;
+                Box soBox = SimulationObject as Box;
                 if (soBox != null)
                 {
                     Position = value - Matrix.CreateFromQuaternion(Orientation).Up * soBox.HalfHeight;
@@ -62,14 +62,22 @@ namespace Mechadrone1.Gameplay
         }
 
 
+        public SimulatedGameObject(SimulatedGameObject a) : base(a)
+        {
+            CollisionModel = a.CollisionModel;
+            SimulationObjectTypeFullName = a.SimulationObjectTypeFullName;
+            SimulationObjectCtorParams = a.SimulationObjectCtorParams;
+        }
+
+
         public override void Initialize()
         {
             base.Initialize();
 
             simulationObjectType = Type.GetType(SimulationObjectTypeFullName);
-            simulationObject = Activator.CreateInstance(simulationObjectType, SimulationObjectCtorParams) as ISpaceObject;
+            SimulationObject = Activator.CreateInstance(simulationObjectType, SimulationObjectCtorParams) as ISpaceObject;
 
-            Entity soEnt = simulationObject as Entity;
+            Entity soEnt = SimulationObject as Entity;
 
             if (soEnt != null)
             {
@@ -80,19 +88,18 @@ namespace Mechadrone1.Gameplay
                 soEnt.Material.KineticFriction = 0.3f;
             }
 
-            owner.SimSpace.Add(simulationObject);
         }
 
 
         public override void RegisterUpdateHandlers()
         {
-            owner.PostPhysicsUpdateStep += PostPhysicsUpdate;
+            game.PostPhysicsUpdateStep += PostPhysicsUpdate;
         }
 
 
         public virtual void PostPhysicsUpdate(object sender, UpdateStepEventArgs e)
         {
-            Entity soEnt = simulationObject as Entity;
+            Entity soEnt = SimulationObject as Entity;
             if (soEnt != null)
             {
                 if (soEnt.IsDynamic)

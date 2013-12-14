@@ -11,6 +11,7 @@ using Mechadrone1.Rendering;
 using System.Collections.Generic;
 using SlagformCommon;
 using BEPUphysicsDemos.AlternateMovement.Character;
+using System.Text.RegularExpressions;
 
 
 namespace Mechadrone1.Gameplay
@@ -33,17 +34,16 @@ namespace Mechadrone1.Gameplay
                 AnimationPackage ap = visualModel.Tag as AnimationPackage;
                 if (ap != null)
                 {
-                    Animations = ap.SkinningData;
+                    animations = ap.SkinningData;
                     if (ap.SkinningData != null)
                     {
-                        AnimationPlayer = new ClipPlayer(Animations);
+                        animationPlayer = new ClipPlayer(animations);
                     }
                 }
             }
         }
 
-
-        protected IGameManager owner;
+        protected IGameManager game;
 
         [NotInitializable]
         public QuadTreeNode QuadTreeNode { get; set; }
@@ -177,27 +177,45 @@ namespace Mechadrone1.Gameplay
         // Default pose
         static protected Matrix[] bindPose;
 
-        public SkinningData Animations { get; set; }
-        public ISkinnedSkeletonPoser AnimationPlayer { get; set; }
+        protected SkinningData animations { get; set; }
+        protected ISkinnedSkeletonPoser animationPlayer { get; set; }
+
         public bool CastsShadow { get; set; }
-        public bool Visible { get; set; }
+
+        protected bool visible;
+        public bool Visible
+        {
+            get { return visible; }
+            set
+            {
+                if (visible != value)
+                {
+                    hasMovedSinceLastUpdate = true;
+                    visible = value;
+                    UpdateQuadTree();
+                }
+            }
+        }
+
         public event MakeSoundEventHandler MakeSound;
         public string DebugMessage { get; set; }
 
 
+        static GameObject()
+        {
+            const int MAX_BONES = 72;
+            bindPose = new Matrix[MAX_BONES];
+
+            for (int i = 0; i < MAX_BONES; i++)
+            {
+                bindPose[i] = Matrix.Identity;
+            }
+        }
+
+
         public GameObject(IGameManager owner)
         {
-            this.owner = owner;
-
-            if (bindPose == null)
-            {
-                bindPose = new Matrix[72];
-
-                for (int i = 0; i < bindPose.Length; i++)
-                {
-                    bindPose[i] = Matrix.Identity;
-                }
-            }
+            this.game = owner;
 
             // Set defaults:
             Position = Vector3.Zero;
@@ -212,7 +230,30 @@ namespace Mechadrone1.Gameplay
         }
 
         /// <summary>
-        /// Performs additional processing of the object once all properties have been set from the level manifest.
+        /// Copy constructor. The name property of the copy should be updated as soon as possible,
+        /// along with the other properties that need to be unique. Then the copy will have to be
+        /// initialized and spawned to enter the game.
+        /// </summary>
+        /// <param name="a"></param>
+        public GameObject(GameObject a)
+        {
+            game = a.game;
+            ModelAdjustment = a.ModelAdjustment;
+            Position = a.Position;
+            Orientation = a.Orientation;
+            Scale = a.Scale;
+            CastsShadow = a.CastsShadow;
+            Visible = a.Visible;
+            CameraOffset = a.CameraOffset;
+            CameraTargetOffset = a.CameraTargetOffset;
+            Name = a.Name;
+            VisualModel = a.VisualModel;
+            DebugMessage = String.Empty;
+        }
+
+
+        /// <summary>
+        /// Performs required additional processing of the object once all properties have been set.
         /// </summary>
         public virtual void Initialize()
         {
@@ -286,15 +327,31 @@ namespace Mechadrone1.Gameplay
         }
 
 
+        /// <summary>
+        /// Updates the objects's goal states based on control input
+        /// </summary>
+        /// <param name="gameTime">The current game time</param>
+        /// <param name="input">The control information</param>
+        /// <param name="player">PlayerIndex of player sending the input.</param>
         public virtual void HandleInput(GameTime gameTime, InputManager input, PlayerIndex player) { }
 
 
         protected void UpdateQuadTree()
         {
-            if (hasMovedSinceLastUpdate)
+            if (QuadTreeNode != null && hasMovedSinceLastUpdate)
             {
                 if (Visible)
+                {
                     QuadTree.AddOrUpdateSceneObject(this);
+                }
+                else
+                {
+                    // remove the member from it's previous quad tree node (if any)
+                    if (QuadTreeNode != null)
+                    {
+                        QuadTreeNode.RemoveMember(this);
+                    }
+                }
 
                 hasMovedSinceLastUpdate = false;
             }
@@ -331,9 +388,9 @@ namespace Mechadrone1.Gameplay
 
             bones = bindPose;
 
-            if (Animations != null && AnimationPlayer != null && AnimationPlayer.IsActive == true)
+            if (animations != null && animationPlayer != null && animationPlayer.IsActive == true)
             {
-                bones = AnimationPlayer.GetSkinTransforms();
+                bones = animationPlayer.GetSkinTransforms();
             }
 
             List<RenderEntry> results = new List<RenderEntry>();
@@ -371,7 +428,7 @@ namespace Mechadrone1.Gameplay
                             re.DrawCallback = DrawShadow;
 
                             // TODO: perhaps put these fx into separate techniques instead maybe?
-                            if ((re.RenderOptions & RenderOptions.RequiresSkeletalPose) > 0 && Animations != null)
+                            if ((re.RenderOptions & RenderOptions.RequiresSkeletalPose) > 0 && animations != null)
                             {
                                 re.Effect = EffectRegistry.DepthOnlySkinFx;
                             }
@@ -406,9 +463,9 @@ namespace Mechadrone1.Gameplay
             EffectRegistry.DOWorldViewProj.SetValue(wvp);
             EffectRegistry.DOSWorldViewProj.SetValue(wvp);
 
-            if (Animations != null)
+            if (animations != null)
             {
-                EffectRegistry.DOSWeightsPerVert.SetValue(Animations.WeightsPerVert);
+                EffectRegistry.DOSWeightsPerVert.SetValue(animations.WeightsPerVert);
                 EffectRegistry.DOSPosedBones.SetValue(bones);
             }
 
@@ -423,9 +480,9 @@ namespace Mechadrone1.Gameplay
             if ((re.RenderOptions & RenderOptions.RequiresSkeletalPose) > 0)
             {
                 EffectRegistry.Params[re.Effect][EffectRegistry.POSEDBONES_PARAM_NAME].SetValue(bones);
-                if (Animations != null)
+                if (animations != null)
                 {
-                    EffectRegistry.Params[re.Effect][EffectRegistry.WEIGHTS_PER_VERT_PARAM_NAME].SetValue(Animations.WeightsPerVert);
+                    EffectRegistry.Params[re.Effect][EffectRegistry.WEIGHTS_PER_VERT_PARAM_NAME].SetValue(animations.WeightsPerVert);
                 }
                 else
                 {

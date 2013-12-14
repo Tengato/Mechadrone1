@@ -19,7 +19,7 @@ namespace Mechadrone1.Gameplay.Prefabs
         BasicEffect effect;
 
         public Grid(GraphicsDevice device)
-            : base(null)
+            : base(null as IGameManager)
         {
             gd = device;
 

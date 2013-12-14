@@ -35,7 +35,7 @@ namespace Mechadrone1.Gameplay.Prefabs
 
         public override void RegisterUpdateHandlers()
         {
-            owner.PreAnimationUpdateStep += PreAnimationUpdate;
+            game.PreAnimationUpdateStep += PreAnimationUpdate;
         }
 
 

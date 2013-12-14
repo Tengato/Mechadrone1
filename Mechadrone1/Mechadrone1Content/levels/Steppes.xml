@@ -26,7 +26,46 @@
         </TerrainChunks>
         <GameObjects>
             <Item>
+                <TypeFullName>Mechadrone1.Gameplay.Prefabs.BlasterBolt, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                <Spawn>false</Spawn>
+                <Properties>
+                    <Item>
+                        <Key>Name</Key>
+                        <Value Type="string">BlasterBoltTemplate</Value>
+                    </Item>
+                    <Item>
+                        <Key>VisualModel</Key>
+                        <Value Type="string">models\blasterbolt\BlasterBolt</Value>
+                    </Item>
+                    <Item>
+                        <Key>ModelAdjustment</Key>
+                        <Value Type="Framework:Quaternion">0.7071068 0 0 0.7071068</Value>
+                    </Item>
+                    <Item>
+                        <Key>SimulationObjectTypeFullName</Key>
+                        <Value Type="string">BEPUphysics.Entities.Prefabs.Sphere, BEPUphysics, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</Value>
+                    </Item>
+                    <Item>
+                        <Key>SimulationObjectCtorParams</Key>
+                        <Value Type="System.Object[]">
+                            <Item Type="BEPUutilities.Vector3">
+                                <X>0</X>
+                                <Y>0</Y>
+                                <Z>0</Z>
+                            </Item>
+                            <Item Type="float">1</Item>
+                            <Item Type="float">1</Item>
+                        </Value>
+                    </Item>
+                    <Item>
+                        <Key>Scale</Key>
+                        <Value Type="float">3</Value>
+                    </Item>
+                </Properties>
+            </Item>
+            <Item>
                 <TypeFullName>Mechadrone1.Gameplay.Prefabs.TPPedestrian, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                <Spawn>true</Spawn>
                 <Properties>
                     <Item>
                         <Key>Name</Key>
@@ -41,14 +80,6 @@
                         <Value Type="Framework:Vector3">17.1228523 18.03357 80.56549</Value>
                     </Item>
                     <Item>
-                        <Key>ModelAdjustment</Key>
-                        <Value Type="Framework:Quaternion">0 0 0 1</Value>
-                    </Item>
-                    <Item>
-                        <Key>Scale</Key>
-                        <Value Type="float">1</Value>
-                    </Item>
-                    <Item>
                         <Key>Height</Key>
                         <Value Type="float">11.5</Value>
                     </Item>
@@ -61,13 +92,14 @@
                         <Value Type="Framework:Vector3">0 10 0</Value>
                     </Item>
                     <Item>
-                        <Key>CastsShadow</Key>
-                        <Value Type="bool">true</Value>
+                        <Key>WeaponTypeFullName</Key>
+                        <Value Type="string">Mechadrone1.Gameplay.Prefabs.BlasterRifle, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</Value>
                     </Item>
                 </Properties>
             </Item>
             <Item>
                 <TypeFullName>Mechadrone1.Gameplay.Prefabs.SimpleBot, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                <Spawn>true</Spawn>
                 <Properties>
                     <Item>
                         <Key>Name</Key>
@@ -80,14 +112,6 @@
                     <Item>
                         <Key>Position</Key>
                         <Value Type="Framework:Vector3">30 16 -4.5</Value>
-                    </Item>
-                    <Item>
-                        <Key>Orientation</Key>
-                        <Value Type="Framework:Quaternion">0 0 0 1</Value>
-                    </Item>
-                    <Item>
-                        <Key>Scale</Key>
-                        <Value Type="float">1</Value>
                     </Item>
                     <Item>
                         <Key>RunSpeed</Key>
@@ -105,10 +129,15 @@
                         <Key>CastsShadow</Key>
                         <Value Type="bool">true</Value>
                     </Item>
+                    <Item>
+                        <Key>WeaponTypeFullName</Key>
+                        <Value Type="string">Mechadrone1.Gameplay.Prefabs.BlasterRifle, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</Value>
+                    </Item>
                 </Properties>
             </Item>
             <Item>
                 <TypeFullName>Mechadrone1.Gameplay.Prefabs.OrbitingLightbulb, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                <Spawn>true</Spawn>
                 <Properties>
                     <Item>
                         <Key>Name</Key>
@@ -123,18 +152,6 @@
                         <Value Type="Framework:Vector3">8 2 -4.5</Value>
                     </Item>
                     <Item>
-                        <Key>Orientation</Key>
-                        <Value Type="Framework:Quaternion">0 0 0 1</Value>
-                    </Item>
-                    <Item>
-                        <Key>Scale</Key>
-                        <Value Type="float">1</Value>
-                    </Item>
-                    <Item>
-                        <Key>CastsShadow</Key>
-                        <Value Type="bool">true</Value>
-                    </Item>
-                    <Item>
                         <Key>Color</Key>
                         <Value Type="Framework:Color">FFDB7093</Value>
                     </Item>
@@ -145,32 +162,8 @@
                 </Properties>
             </Item>
             <Item>
-                <TypeFullName>Mechadrone1.Gameplay.Prefabs.BlasterBolt, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
-                <Properties>
-                    <Item>
-                        <Key>Name</Key>
-                        <Value Type="string">Pew</Value>
-                    </Item>
-                    <Item>
-                        <Key>VisualModel</Key>
-                        <Value Type="string">models\blasterbolt\BlasterBolt</Value>
-                    </Item>
-                    <Item>
-                        <Key>Position</Key>
-                        <Value Type="Framework:Vector3">17.1228523 23 84</Value>
-                    </Item>
-                    <Item>
-                        <Key>ModelAdjustment</Key>
-                        <Value Type="Framework:Quaternion">-0.7071068 0 0 0.7071068</Value>
-                    </Item>
-                    <Item>
-                        <Key>Scale</Key>
-                        <Value Type="float">1</Value>
-                    </Item>
-                </Properties>
-            </Item>
-            <Item>
                 <TypeFullName>Mechadrone1.Gameplay.Prefabs.FreeFlyer, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                <Spawn>false</Spawn>
                 <Properties>
                     <Item>
                         <Key>Name</Key>
@@ -196,6 +189,7 @@
             </Item>
             <Item>
                 <TypeFullName>Mechadrone1.Gameplay.Prefabs.Bouncer, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                <Spawn>true</Spawn>
                 <Properties>
                     <Item>
                         <Key>Name</Key>
@@ -228,21 +222,14 @@
                         <Value Type="Framework:Vector3">-5 36.4 -40.5</Value>
                     </Item>
                     <Item>
-                        <Key>Orientation</Key>
+                        <Key>ModelAdjustment</Key>
                         <Value Type="Framework:Quaternion">0 1 0 -4.371139E-08</Value>
-                    </Item>
-                    <Item>
-                        <Key>Scale</Key>
-                        <Value Type="float">1</Value>
-                    </Item>
-                    <Item>
-                        <Key>CastsShadow</Key>
-                        <Value Type="bool">true</Value>
                     </Item>
                 </Properties>
             </Item>
             <Item>
                 <TypeFullName>Mechadrone1.Gameplay.Prefabs.Roller, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                <Spawn>true</Spawn>
                 <Properties>
                     <Item>
                         <Key>Name</Key>
@@ -271,18 +258,6 @@
                     <Item>
                         <Key>Position</Key>
                         <Value Type="Framework:Vector3">-15 36.4 -40.5</Value>
-                    </Item>
-                    <Item>
-                        <Key>Orientation</Key>
-                        <Value Type="Framework:Quaternion">0 0 0 1</Value>
-                    </Item>
-                    <Item>
-                        <Key>Scale</Key>
-                        <Value Type="float">1</Value>
-                    </Item>
-                    <Item>
-                        <Key>CastsShadow</Key>
-                        <Value Type="bool">true</Value>
                     </Item>
                 </Properties>
             </Item>

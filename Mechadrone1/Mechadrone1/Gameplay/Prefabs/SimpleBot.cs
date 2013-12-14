@@ -18,18 +18,18 @@ namespace Mechadrone1.Gameplay.Prefabs
         public override void RegisterUpdateHandlers()
         {
             base.RegisterUpdateHandlers();
-            owner.BotControlUpdateStep += UpdateBotControl;
+            game.BotControlUpdateStep += UpdateBotControl;
         }
 
         public void UpdateBotControl(object sender, UpdateStepEventArgs e)
         {
             // Just walk toward the player:
-            Vector3 targetPosition = owner.GetGameObject("Suzanne").Position - Position;
+            Vector3 targetPosition = game.GetGameObject("Suzanne").Position - Position;
             character.ViewDirection = BepuConverter.Convert(targetPosition);
 
             ConditionAndSetMovement(new BEPUutilities.Vector2(0.0f, 0.33f));
 
-            desiredState = BipedStates.Neutral;
+            desiredMovementState = BipedMovementStates.Neutral;
         }
 
     }

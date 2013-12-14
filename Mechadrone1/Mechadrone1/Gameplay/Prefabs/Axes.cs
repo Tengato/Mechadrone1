@@ -18,7 +18,7 @@ namespace Mechadrone1.Gameplay.Prefabs
         BasicEffect effect;
 
         public Axes(GraphicsDevice device)
-            : base(null)
+            : base(null as IGameManager)
         {
             gd = device;
 

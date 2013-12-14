@@ -18,7 +18,7 @@ namespace Mechadrone1.Gameplay
 
 
         public Skydome(TextureCube skyTexture, Model skyModel, Effect skyFx)
-            : base(null)
+            : base(null as IGameManager)
         {
             VisualModel = skyModel;
             gd = skyTexture.GraphicsDevice;

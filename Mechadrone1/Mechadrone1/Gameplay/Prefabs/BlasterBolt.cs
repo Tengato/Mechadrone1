@@ -7,10 +7,17 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Manifracture;
 using Skelemator;
+using BEPUphysics.Entities;
+using BEPUphysics.BroadPhaseEntries.Events;
+using BEPUphysics.BroadPhaseEntries.MobileCollidables;
+using BEPUphysics.BroadPhaseEntries;
+using BEPUphysics.NarrowPhaseSystems.Pairs;
+using SlagformCommon;
+using BEPUphysics.CollisionTests;
 
 namespace Mechadrone1.Gameplay.Prefabs
 {
-    class BlasterBolt : GameObject
+    class BlasterBolt : SimulatedGameObject
     {
         public BlasterBolt(IGameManager owner)
             : base(owner)
@@ -19,17 +26,21 @@ namespace Mechadrone1.Gameplay.Prefabs
         }
 
 
-        public override void RegisterUpdateHandlers()
+        public BlasterBolt(BlasterBolt a)
+            : base(a)
+        { }
+
+
+        public override void Initialize()
         {
-            owner.PreAnimationUpdateStep += PreAnimationUpdate;
-        }
+            base.Initialize();
 
+            Entity soEnt = SimulationObject as Entity;
 
-        public void PreAnimationUpdate(object sender, UpdateStepEventArgs e)
-        {
-            //Position = Vector3.Transform(Position, Matrix.CreateFromAxisAngle(Vector3.Up, (float)(e.GameTime.ElapsedGameTime.TotalSeconds)));
-
-            UpdateQuadTree();
+            soEnt.IsAffectedByGravity = false;
+            soEnt.CollisionInformation.Events.InitialCollisionDetected += CollisionEventHandler;
+            BEPUutilities.Vector3 initialImpulse = BepuConverter.Convert(Vector3.Transform(Vector3.Backward, Orientation) * 250.0f);
+            soEnt.ApplyLinearImpulse(ref initialImpulse);
         }
 
 
@@ -98,5 +109,16 @@ namespace Mechadrone1.Gameplay.Prefabs
 
             return results;
         }
+
+
+        public void CollisionEventHandler(EntityCollidable sender, Collidable other, CollidablePairHandler pair)
+        {
+            // TODO: deal damage, go poof...
+            // TODO: will removing this from the sim now cause problems with the state of the simulation? It's possible this method gets called twice per collision? like if it hits a seam?
+            game.DespawnList.Add(this);
+            Entity soEnt = SimulationObject as Entity;
+            soEnt.CollisionInformation.Events.InitialCollisionDetected -= CollisionEventHandler;
+        }
+
     }
 }

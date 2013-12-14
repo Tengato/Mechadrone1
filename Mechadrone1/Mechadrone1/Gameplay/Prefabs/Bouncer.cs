@@ -23,13 +23,13 @@ namespace Mechadrone1.Gameplay.Prefabs
         {
             base.HandleInput(gameTime, input, player);
 
-            Entity soEnt = simulationObject as Entity;
+            Entity soEnt = SimulationObject as Entity;
 
             if (soEnt != null)
             {
                 if (input.CurrentState.KeyState[(int)player].IsKeyDown(Keys.Space))
                 {
-                    soEnt.LinearMomentum += BepuConverter.Convert((Vector3.Up + owner.Avatars[player].Camera.Transform.Forward) * (float)(gameTime.ElapsedGameTime.TotalMilliseconds) * 0.42f);
+                    soEnt.LinearMomentum += BepuConverter.Convert((Vector3.Up + game.Avatars[player].Camera.Transform.Forward) * (float)(gameTime.ElapsedGameTime.TotalMilliseconds) * 0.42f);
                 }
             }
 

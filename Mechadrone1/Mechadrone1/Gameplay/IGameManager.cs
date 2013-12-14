@@ -18,5 +18,8 @@ namespace Mechadrone1.Gameplay
         event UpdateStepEventHandler BotControlUpdateStep;
         Space SimSpace { get; }
         List<Axes> DebugAxes { get; }
+        GameObjectLoader Builder { get; }
+        void SpawnInitializedObject(GameObject spawn);
+        List<GameObject> DespawnList { get; }
     }
 }

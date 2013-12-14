@@ -46,18 +46,6 @@ namespace Mechadrone1.Gameplay
 
         public Dictionary<PlayerIndex, GameObject> Avatars { get; set; }
 
-
-        public GameObject GetGameObject(string name)
-        {
-            for (int i = 0; i < GameObjects.Count; i++)
-            {
-                if (GameObjects[i].Name == name)
-                    return GameObjects[i];
-            }
-
-            return null;
-        }
-
         public DirectLight ShadowCastingLight { get; private set; }
 
         public Space SimSpace { get; private set; }
@@ -65,7 +53,12 @@ namespace Mechadrone1.Gameplay
         public event UpdateStepEventHandler BotControlUpdateStep;
         public event UpdateStepEventHandler PreAnimationUpdateStep;
         public event UpdateStepEventHandler AnimationUpdateStep;
+        public event UpdateStepEventHandler PostAnimationUpdateStep;
         public event UpdateStepEventHandler PostPhysicsUpdateStep;
+
+        public GameObjectLoader Builder { get; private set; }
+
+        public List<GameObject> DespawnList { get; private set; }
 
         public PowerupManager powerup;
         public ProjectileManager projectile;
@@ -87,6 +80,7 @@ namespace Mechadrone1.Gameplay
         // powerup model files (matches PowerupType)
         string[] powerupFiles;
         Model[] powerupModels;
+
 
         public Game1Manager(SoundBank soundBank)
         {
@@ -116,11 +110,15 @@ namespace Mechadrone1.Gameplay
             SimSpace.ForceUpdater.Gravity = new BEPUutilities.Vector3(0.0f, -89.2f, 0.0f);   // 9 units = 1 meter?
 
             Substrate = new List<TerrainChunk>();
+
+            DespawnList = new List<GameObject>();
         }
 
 
         public void LoadContent(GraphicsDevice gd, ContentManager contentMan, Game1Manifest manifest)
         {
+            Builder = new GameObjectLoader(this, contentMan);
+
             WorldBounds = new BoundingBox(Vector3.Zero, Vector3.One);
 
             Sky = new Skydome(contentMan.Load<TextureCube>(manifest.SkydomeTextureName),
@@ -154,54 +152,27 @@ namespace Mechadrone1.Gameplay
             }
 
             // Load game object assets from level manifest:
-            // The manifest may direct us to instantiate any kind of class that inherits from GameObject.
-            // So we must use reflection to construct the object and initialize its properties.
-            GameObject goLoaded;
-            Type goLoadedType;
-            PropertyInfo[] goLoadedProperties;
-            PropertyInfo goLoadedProperty;
-            // If the property requires an asset from the content manager, it will have a special attribute.
-            object[] goLoadedPropertyAttributes;
-            // We'll have to construct the ContentManager.Load generic method because we don't know the type
-            // at runtime.
-            MethodInfo miLoad = (typeof(ContentManager)).GetMethod("Load");
-            MethodInfo miLoadConstructed;
-
-            object[] basicCtorParams = new object[] { this };
-
             foreach (GameObjectLoadInfo goli in manifest.GameObjects)
             {
-                goLoadedType = Type.GetType(goli.TypeFullName);
-                goLoadedProperties = goLoadedType.GetProperties();
-                goLoaded = Activator.CreateInstance(goLoadedType, basicCtorParams) as GameObject;
-
-                foreach (KeyValuePair<string, object> kvp in goli.Properties)
-                {
-                    // Find the matching runtime property:
-                    goLoadedProperty = goLoadedProperties.Single(pi => pi.Name == kvp.Key);
-                    goLoadedPropertyAttributes = goLoadedProperty.GetCustomAttributes(false);
-
-                    if (goLoadedPropertyAttributes.OfType<LoadedAssetAttribute>().Count() > 0)
-                    {
-                        // The presence of that attribute indicates that the property value in the manifest is
-                        // the name of the asset to be loaded.
-                        miLoadConstructed = miLoad.MakeGenericMethod(new Type[] { goLoadedProperty.PropertyType });
-                        // TODO: catch TargetInvocationException, log an error message, and load some kind of obvious placeholder content so missing content won't break game:
-                        goLoadedProperty.SetValue(goLoaded, miLoadConstructed.Invoke(contentMan, new object[] { kvp.Value }), null);
-                    }
-                    else
-                    {
-                        goLoadedProperty.SetValue(goLoaded, kvp.Value, null);
-                    }
-                }
-
+                GameObject goLoaded = Builder.LoadObject(goli);
                 goLoaded.Initialize();
-
                 GameObjects.Add(goLoaded);
 
-                if (goLoaded.Visible)
-                    QuadTree.AddOrUpdateSceneObject(goLoaded);
+                if (goli.Spawn)
+                    SpawnInitializedObject(goLoaded);
             }
+
+
+            /* Example of adding a debug Axes object:
+            Axes playerTransform = new Axes(gd);
+            GameObject p1 = GetGameObject("Player1");
+
+            playerTransform.Position = p1.Position;
+            playerTransform.Orientation = p1.Orientation;
+
+            DebugAxes.Add(playerTransform);*/
+
+
 
             DirectLight dirLight = manifest.KeyLight;
             dirLight.Direction = Vector3.Normalize(dirLight.Direction);
@@ -254,6 +225,18 @@ namespace Mechadrone1.Gameplay
         }
 
 
+        public GameObject GetGameObject(string name)
+        {
+            for (int i = 0; i < GameObjects.Count; i++)
+            {
+                if (GameObjects[i].Name == name)
+                    return GameObjects[i];
+            }
+
+            return null;
+        }
+
+
         public void HandleInput(GameTime gameTime, InputManager input)
         {
             // Player-controlled objects need to update animation state machines,
@@ -268,6 +251,35 @@ namespace Mechadrone1.Gameplay
         }
 
 
+        public void SpawnInitializedObject(GameObject spawn)
+        {
+            if (!GameObjects.Contains(spawn))
+                GameObjects.Add(spawn);
+
+            if (spawn.Visible)
+                QuadTree.AddOrUpdateSceneObject(spawn);
+
+            ISimulationParticipant physicsObj = spawn as ISimulationParticipant;
+            if (physicsObj != null && physicsObj.SimulationObject.Space == null)
+                SimSpace.Add(physicsObj.SimulationObject);
+        }
+
+
+        public void DespawnObject(GameObject despawn)
+        {
+            if (GameObjects.Contains(despawn))
+                GameObjects.Remove(despawn);
+
+            QuadTree.RemoveSceneObject(despawn);
+            if (despawn.QuadTreeNode != null)
+                Console.WriteLine("Hmm...");
+
+            ISimulationParticipant physicsObj = despawn as ISimulationParticipant;
+            if (physicsObj != null)
+                SimSpace.Remove(physicsObj.SimulationObject);
+        }
+
+
         public void Update(GameTime gameTime)
         {
             float elapsedTime = (float)(gameTime.ElapsedGameTime.TotalSeconds);
@@ -276,12 +288,15 @@ namespace Mechadrone1.Gameplay
             // interdependent.
 
             // 1. Pre-animation update. Game-driven objects should update their position now.
+            // Also, objects should make sure their animation players have the correct animations selected.
+            // This usually requires stepping their state machines.
             OnPreAnimationUpdateStep(gameTime);
 
-            // 2. Update object animations here.
+            // 2. Step the object animation players here.
             OnUpdateAnimationStep(gameTime); 
 
             // 3. Adjust poses as needed. Update physics models with game object positions.
+            OnPostAnimationUpdateStep(gameTime);
 
             // 4. Step the physics sim:
             SimSpace.Update(elapsedTime);
@@ -383,10 +398,24 @@ namespace Mechadrone1.Gameplay
         }
 
 
+        private void OnPostAnimationUpdateStep(GameTime gameTime)
+        {
+            if (PostAnimationUpdateStep != null)
+                PostAnimationUpdateStep(this, new UpdateStepEventArgs(gameTime));
+        }
+
+
         private void OnPostPhysicsUpdateStep(GameTime gameTime)
         {
             if (PostPhysicsUpdateStep != null)
                 PostPhysicsUpdateStep(this, new UpdateStepEventArgs(gameTime));
+
+            foreach (GameObject go in DespawnList)
+            {
+                DespawnObject(go);
+            }
+
+            DespawnList.Clear();
         }
 
 

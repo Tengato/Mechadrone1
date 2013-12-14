@@ -15,7 +15,7 @@ namespace Mechadrone1.Gameplay.Prefabs
         GraphicsDevice gd;
         BasicEffect effect;
 
-        public WireBox(GraphicsDevice device, float edgeLength) : base(null)
+        public WireBox(GraphicsDevice device, float edgeLength) : base(null as IGameManager)
         {
             gd = device;
 

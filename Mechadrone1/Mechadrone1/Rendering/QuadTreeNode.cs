@@ -119,7 +119,7 @@ namespace Mechadrone1.Rendering
         }
 
 
-        private void RemoveMember(ISceneObject obj)
+        internal void RemoveMember(ISceneObject obj)
         {
             sceneObjects.Remove(obj);
 
@@ -130,6 +130,8 @@ namespace Mechadrone1.Rendering
             {
                 parent.OnDescendantMemberChanged();
             }
+
+            obj.QuadTreeNode = null;
         }
 
 

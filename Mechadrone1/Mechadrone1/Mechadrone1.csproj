@@ -108,7 +108,9 @@
     <Compile Include="Gameplay\Helpers\SupportFinder.cs" />
     <Compile Include="Gameplay\Helpers\VerticalMotionConstraint.cs" />
     <Compile Include="Gameplay\IGameManager.cs" />
+    <Compile Include="Gameplay\ISimulationParticipant.cs" />
     <Compile Include="Gameplay\Prefabs\BlasterBolt.cs" />
+    <Compile Include="Gameplay\Prefabs\BlasterRifle.cs" />
     <Compile Include="Gameplay\Prefabs\Bouncer.cs" />
     <Compile Include="Gameplay\Decorators\IAudible.cs" />
     <Compile Include="Gameplay\Prefabs\Axes.cs" />
@@ -121,9 +123,12 @@
     <Compile Include="Gameplay\Prefabs\TPPedestrian.cs" />
     <Compile Include="Gameplay\Prefabs\QuadWheel.cs" />
     <Compile Include="Gameplay\Prefabs\Roller.cs" />
+    <Compile Include="Gameplay\BipedWeapon.cs" />
+    <Compile Include="Gameplay\Prefabs\WeaponState.cs" />
     <Compile Include="Gameplay\SimulatedGameObject.cs" />
     <Compile Include="Gameplay\Skydome.cs" />
     <Compile Include="Gameplay\Prefabs\WireBox.cs" />
+    <Compile Include="Gameplay\GameObjectLoader.cs" />
     <Compile Include="Gameplay\TerrainChunk.cs" />
     <Compile Include="Gameplay\Subsystems\AnimSprite.cs" />
     <Compile Include="Gameplay\Subsystems\AnimSpriteManager.cs" />

@@ -80,6 +80,14 @@ namespace Mechadrone1.Rendering
         }
 
 
+        public void RemoveSceneObject(ISceneObject obj)
+        {
+            QuadTreeNode node = FindTreeNode(obj.QuadTreeBoundingBox);
+
+            node.RemoveMember(obj);
+        }
+
+
         public List<ISceneObject> Search(BoundingBox worldRect, BoundingFrustum worldFrustum)
         {
             List<ISceneObject> results = new List<ISceneObject>();

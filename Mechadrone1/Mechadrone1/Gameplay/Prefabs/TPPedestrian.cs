@@ -11,10 +11,11 @@ using SlagformCommon;
 using Manifracture;
 using Skelemator;
 using Microsoft.Xna.Framework.Graphics;
+using BEPUphysics;
 
 namespace Mechadrone1.Gameplay.Prefabs
 {
-    class TPPedestrian : GameObject
+    class TPPedestrian : GameObject, ISimulationParticipant
     {
         public float Height { get; set; }
         public float Radius { get; set; }
@@ -84,26 +85,46 @@ namespace Mechadrone1.Gameplay.Prefabs
                 AnimationPackage ap = visualModel.Tag as AnimationPackage;
                 if (ap != null)
                 {
-                    Animations = ap.SkinningData;
+                    animations = ap.SkinningData;
                     if (ap.SkinningData != null)
                     {
                         animationStateMachine = new AnimationStateMachine(ap);
-                        AnimationPlayer = animationStateMachine;
+                        animationPlayer = animationStateMachine;
                     }
                 }
             }
         }
 
+        // TODO: How to assign a loadout, and switch between weapons???
+        public string WeaponTypeFullName { get; set; }
+
+        [NotInitializable]
+        public BipedWeapon Weapon { get; set; }
+
 
         [Flags]
-        protected enum BipedStates
+        public enum BipedMovementStates
         {
             Neutral = 0x00,
             Crouching = 0x01,
-            Jumping = 0x04,
+            Jumping = 0x02,
         }
 
-        protected BipedStates desiredState;
+        protected BipedMovementStates desiredMovementState;
+
+        [Flags]
+        public enum BipedArmStates
+        {
+            Neutral = 0x00,
+            PointingWeapon = 0x01,
+            Throwing = 0x02,
+        }
+
+
+        public ISpaceObject SimulationObject
+        {
+            get { return character; }
+        }
 
 
         public TPPedestrian(IGameManager owner) : base(owner)
@@ -111,7 +132,7 @@ namespace Mechadrone1.Gameplay.Prefabs
             cameraYaw = 0.0f;
             cameraPitch = 0.0f;
             LookFactor = -1;
-            desiredState = BipedStates.Neutral;
+            desiredMovementState = BipedMovementStates.Neutral;
 
             // Default values for the CharacterController:
             Height = 9.3f;
@@ -119,6 +140,20 @@ namespace Mechadrone1.Gameplay.Prefabs
             Mass = 9.0f;
             JumpSpeed = 35.0f;
             RunSpeed = 32.0f;
+            Weapon = null;
+        }
+
+
+        public TPPedestrian(TPPedestrian a)
+            : base(a)
+        {
+            Height = a.Height;
+            Radius = a.Radius;
+            Mass = a.Mass;
+            JumpSpeed = a.JumpSpeed;
+            RunSpeed = a.RunSpeed;
+            LookFactor = a.LookFactor;
+            Weapon = a.Weapon;
         }
 
 
@@ -133,17 +168,21 @@ namespace Mechadrone1.Gameplay.Prefabs
             character.HorizontalMotionConstraint.CrouchingSpeed = RunSpeed * 0.5f;
             character.HorizontalMotionConstraint.SpeedScale = 1.0f;
 
-            owner.PostPhysicsUpdateStep += PostPhysicsUpdate;
+            Type weaponType = Type.GetType(WeaponTypeFullName);
+            object[] weaponCtorParams = new object[] { game, this };
+            Weapon = Activator.CreateInstance(weaponType, weaponCtorParams) as BipedWeapon;
+            Weapon.LoadedAmmo = 48;
+            Weapon.ReserveAmmo = 384;
 
-            owner.SimSpace.Add(character);
+            game.PostPhysicsUpdateStep += PostPhysicsUpdate;
         }
 
 
         public override void RegisterUpdateHandlers()
         {
-            owner.PreAnimationUpdateStep += PreAnimationUpdate;
-            owner.PostPhysicsUpdateStep += PostPhysicsUpdate;
-            owner.AnimationUpdateStep += AnimationUpdate;
+            game.PreAnimationUpdateStep += PreAnimationUpdate;
+            game.PostPhysicsUpdateStep += PostPhysicsUpdate;
+            game.AnimationUpdateStep += AnimationUpdate;
         }
 
 
@@ -182,12 +221,16 @@ namespace Mechadrone1.Gameplay.Prefabs
                 cameraPitch += LookFactor * mouseDragDisplacement.Y * INPUT_MOUSE_LOOK_RATE;
             }
 
-            // Gamepad camera & object orientation:
-            Orientation *= Quaternion.CreateFromAxisAngle(Vector3.Up, -input.CurrentState.PadState[(int)player].ThumbSticks.Right.X *
-                INPUT_ROTATION_FORCE * dTimeMs);
 
-            cameraPitch += LookFactor * -input.CurrentState.PadState[(int)player].ThumbSticks.Right.Y *
-                INPUT_ROTATION_FORCE * dTimeMs;
+            // Gamepad camera & object orientation:
+            if (!input.CurrentState.PadState[(int)player].IsButtonDown(Buttons.RightStick))
+            {
+                Orientation *= Quaternion.CreateFromAxisAngle(Vector3.Up, -input.CurrentState.PadState[(int)player].ThumbSticks.Right.X *
+                    INPUT_ROTATION_FORCE * dTimeMs);
+
+                cameraPitch += LookFactor * -input.CurrentState.PadState[(int)player].ThumbSticks.Right.Y *
+                    INPUT_ROTATION_FORCE * dTimeMs;
+            }
 
             cameraPitch = MathHelper.Clamp(cameraPitch, -2.0f * MathHelper.Pi / 5.0f, 2.0f * MathHelper.Pi / 5.0f);
 
@@ -211,8 +254,10 @@ namespace Mechadrone1.Gameplay.Prefabs
             character.ViewDirection = BepuConverter.Convert(Vector3.Transform(Vector3.Backward, Orientation));
 
             // Camera distance:
-            cameraDist += input.CurrentState.PadState[(int)player].Triggers.Right * dTimeMs * INPUT_PAD_CAM_DIST_MOVE_RATE;
-            cameraDist -= input.CurrentState.PadState[(int)player].Triggers.Left * dTimeMs * INPUT_PAD_CAM_DIST_MOVE_RATE;
+            if (input.CurrentState.PadState[(int)player].IsButtonDown(Buttons.RightStick))
+            {
+                cameraDist -= input.CurrentState.PadState[(int)player].ThumbSticks.Right.Y * dTimeMs * INPUT_PAD_CAM_DIST_MOVE_RATE;
+            }
 
             cameraDist -= (float)input.ScrollWheelDiff() * INPUT_SCROLLWHEEL_CAM_DIST_MOVE_RATE;
 
@@ -221,10 +266,10 @@ namespace Mechadrone1.Gameplay.Prefabs
             // It's good practice to make sure floating point errors don't accumulate and change the length of our unit quaternion:
             Orientation = Quaternion.Normalize(Orientation);
 
-            // Process movement:
+            // Collect and process the rest of the movement:
             BEPUutilities.Vector2 rawMovement = BEPUutilities.Vector2.Zero;
 
-            // Keyboard:
+            // Keyboard movement:
             if (input.CurrentState.KeyState[(int)player].IsKeyDown(Keys.W))
             {
                 rawMovement += new BEPUutilities.Vector2(0, 1);
@@ -252,22 +297,41 @@ namespace Mechadrone1.Gameplay.Prefabs
             if (input.CurrentState.KeyState[(int)player].IsKeyDown(Keys.LeftShift) ||
                 input.CurrentState.PadState[(int)player].IsButtonDown(Buttons.LeftStick))
             {
-                desiredState |= BipedStates.Crouching;
+                desiredMovementState |= BipedMovementStates.Crouching;
             }
             else
             {
-                desiredState &= ~BipedStates.Crouching;
+                desiredMovementState &= ~BipedMovementStates.Crouching;
             }
 
             // Jumping:
             if (input.CurrentState.KeyState[(int)player].IsKeyDown(Keys.Space) ||
                 input.IsNewButtonPress(Buttons.A, player, out dummyPlayerIndex))
             {
-                desiredState |= BipedStates.Jumping;
+                desiredMovementState |= BipedMovementStates.Jumping;
             }
             else
             {
-                desiredState &= ~BipedStates.Jumping;
+                desiredMovementState &= ~BipedMovementStates.Jumping;
+            }
+
+            if (Weapon != null)
+            {
+                // Weapon:
+                if (input.CurrentState.MouseState.LeftButton == ButtonState.Pressed ||
+                    input.CurrentState.PadState[(int)player].IsButtonDown(Buttons.RightTrigger))
+                {
+                    Weapon.CurrentOperation = WeaponFunctions.TriggerPulled;
+                }
+                else if (input.IsNewKeyPress(Keys.R, player, out dummyPlayerIndex) ||
+                    input.IsNewButtonPress(Buttons.X, player, out dummyPlayerIndex))
+                {
+                    Weapon.CurrentOperation = WeaponFunctions.Reloading;
+                }
+                else
+                {
+                    Weapon.CurrentOperation = WeaponFunctions.Neutral;
+                }
             }
         }
 
@@ -310,11 +374,11 @@ namespace Mechadrone1.Gameplay.Prefabs
                 Vector2 horizontalMovement = BepuConverter.Convert(character.HorizontalMotionConstraint.MovementDirection)
                     * character.HorizontalMotionConstraint.SpeedScale;
 
-                if ((desiredState & BipedStates.Jumping) > 0)
+                if ((desiredMovementState & BipedMovementStates.Jumping) > 0)
                 {
                     animationStateMachine.DesiredStateName = "Jumping";
                 }
-                else if ((desiredState & BipedStates.Crouching) > 0)
+                else if ((desiredMovementState & BipedMovementStates.Crouching) > 0)
                 {
                     if (horizontalMovement.LengthSquared() > 0.0f)
                     {
@@ -341,10 +405,17 @@ namespace Mechadrone1.Gameplay.Prefabs
                 animationStateMachine.DesiredStateName = "Falling";
             }
 
-            DebugMessage = String.Format("{0}{1}  ->  {2}",
-                animationStateMachine.CurrentState.Name,
-                animationStateMachine.ActiveTransition != null ? "*" : "",
-                animationStateMachine.DesiredStateName);
+            if (Weapon != null)
+            {
+                Weapon.PreAnimationUpdate(sender, e);
+            }
+
+
+
+            //DebugMessage = String.Format("{0}{1}  ->  {2}",
+            //    animationStateMachine.CurrentState.Name,
+            //    animationStateMachine.ActiveTransition != null ? "*" : "",
+            //    animationStateMachine.DesiredStateName);
         }
 
 
