@@ -249,20 +249,6 @@ namespace Mechadrone1
         {
             CommitOrientationAndMovement();
 
-            /*
-            // We manage transitions out of the boost state:
-            if (mState == ControllerState.Boosting)
-            {
-                if (mBoostTime > mMaxBoostTime)
-                {
-                    DesiredMovementActions &= ~MovementActions.Boosting;
-                }
-                else if (mBoostTime < mMinBoostTime)
-                {
-                    DesiredMovementActions |= MovementActions.Boosting;
-                }
-            }*/
-
             if (mState != ControllerState.InputDisabled)
             {
                 if (mAnimationStateMachine != null)
