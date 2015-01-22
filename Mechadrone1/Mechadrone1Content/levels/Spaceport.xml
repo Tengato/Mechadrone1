@@ -1,0 +1,530 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Framework="Microsoft.Xna.Framework" xmlns:Generic="System.Collections.Generic">
+    <Asset Type="Manifracture.LevelManifest">
+        <ScreenHonchoTypeName>Mechadrone1.ActionScreenHoncho, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</ScreenHonchoTypeName>
+        <Actors>
+            <Item>
+                <Name>TerrainPrime</Name>
+                <Components>
+                    <Item>
+                        <TypeFullName>Mechadrone1.TerrainRenderComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties>
+                            <Item>
+                                <Key>Terrain</Key>
+                                <Value Type="string">terrain\CoarseHeightmap 01</Value>
+                            </Item>
+                        </Properties>
+                    </Item>
+                    <Item>
+                        <TypeFullName>Mechadrone1.TransformComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties>
+                            <Item>
+                                <Key>Position</Key>
+                                <Value Type="Framework:Vector3">0 0 0</Value>
+                            </Item>
+                        </Properties>
+                    </Item>
+                    <Item>
+                        <TypeFullName>Mechadrone1.TerrainCollisionComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties>
+                            <Item>
+                                <Key>ClipsCamera</Key>
+                                <Value Type="bool">true</Value>
+                            </Item>
+                        </Properties>
+                    </Item>
+                </Components>
+            </Item>
+            <Item>
+                <Name>Sky</Name>
+                <Components>
+                    <Item>
+                        <TypeFullName>Mechadrone1.SkyboxRenderComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties>
+                            <Item>
+                                <Key>Texture</Key>
+                                <Value Type="string">textures\CloudCube</Value>
+                            </Item>
+                        </Properties>
+                    </Item>
+                </Components>
+            </Item>
+            <Item>
+                <Name>ShadowCaster</Name>
+                <Components>
+                    <Item>
+                        <TypeFullName>Mechadrone1.ShadowCasterComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties/>
+                    </Item>
+                    <Item>
+                        <TypeFullName>Mechadrone1.TransformComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties>
+                            <Item>
+                                <Key>LookAt</Key>
+                                <!--<Value Type="Framework:Vector3">-0.7270790 -0.1346443 -0.6732213</Value>-->
+                                <Value Type="Framework:Vector3">-0.6719589 -0.4016938 -0.6221842</Value>
+                            </Item>
+                        </Properties>
+                    </Item>
+                </Components>
+            </Item>
+            <Item>
+                <Name>Soldier1</Name>
+                <Components>
+                    <Item>
+                        <TypeFullName>Mechadrone1.ModelRenderComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties>
+                            <Item>
+                                <Key>VisualModel</Key>
+                                <Value Type="string">models\soldierDAE\soldierDAE_LOD0</Value>
+                            </Item>
+                            <Item>
+                                <Key>ModelAdjustment</Key>
+                                <Value Type="Framework:Matrix">-1 0 0 0 0 1 0 0 0 0 -1 0 0 0.3 0 1</Value>
+                            </Item>
+                        </Properties>
+                    </Item>
+                    <Item>
+                        <TypeFullName>Mechadrone1.TransformComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties>
+                            <Item>
+                                <Key>Position</Key>
+                                <Value Type="Framework:Vector3">20 293 62</Value>
+                            </Item>
+                        </Properties>
+                    </Item>
+                    <Item>
+                        <TypeFullName>Mechadrone1.BipedControllerComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties/>
+                    </Item>
+                    <Item>
+                        <TypeFullName>Mechadrone1.BipedCollisionComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties>
+                            <Item>
+                                <Key>Height</Key>
+                                <Value Type="float">9.3</Value>
+                            </Item>
+                            <Item>
+                                <Key>TransformOffset</Key>
+                                <Value Type="Framework:Vector3">0 4.65 0</Value>
+                            </Item>
+                            <Item>
+                                <Key>Radius</Key>
+                                <Value Type="float">1.7</Value>
+                            </Item>
+                        </Properties>
+                    </Item>
+                    <Item>
+                        <TypeFullName>Mechadrone1.StatefulAnimationComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties/>
+                    </Item>
+                    <Item>
+                        <TypeFullName>Mechadrone1.BehaviorComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties>
+                            <Item>
+                                <Key>Behaviors</Key>
+                                <Value Type ="Generic:List[Manifracture.ComponentManifest]">
+                                    <Item>
+                                        <TypeFullName>Mechadrone1.Zombie, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                                        <Properties/>
+                                    </Item>
+                                    <Item>
+                                        <TypeFullName>Mechadrone1.ArmedSingleWeapon, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                                        <Properties>
+                                            <Item>
+                                                <Key>SkillAssetName</Key>
+                                                <Value Type="string">BlasterRifle</Value>
+                                            </Item>
+                                        </Properties>
+                                    </Item>
+                                    <Item>
+                                        <TypeFullName>Mechadrone1.WeaponResource, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                                        <Properties/>
+                                    </Item>
+                                </Value>
+                            </Item>
+                        </Properties>
+                    </Item>
+                </Components>
+            </Item>
+            <Item>
+                <Name>BigBlock</Name>
+                <Components>
+                    <Item>
+                        <TypeFullName>Mechadrone1.ShapeRenderComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties>
+                            <Item>
+                                <Key>Shape</Key>
+                                <Value Type="Manifracture.Shape">Box</Value>
+                            </Item>
+                            <Item>
+                                <Key>Texture</Key>
+                                <Value Type="string">textures\testpattern</Value>
+                            </Item>
+                            <Item>
+                                <Key>MaterialSpecularColor</Key>
+                                <Value Type="Framework:Vector4">0.002 0.002 0.002 8</Value>
+                            </Item>
+                            <Item>
+                                <Key>ModelAdjustment</Key>
+                                <Value Type="Framework:Matrix">180 0 0 0 0 4 0 0 0 0 120 0 0 0 0 1</Value>
+                            </Item>
+                            <Item>
+                                <Key>Brightness</Key>
+                                <Value Type="float">0.33</Value>
+                            </Item>
+                            <Item>
+                                <Key>Contrast</Key>
+                                <Value Type="float">1.1</Value>
+                            </Item>
+                            <Item>
+                                <Key>IsStatic</Key>
+                                <Value Type="bool">true</Value>
+                            </Item>
+                        </Properties>
+                    </Item>
+                    <Item>
+                        <TypeFullName>Mechadrone1.TransformComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties>
+                            <Item>
+                                <Key>Position</Key>
+                                <Value Type="Framework:Vector3">20 289 32</Value>
+                            </Item>
+                        </Properties>
+                    </Item>
+                    <Item>
+                        <TypeFullName>Mechadrone1.BoxCollisionComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties>
+                            <Item>
+                                <Key>Width</Key>
+                                <Value Type="float">360</Value>
+                            </Item>
+                            <Item>
+                                <Key>Height</Key>
+                                <Value Type="float">8</Value>
+                            </Item>
+                            <Item>
+                                <Key>Length</Key>
+                                <Value Type="float">240</Value>
+                            </Item>
+                            <Item>
+                                <Key>ClipsCamera</Key>
+                                <Value Type="bool">true</Value>
+                            </Item>
+                        </Properties>
+                    </Item>
+                </Components>
+            </Item>
+            <Item>
+                <Name>SomeBlock01</Name>
+                <Components>
+                    <Item>
+                        <TypeFullName>Mechadrone1.ShapeRenderComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties>
+                            <Item>
+                                <Key>Shape</Key>
+                                <Value Type="Manifracture.Shape">Box</Value>
+                            </Item>
+                            <Item>
+                                <Key>Texture</Key>
+                                <Value Type="string">textures\testpattern</Value>
+                            </Item>
+                            <Item>
+                                <Key>MaterialSpecularColor</Key>
+                                <Value Type="Framework:Vector4">0.002 0.002 0.002 8</Value>
+                            </Item>
+                            <Item>
+                                <Key>ModelAdjustment</Key>
+                                <Value Type="Framework:Matrix">4 0 0 0 0 4 0 0 0 0 1 0 0 0 0 1</Value>
+                            </Item>
+                            <Item>
+                                <Key>Brightness</Key>
+                                <Value Type="float">0.33</Value>
+                            </Item>
+                            <Item>
+                                <Key>Contrast</Key>
+                                <Value Type="float">1.1</Value>
+                            </Item>
+                            <Item>
+                                <Key>IsStatic</Key>
+                                <Value Type="bool">true</Value>
+                            </Item>
+                        </Properties>
+                    </Item>
+                    <Item>
+                        <TypeFullName>Mechadrone1.TransformComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties>
+                            <Item>
+                                <Key>Position</Key>
+                                <Value Type="Framework:Vector3">20 297 3</Value>
+                            </Item>
+                        </Properties>
+                    </Item>
+                    <Item>
+                        <TypeFullName>Mechadrone1.BoxCollisionComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties>
+                            <Item>
+                                <Key>Width</Key>
+                                <Value Type="float">8</Value>
+                            </Item>
+                            <Item>
+                                <Key>Height</Key>
+                                <Value Type="float">8</Value>
+                            </Item>
+                            <Item>
+                                <Key>Length</Key>
+                                <Value Type="float">2</Value>
+                            </Item>
+                            <Item>
+                                <Key>ClipsCamera</Key>
+                                <Value Type="bool">true</Value>
+                            </Item>
+                        </Properties>
+                    </Item>
+                </Components>
+            </Item>
+            <Item>
+                <Name>SomeBlock02</Name>
+                <Components>
+                    <Item>
+                        <TypeFullName>Mechadrone1.ShapeRenderComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties>
+                            <Item>
+                                <Key>Shape</Key>
+                                <Value Type="Manifracture.Shape">Box</Value>
+                            </Item>
+                            <Item>
+                                <Key>Texture</Key>
+                                <Value Type="string">textures\testpattern</Value>
+                            </Item>
+                            <Item>
+                                <Key>MaterialSpecularColor</Key>
+                                <Value Type="Framework:Vector4">0.002 0.002 0.002 8</Value>
+                            </Item>
+                            <Item>
+                                <Key>ModelAdjustment</Key>
+                                <Value Type="Framework:Matrix">14 0 0 0 0 4 0 0 0 0 1 0 0 0 0 1</Value>
+                            </Item>
+                            <Item>
+                                <Key>Brightness</Key>
+                                <Value Type="float">0.33</Value>
+                            </Item>
+                            <Item>
+                                <Key>Contrast</Key>
+                                <Value Type="float">1.1</Value>
+                            </Item>
+                            <Item>
+                                <Key>IsStatic</Key>
+                                <Value Type="bool">true</Value>
+                            </Item>
+                        </Properties>
+                    </Item>
+                    <Item>
+                        <TypeFullName>Mechadrone1.TransformComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties>
+                            <Item>
+                                <Key>Position</Key>
+                                <Value Type="Framework:Vector3">28 297 -23</Value>
+                            </Item>
+                        </Properties>
+                    </Item>
+                    <Item>
+                        <TypeFullName>Mechadrone1.BoxCollisionComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties>
+                            <Item>
+                                <Key>Width</Key>
+                                <Value Type="float">28</Value>
+                            </Item>
+                            <Item>
+                                <Key>Height</Key>
+                                <Value Type="float">8</Value>
+                            </Item>
+                            <Item>
+                                <Key>Length</Key>
+                                <Value Type="float">2</Value>
+                            </Item>
+                            <Item>
+                                <Key>ClipsCamera</Key>
+                                <Value Type="bool">true</Value>
+                            </Item>
+                        </Properties>
+                    </Item>
+                </Components>
+            </Item>
+            <Item>
+                <Name>Fog</Name>
+                <Components>
+                    <Item>
+                        <TypeFullName>Mechadrone1.FogComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties>
+                            <Item>
+                                <Key>Color</Key>
+                                <Value Type="Framework:Color">AAAACC</Value>
+                            </Item>
+                            <Item>
+                                <Key>Start</Key>
+                                <Value Type="float">300</Value>
+                            </Item>
+                            <Item>
+                                <Key>End</Key>
+                                <Value Type="float">2000</Value>
+                            </Item>
+                        </Properties>
+                    </Item>
+                </Components>
+            </Item>
+            <Item>
+                <Name>Sunlight</Name>
+                <Components>
+                    <Item>
+                        <TypeFullName>Mechadrone1.HDRLightComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties>
+                            <Item>
+                                <Key>IrradianceMap</Key>
+                                <Value Type="string">textures\MonValleyIrradianceMap</Value>
+                            </Item>
+                            <Item>
+                                <Key>SpecPrefilter</Key>
+                                <Value Type="string">textures\MonValleySpecPrefilter</Value>
+                            </Item>
+                            <Item>
+                                <Key>NumSpecLevels</Key>
+                                <Value Type="int">7</Value>
+                            </Item>
+                            <Item>
+                                <Key>SpecExponentFactor</Key>
+                                <Value Type="float">6.06275902901</Value>
+                            </Item>
+                            <Item>
+                                <Key>Ambient</Key>
+                                <Value Type="Framework:Vector3">0.27 0.27 0.32</Value>
+                            </Item>
+                        </Properties>
+                    </Item>
+                </Components>
+            </Item>
+            <Item>
+                <Name>Ship1</Name>
+                <Components>
+                    <Item>
+                        <TypeFullName>Mechadrone1.ModelRenderComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties>
+                            <Item>
+                                <Key>VisualModel</Key>
+                                <Value Type="string">models\shipgame1\ship1</Value>
+                            </Item>
+                            <Item>
+                                <Key>ModelAdjustment</Key>
+                                <Value Type="Framework:Matrix">0.25 0 0 0 0 0.25 0 0 0 0 0.25 0 0 0 0 1</Value>
+                            </Item>
+                        </Properties>
+                    </Item>
+                    <Item>
+                        <TypeFullName>Mechadrone1.TransformComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties>
+                            <Item>
+                                <Key>Position</Key>
+                                <Value Type="Framework:Vector3">30 298 32</Value>
+                            </Item>
+                        </Properties>
+                    </Item>
+                    <Item>
+                        <TypeFullName>Mechadrone1.BehaviorComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties>
+                            <Item>
+                                <Key>Behaviors</Key>
+                                <Value Type ="Generic:List[Manifracture.ComponentManifest]">
+                                    <Item>
+                                        <TypeFullName>Mechadrone1.Rotation, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                                        <Properties/>
+                                    </Item>
+                                </Value>
+                            </Item>
+                        </Properties>
+                    </Item>
+                </Components>
+            </Item>
+            <Item>
+                <Name>HealthPickup1</Name>
+                <Components>
+                    <Item>
+                        <TypeFullName>Mechadrone1.BillboardRenderComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties>
+                            <Item>
+                                <Key>Texture</Key>
+                                <Value Type="string">textures\Giftbox</Value>
+                            </Item>
+                        </Properties>
+                    </Item>
+                    <Item>
+                        <TypeFullName>Mechadrone1.TransformComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties>
+                            <Item>
+                                <Key>Position</Key>
+                                <Value Type="Framework:Vector3">30 298 62</Value>
+                            </Item>
+                        </Properties>
+                    </Item>
+                    <Item>
+                        <TypeFullName>Mechadrone1.SphereCollisionComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties>
+                            <Item>
+                                <Key>Radius</Key>
+                                <Value Type="float">2</Value>
+                            </Item>
+                            <Item>
+                                <Key>Mass</Key>
+                                <Value Type="float">10</Value>
+                            </Item>
+                            <Item>
+                                <Key>Bounciness</Key>
+                                <Value Type="float">0</Value>
+                            </Item>
+                            <Item>
+                                <Key>StaticFriction</Key>
+                                <Value Type="float">0.6</Value>
+                            </Item>
+                            <Item>
+                                <Key>KineticFriction</Key>
+                                <Value Type="float">0.3</Value>
+                            </Item>
+                            <Item>
+                                <Key>LockRotation</Key>
+                                <Value Type="bool">true</Value>
+                            </Item>
+                        </Properties>
+                    </Item>
+                    <Item>
+                        <TypeFullName>Mechadrone1.BehaviorComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                        <Properties>
+                            <Item>
+                                <Key>Behaviors</Key>
+                                <Value Type ="Generic:List[Manifracture.ComponentManifest]">
+                                    <Item>
+                                        <TypeFullName>Mechadrone1.InventoryPickup, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                                        <Properties>
+                                            <Item>
+                                                <Key>ItemName</Key>
+                                                <Value Type="string">HealthPotion1</Value>
+                                            </Item>
+                                        </Properties>
+                                    </Item>
+                                </Value>
+                            </Item>
+                        </Properties>
+                    </Item>
+                </Components>
+            </Item>
+        </Actors>
+        <Templates>
+            <Item>Vanquisher</Item>
+            <Item>Rocket</Item>
+            <Item>Contrail</Item>
+            <Item>ExplosionFire</Item>
+            <Item>ExplosionSmoke</Item>
+            <Item>Sparks</Item>
+            <Item>BlasterBolt</Item>
+            <Item>GenericPickup</Item>
+        </Templates>
+    </Asset>
+</XnaContent>

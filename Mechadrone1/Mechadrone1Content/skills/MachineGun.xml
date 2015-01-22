@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<XnaContent xmlns:Framework="Microsoft.Xna.Framework" xmlns:Generic="System.Collections.Generic">
+    <Asset Type="Manifracture.ComponentManifest">
+        <TypeFullName>Mechadrone1.MachineGunSkill, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+        <Properties>
+            <Item>
+                <Key>Damage</Key>
+                <Value Type="int">5</Value>
+            </Item>
+            <Item>
+                <Key>ResourceCostToUse</Key>
+                <Value Type="float">0</Value>
+            </Item>
+        </Properties>
+    </Asset>
+</XnaContent>

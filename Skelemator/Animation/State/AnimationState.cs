@@ -60,7 +60,7 @@ namespace Skelemator
         }
 
 
-        public List<AnimationControlEvents> GetActiveControlEvents()
+        public AnimationControlEvents GetActiveControlEvents()
         {
             return blendTree.GetActiveControlEvents();
         }
@@ -75,9 +75,9 @@ namespace Skelemator
         }
 
 
-        public Matrix[] GetSkinTransforms()
+        public Matrix[] GetBoneTransforms()
         {
-            return blendTree.GetSkinTransforms();
+            return blendTree.GetBoneTransforms();
         }
 
 

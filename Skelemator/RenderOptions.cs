@@ -1,6 +1,4 @@
 ﻿using System;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Skelemator
 {
@@ -10,9 +8,11 @@ namespace Skelemator
         None = 0x0,
         RequiresSkeletalPose = 0x01,
         RequiresEnviroMap = 0x02,
-
-        // Put fringe map procedural textures into the processor.
         RequiresFringeMap = 0x04,
         RequiresShadowMap = 0x08,
+        RequiresHDRLighting = 0x10,
+        NoStandardParams = 0x20,
+        ParticleParams = 0x40,
+        BillboardParams = 0x80,
     }
 }

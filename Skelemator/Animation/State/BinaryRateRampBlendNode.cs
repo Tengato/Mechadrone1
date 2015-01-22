@@ -41,9 +41,9 @@ namespace Skelemator
         }
 
 
-        public override Matrix[] GetSkinTransforms()
+        public override Matrix[] GetBoneTransforms()
         {
-            return child.GetSkinTransforms();
+            return child.GetBoneTransforms();
         }
 
 

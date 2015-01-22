@@ -33,7 +33,7 @@ namespace Skelemator
         }
 
 
-        public override Matrix[] GetSkinTransforms()
+        public override Matrix[] GetBoneTransforms()
         {
             // Pick an arbitrary node to 'prime' the refinement loop
             float lowerBoundPosition = ChildrenByPosition.Keys.Min();
@@ -48,12 +48,12 @@ namespace Skelemator
                     upperBoundPosition = position;
             }
 
-            Matrix[] lowerBoundTransforms = ChildrenByPosition[lowerBoundPosition].GetSkinTransforms();
+            Matrix[] lowerBoundTransforms = ChildrenByPosition[lowerBoundPosition].GetBoneTransforms();
 
             if (lowerBoundPosition == upperBoundPosition)
                 return lowerBoundTransforms;
 
-            Matrix[] upperBoundTransforms = ChildrenByPosition[upperBoundPosition].GetSkinTransforms();
+            Matrix[] upperBoundTransforms = ChildrenByPosition[upperBoundPosition].GetBoneTransforms();
             float blendFactor = (BlendPosition - lowerBoundPosition) /
                 (upperBoundPosition - lowerBoundPosition);
 

@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
 
-namespace Mechadrone1.StateManagement
+namespace Mechadrone1.Screens
 {
     /// <summary>
     /// The background screen sits behind all the other menu screens.
@@ -23,23 +23,13 @@ namespace Mechadrone1.StateManagement
     /// </summary>
     class BackgroundScreen : Screen
     {
-        #region Fields
+        private ContentManager mContentLoader;
+        private Texture2D mImage;
 
-        ContentManager content;
-        Texture2D backgroundTexture;
-
-        #endregion
-
-        #region Initialization
-
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
         public BackgroundScreen()
         {
-            TransitionOnTime = TimeSpan.FromSeconds(0.5);
-            TransitionOffTime = TimeSpan.FromSeconds(0.5);
+            TransitionOnTime = TimeSpan.FromSeconds(0.5d);
+            TransitionOffTime = TimeSpan.FromSeconds(0.5d);
         }
 
 
@@ -52,10 +42,10 @@ namespace Mechadrone1.StateManagement
         /// </summary>
         public override void LoadContent()
         {
-            if (content == null)
-                content = new ContentManager(ScreenManager.Game.Services, "Content");
+            if (mContentLoader == null)
+                mContentLoader = new ContentManager(SharedResources.Game.Services, "Content");
 
-            backgroundTexture = content.Load<Texture2D>("textures\\sci fi thing by rich4rt");
+            mImage = mContentLoader.Load<Texture2D>("textures\\sci fi thing by rich4rt");
         }
 
 
@@ -64,11 +54,9 @@ namespace Mechadrone1.StateManagement
         /// </summary>
         public override void UnloadContent()
         {
-            content.Unload();
+            mContentLoader.Unload();
+            mContentLoader.Dispose();
         }
-
-
-        #endregion
 
         #region Update and Draw
 
@@ -92,22 +80,20 @@ namespace Mechadrone1.StateManagement
         /// </summary>
         public override void Draw(GameTime gameTime)
         {
-            SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
-            Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
+            Viewport viewport = SharedResources.Game.GraphicsDevice.Viewport;
             Rectangle fullscreen = new Rectangle(0, 0, viewport.Width, viewport.Height);
 
-            spriteBatch.Begin();
+            SharedResources.SpriteBatch.Begin();
+            SharedResources.FontManager.BeginText();
 
-            spriteBatch.Draw(backgroundTexture, fullscreen,
-                             new Color(TransitionAlpha, TransitionAlpha, TransitionAlpha));
-
-            spriteBatch.End();
+            SharedResources.SpriteBatch.Draw(mImage, fullscreen, new Color(TransitionAlpha, TransitionAlpha, TransitionAlpha));
 
             const string text = "image by:\nhttp://rich4rt.deviantart.com/";
-            Vector2 position = new Vector2(20.0f, 620.0f); 
-            ScreenManager.FontManager.BeginText();
-            ScreenManager.FontManager.DrawText(FontType.ArialSmall, text, position, Color.Multiply(Color.Multiply(Color.BurlyWood, 0.5f), TransitionAlpha), true);
-            ScreenManager.FontManager.EndText();
+            Vector2 position = new Vector2(20.0f, 620.0f);
+            SharedResources.FontManager.DrawText(FontType.ArialSmall, text, position, Color.Multiply(Color.Multiply(Color.BurlyWood, 0.5f), TransitionAlpha), true);
+
+            SharedResources.SpriteBatch.End();
+            SharedResources.FontManager.EndText();
         }
 
 

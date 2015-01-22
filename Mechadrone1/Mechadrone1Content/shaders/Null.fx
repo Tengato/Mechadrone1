@@ -42,7 +42,7 @@ void PixelProc(float  depth  : TEXCOORD,
 }
 
 
-technique TheOnlyTechnique
+technique Null
 {
     pass Pass1
     {

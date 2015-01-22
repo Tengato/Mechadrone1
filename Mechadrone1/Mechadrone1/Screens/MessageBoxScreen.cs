@@ -7,13 +7,10 @@
 //-----------------------------------------------------------------------------
 #endregion
 
-#region Using Statements
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Mechadrone1.StateManagement;
-#endregion
 
 namespace Mechadrone1.Screens
 {
@@ -78,9 +75,7 @@ namespace Mechadrone1.Screens
         /// </summary>
         public override void LoadContent()
         {
-            ContentManager content = ScreenManager.Game.Content;
-
-            gradientTexture = content.Load<Texture2D>("textures\\gradient");
+            gradientTexture = SharedResources.Game.Content.Load<Texture2D>("textures\\gradient");
         }
 
 
@@ -135,9 +130,9 @@ namespace Mechadrone1.Screens
             ScreenManager.FadeBackBufferToBlack(TransitionAlpha * 2 / 3);
 
             // Center the message text in the viewport.
-            Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
+            Viewport viewport = SharedResources.Game.GraphicsDevice.Viewport;
             Vector2 viewportSize = new Vector2(viewport.Width, viewport.Height);
-            Vector2 textSize = ScreenManager.FontManager.MeasureString(FontType.ArialMedium, message);
+            Vector2 textSize = SharedResources.FontManager.MeasureString(FontType.ArialMedium, message);
             Vector2 textPosition = (viewportSize - textSize) / 2;
 
             // The background includes a border somewhat larger than the text itself.
@@ -152,15 +147,15 @@ namespace Mechadrone1.Screens
             // Fade the popup alpha during transitions.
             Color color = Color.White * TransitionAlpha;
 
-            ScreenManager.FontManager.BeginText();
+            SharedResources.FontManager.BeginText();
 
             // Draw the background rectangle.
-            ScreenManager.FontManager.DrawTexture(gradientTexture, backgroundRectangle, color, BlendState.AlphaBlend);
+            SharedResources.FontManager.DrawTexture(gradientTexture, backgroundRectangle, color, BlendState.AlphaBlend);
 
             // Draw the message box text.
-            ScreenManager.FontManager.DrawText(FontType.ArialMedium, message, textPosition, color, false);
+            SharedResources.FontManager.DrawText(FontType.ArialMedium, message, textPosition, color, false);
 
-            ScreenManager.FontManager.EndText();
+            SharedResources.FontManager.EndText();
         }
 
 

@@ -19,7 +19,7 @@ namespace Mechadrone1
         // game screen horizontal resolution
         public static int        ScreenWidth                   = 1200;
         // game screen vertical resolution
-        public static int        ScreenHeight                  = 675;
+        public static int ScreenHeight = 675;
 
         // glow buffer resolution
         public static int        GlowResolution                = 512;
@@ -113,11 +113,11 @@ namespace Mechadrone1
         public static float      PowerupRespawnTime            = 5.0f;
 
         // max ship velocity
-        public static float      MovementVelocity              = 700;
+        public static float      MovementVelocity              = 300;
         // max ship velocity with boost activated
         public static float      MovementVelocityBoost         = 1200;
         // force applied by controls to move ship
-        public static float      MovementForce                 = 3000;
+        public static float      MovementForce                 = 300;
         // damping force used to stop movemnt 
         public static float      MovementForceDamping          = 750;
         // max rotation velocity
@@ -126,5 +126,8 @@ namespace Mechadrone1
         public static float      MovementRotationForce         = 5.0f;
         // damping force used to stop rotation
         public static float      MovementRotationForceDamping  = 3.0f;
+
+        // Screen split style preference when there are two local players.
+        public static bool PreferHorizontalSplit { get; set; }
     }
 }

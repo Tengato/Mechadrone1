@@ -1,136 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework.Graphics;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Skelemator;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 
-namespace Mechadrone1.Rendering
+namespace Mechadrone1
 {
-    /// <summary>
-    /// The RenderEntry class abstracts a single DrawPrimitives call.
-    /// </summary>
+    // Saves information about a geometry object that needs to be rendered.
     class RenderEntry
     {
-        public delegate void DrawMethod(RenderEntry renderEntry);
+        public GeometryNode DrawNode { get; set; }
+        public float SceneDepth { get; set; }   // Only used to sort translucent objects.
+        public EffectApplication Material { get; set; }
+        public Matrix Transform { get; set; }
 
-        public DrawMethod DrawCallback { private get; set; }
-
-        public ISceneObject SceneObject;
-        public EffectPass Pass { get; set; }
-
-        public int SortOrder { get; set; }
-
-        public BlendState BlendState;
-        public DepthStencilState DepthStencilState;
-        public RasterizerState RasterizerState;
-
-        public Effect Effect { get; set; }
-        public VertexBuffer VertexBuffer { get; set; }
-        public int NumVertices { get; set; }
-        public IndexBuffer IndexBuffer { get; set; }
-        public int VertexOffset { get; set; }
-        public int StartIndex { get; set; }
-        public RenderOptions RenderOptions { get; set; }
-        public int PrimitiveCount { get; set; }
-
-        public Matrix View { get; set; }
-        public Matrix Projection { get; set; }
-        public Matrix CameraTransform { get; set; }
-        public Matrix ShadowCastingLightView { get; set; }
-        public Matrix ShadowCastingLightProjection { get; set; }
-        public RenderTarget2D ShadowMap { get; set; }
-        public List<Manifracture.DirectLight> Lights { get; set; }
-
-        public RenderEntry()
+        public RenderEntry(GeometryNode drawNode, EffectApplication material)
         {
-            SetDefaults();
+            DrawNode = drawNode;
+            SceneDepth = 0.0f;
+            Material = material;
+            Transform = Matrix.Identity;
         }
-
-
-        public RenderEntry(RenderEntry reOrig)
-        {
-            this.DrawCallback = reOrig.DrawCallback;
-            this.SceneObject = reOrig.SceneObject;
-            this.Pass = reOrig.Pass;
-            this.BlendState = reOrig.BlendState;
-            this.DepthStencilState = reOrig.DepthStencilState;
-            this.Effect = reOrig.Effect;
-            this.VertexBuffer = reOrig.VertexBuffer;
-            this.NumVertices = reOrig.NumVertices;
-            this.IndexBuffer = reOrig.IndexBuffer;
-            this.VertexOffset = reOrig.VertexOffset;
-            this.StartIndex = reOrig.StartIndex;
-            this.RenderOptions = reOrig.RenderOptions;
-            this.PrimitiveCount = reOrig.PrimitiveCount;
-            this.View = reOrig.View;
-            this.Projection = reOrig.Projection;
-            this.CameraTransform = reOrig.CameraTransform;
-            this.ShadowCastingLightView = reOrig.ShadowCastingLightView;
-            this.ShadowCastingLightProjection = reOrig.ShadowCastingLightProjection;
-            this.ShadowMap = reOrig.ShadowMap;
-        }
-
-
-        public RenderEntry(ModelMeshPart modelMeshPart)
-        {
-            SetDefaults();
-
-            // Set the ModelMeshPart values:
-            VertexBuffer = modelMeshPart.VertexBuffer;
-            NumVertices = modelMeshPart.NumVertices;
-            IndexBuffer = modelMeshPart.IndexBuffer;
-            VertexOffset = modelMeshPart.VertexOffset;
-            StartIndex = modelMeshPart.StartIndex;
-            
-            if (modelMeshPart.Tag != null)
-            {
-                RenderOptions = (RenderOptions)(modelMeshPart.Tag);
-            }
-
-            PrimitiveCount = modelMeshPart.PrimitiveCount;
-        }
-
-
-        private void SetDefaults()
-        {
-            SortOrder = 100;
-            BlendState = BlendState.Opaque;
-            DepthStencilState = DepthStencilState.Default;
-            RasterizerState = RasterizerState.CullCounterClockwise;
-            RenderOptions = RenderOptions.None;
-        }
-
-
-        public void Draw()
-        {
-            DrawCallback(this);
-        }
-
-
     }
 
     class RenderEntryComparer : Comparer<RenderEntry>
     {
         public override int Compare(RenderEntry x, RenderEntry y)
         {
-            if (x.SortOrder != y.SortOrder)
-                return x.SortOrder - y.SortOrder;
-            if (x.BlendState != y.BlendState)
-                return x.BlendState.GetHashCode() - y.BlendState.GetHashCode();
-            if (x.DepthStencilState != y.DepthStencilState)
-                return x.DepthStencilState.GetHashCode() - y.DepthStencilState.GetHashCode();
-            if (x.RasterizerState != y.RasterizerState)
-                return x.RasterizerState.GetHashCode() - y.RasterizerState.GetHashCode();
-            if (x.Effect != y.Effect)
-                return x.Effect.GetHashCode() - y.Effect.GetHashCode();
-            if (x.Pass != y.Pass)
-                return x.Pass.GetHashCode() - y.Pass.GetHashCode();
-            if (x.VertexBuffer != y.VertexBuffer)
-                return x.VertexBuffer.GetHashCode() - y.VertexBuffer.GetHashCode();
-            if (x.IndexBuffer != y.IndexBuffer)
-                return x.IndexBuffer.GetHashCode() - y.IndexBuffer.GetHashCode();
+            // If x does not use alpha, but y does, return a negative value (x is sorted to precede y)
+            int alphaCompare = (x.Material.UseAlphaPass ? 1 : 0) - (y.Material.UseAlphaPass ? 1 : 0);
+            if (alphaCompare != 0)
+                return alphaCompare;
+            if (x.Material.UseAlphaPass && y.Material.UseAlphaPass)
+                return Math.Sign(x.SceneDepth - y.SceneDepth);
+            if (x.Material.RenderState != y.Material.RenderState)
+                return x.Material.RenderState - y.Material.RenderState;
+            if (x.Material.Effect != y.Material.Effect)
+                return x.Material.Effect.GetHashCode() - y.Material.Effect.GetHashCode();
+            if (x.DrawNode.VertexBuffer != y.DrawNode.VertexBuffer)
+                return x.DrawNode.VertexBuffer.GetHashCode() - y.DrawNode.VertexBuffer.GetHashCode();
+            if (x.DrawNode.IndexBuffer != y.DrawNode.IndexBuffer)
+                return x.DrawNode.IndexBuffer.GetHashCode() - y.DrawNode.IndexBuffer.GetHashCode();
 
             return 0;
         }

@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<XnaContent xmlns:Framework="Microsoft.Xna.Framework" xmlns:Generic="System.Collections.Generic">
+    <Asset Type="Manifracture.ComponentManifest">
+        <TypeFullName>Mechadrone1.BoostSkill, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+        <Properties/>
+    </Asset>
+</XnaContent>

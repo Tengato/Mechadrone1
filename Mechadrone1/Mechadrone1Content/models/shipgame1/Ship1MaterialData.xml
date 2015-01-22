@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Generic="System.Collections.Generic" xmlns:Framework="Microsoft.Xna.Framework">
+  <Asset Type="Generic:List[SkelematorPipeline.MaterialData]">
+    <Item>
+      <Name>phong6</Name>
+      <CustomEffect>shaders\NormSpecPhongEmit.fx</CustomEffect>
+      <EffectParams>
+        <Item>
+          <Name>gNormalMap</Name>
+          <Category>Texture</Category>
+          <ValueTypeFullName>System.String</ValueTypeFullName>
+          <Value Type="string">models\shipgame1\ship1_n.tga</Value>
+        </Item>
+        <Item>
+            <Name>gSpecMap</Name>
+            <Category>Texture</Category>
+            <ValueTypeFullName>System.String</ValueTypeFullName>
+            <Value Type="string">models\shipgame1\ship1_s.tga</Value>
+        </Item>
+        <Item>
+            <Name>gEmitMap</Name>
+            <Category>Texture</Category>
+            <ValueTypeFullName>System.String</ValueTypeFullName>
+            <Value Type="string">models\shipgame1\ship1_i.tga</Value>
+        </Item>
+        <Item>
+            <Name>gBright</Name>
+            <Category>OpaqueData</Category>
+            <ValueTypeFullName>System.Single</ValueTypeFullName>
+            <Value Type="float">0.07</Value>
+        </Item>
+        <Item>
+            <Name>gContrast</Name>
+            <Category>OpaqueData</Category>
+            <ValueTypeFullName>System.Single</ValueTypeFullName>
+            <Value Type="float">1.4</Value>
+        </Item>
+      </EffectParams>
+      <RenderState>Default</RenderState>
+      <HandlingFlags>RequiresHDRLighting</HandlingFlags>
+    </Item>
+  </Asset>
+</XnaContent>

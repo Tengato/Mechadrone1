@@ -30,9 +30,7 @@ namespace Skelemator
 
         public abstract IEnumerable<AnimationNode> Children { get; }
 
-
-        public abstract Matrix[] GetSkinTransforms();
-
+        public abstract Matrix[] GetBoneTransforms();
 
         // Override this if you need to ever capture these messages.
         public virtual void AdjustBlendParam(string nodeName, float blendInput)
@@ -81,13 +79,13 @@ namespace Skelemator
         }
 
 
-        public virtual List<AnimationControlEvents> GetActiveControlEvents()
+        public virtual AnimationControlEvents GetActiveControlEvents()
         {
-            List<AnimationControlEvents> events = new List<AnimationControlEvents>();
+            AnimationControlEvents events = AnimationControlEvents.None;
 
             foreach (AnimationNode an in Children)
             {
-                events.AddRange(an.GetActiveControlEvents());
+                events |= an.GetActiveControlEvents();
             }
             return events;
         }

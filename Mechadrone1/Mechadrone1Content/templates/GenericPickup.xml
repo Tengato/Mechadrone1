@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<XnaContent xmlns:Framework="Microsoft.Xna.Framework" xmlns:Generic="System.Collections.Generic">
+    <Asset Type="Manifracture.TemplateManifest">
+      <Actor>
+          <Name>GenericPickup</Name>
+          <Components>
+              <Item>
+                  <TypeFullName>Mechadrone1.BillboardRenderComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                  <Properties>
+                      <Item>
+                          <Key>Texture</Key>
+                          <Value Type="string">textures\Giftbox</Value>
+                      </Item>
+                  </Properties>
+              </Item>
+              <Item>
+                  <TypeFullName>Mechadrone1.TransformComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                  <Properties/>
+              </Item>
+              <Item>
+                  <TypeFullName>Mechadrone1.SphereCollisionComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                  <Properties>
+                      <Item>
+                          <Key>Radius</Key>
+                          <Value Type="float">2</Value>
+                      </Item>
+                      <Item>
+                          <Key>Mass</Key>
+                          <Value Type="float">10</Value>
+                      </Item>
+                      <Item>
+                          <Key>Bounciness</Key>
+                          <Value Type="float">0</Value>
+                      </Item>
+                      <Item>
+                          <Key>StaticFriction</Key>
+                          <Value Type="float">0.6</Value>
+                      </Item>
+                      <Item>
+                          <Key>KineticFriction</Key>
+                          <Value Type="float">0.3</Value>
+                      </Item>
+                      <Item>
+                          <Key>LockRotation</Key>
+                          <Value Type="bool">true</Value>
+                      </Item>
+                  </Properties>
+              </Item>
+              <Item>
+                  <TypeFullName>Mechadrone1.BehaviorComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                  <Properties>
+                      <Item>
+                          <Key>Behaviors</Key>
+                          <Value Type ="Generic:List[Manifracture.ComponentManifest]">
+                              <Item>
+                                  <TypeFullName>Mechadrone1.InventoryPickup, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                                  <Properties/>
+                              </Item>
+                          </Value>
+                      </Item>
+                  </Properties>
+              </Item>
+          </Components>
+      </Actor>
+      <AssetsToPreload>
+          <Item>
+              <FullTypeName>Microsoft.Xna.Framework.Graphics.Texture, Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553</FullTypeName>
+              <Name>textures\Giftbox</Name>
+          </Item>
+      </AssetsToPreload>
+  </Asset>
+</XnaContent>

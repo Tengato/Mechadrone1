@@ -1,18 +1,6 @@
-#region File Description
-//-----------------------------------------------------------------------------
-// AnimationPlayer.cs
-//
-// Microsoft XNA Community Game Platform
-// Copyright (C) Microsoft Corporation. All rights reserved.
-//-----------------------------------------------------------------------------
-#endregion
-
-#region Using Statements
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Skelemator;
-#endregion
 
 namespace Skelemator
 {
@@ -20,31 +8,16 @@ namespace Skelemator
     /// The animation player is in charge of decoding bone position
     /// matrices from an animation clip.
     /// </summary>
-    public class ClipPlayer : ISkinnedSkeletonPoser
+    public class ClipPlayer
     {
-        #region Fields
+        protected Clip currentClipValue;
+        protected TimeSpan currentTimeValue;
+        protected int currentKeyframe;
+        protected Matrix[] boneTransforms;
+        protected SkinningData skinningDataValue;
+        public AnimationControlEvents ActiveControlEvents { get; private set; }
 
-
-        // Information about the currently playing animation clip.
-        Clip currentClipValue;
-        TimeSpan currentTimeValue;
-        int currentKeyframe;
-
-
-        // Current animation transform matrices.
-        Matrix[] boneTransforms;
-        Matrix[] worldTransforms;
-        Matrix[] skinTransforms;
-
-
-        // Backlink to the bind pose and skeleton hierarchy data.
-        SkinningData skinningDataValue;
         public bool IsActive { get { return CurrentClip != null; } }
-
-        public List<AnimationControlEvents> ActiveControlEvents { get; private set; }
-
-        #endregion
-
 
         /// <summary>
         /// Constructs a new animation player.
@@ -57,11 +30,8 @@ namespace Skelemator
             skinningDataValue = skinningData;
 
             boneTransforms = new Matrix[skinningData.BindPose.Count];
-            worldTransforms = new Matrix[skinningData.BindPose.Count];
-            skinTransforms = new Matrix[skinningData.BindPose.Count];
-            ActiveControlEvents = new List<AnimationControlEvents>();
+            ActiveControlEvents = AnimationControlEvents.None;
         }
-
 
         /// <summary>
         /// Starts decoding the specified animation clip.
@@ -79,18 +49,13 @@ namespace Skelemator
             skinningDataValue.BindPose.CopyTo(boneTransforms, 0);
         }
 
-
         /// <summary>
         /// Advances the current animation position.
         /// </summary>
-        public void Update(TimeSpan time, bool relativeToCurrentTime,
-                           Matrix rootTransform)
+        public virtual void Update(TimeSpan time, bool relativeToCurrentTime)
         {
             UpdateBoneTransforms(time, relativeToCurrentTime);
-            UpdateWorldTransforms(rootTransform);
-            UpdateSkinTransforms();
         }
-
 
         /// <summary>
         /// Helper used by the Update method to refresh the BoneTransforms data.
@@ -134,11 +99,11 @@ namespace Skelemator
             }
 
             // Grab the control events that have occurred
-            ActiveControlEvents.Clear();
+            ActiveControlEvents = AnimationControlEvents.None;
             foreach (KeyValuePair<TimeSpan, AnimationControlEvents> ace in currentClipValue.Events)
             {
                 if (ace.Key > currentTimeValue && ace.Key <= time)
-                    ActiveControlEvents.Add(ace.Value);
+                    ActiveControlEvents |= ace.Value;
             }
 
             currentTimeValue = time;
@@ -161,39 +126,6 @@ namespace Skelemator
             }
         }
 
-
-        /// <summary>
-        /// Helper used by the Update method to refresh the WorldTransforms data.
-        /// </summary>
-        public void UpdateWorldTransforms(Matrix rootTransform)
-        {
-            // Root bone.
-            worldTransforms[0] = boneTransforms[0] * rootTransform;
-
-            // Child bones.
-            for (int bone = 1; bone < worldTransforms.Length; bone++)
-            {
-                int parentBone = skinningDataValue.SkeletonHierarchy[bone];
-
-                worldTransforms[bone] = boneTransforms[bone] *
-                                             worldTransforms[parentBone];
-            }
-        }
-
-
-        /// <summary>
-        /// Helper used by the Update method to refresh the SkinTransforms data.
-        /// </summary>
-        public void UpdateSkinTransforms()
-        {
-            for (int bone = 0; bone < skinTransforms.Length; bone++)
-            {
-                skinTransforms[bone] = skinningDataValue.InverseBindPose[bone] *
-                                            worldTransforms[bone];
-            }
-        }
-
-
         /// <summary>
         /// Gets the current bone transform matrices, relative to their parent bones.
         /// </summary>
@@ -202,26 +134,6 @@ namespace Skelemator
             return boneTransforms;
         }
 
-
-        /// <summary>
-        /// Gets the current bone transform matrices, in absolute format.
-        /// </summary>
-        public Matrix[] GetWorldTransforms()
-        {
-            return worldTransforms;
-        }
-
-
-        /// <summary>
-        /// Gets the current bone transform matrices,
-        /// relative to the skinning bind pose.
-        /// </summary>
-        public Matrix[] GetSkinTransforms()
-        {
-            return skinTransforms;
-        }
-
-
         /// <summary>
         /// Gets the clip currently being decoded.
         /// </summary>
@@ -229,7 +141,6 @@ namespace Skelemator
         {
             get { return currentClipValue; }
         }
-
 
         /// <summary>
         /// Gets the current play position.

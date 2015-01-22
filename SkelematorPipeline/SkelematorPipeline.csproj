@@ -58,15 +58,18 @@
     <Compile Include="AnimationPackageData.cs" />
     <Compile Include="FXProcessor.cs" />
     <Compile Include="Model\ClipData.cs" />
-    <Compile Include="Model\ActorModelProcessor.cs" />
+    <Compile Include="Model\SkinnedModelProcessor.cs" />
     <Compile Include="Model\AssimpColladaImporter.cs" />
     <Compile Include="FxcMaterialProcessor.cs" />
+    <Compile Include="Terrain\TerrainProcessor2.cs" />
     <Compile Include="Terrain\RawTerrainImporter.cs" />
-    <Compile Include="Model\StaticModelProcessor.cs" />
+    <Compile Include="Model\SimpleModelProcessor.cs" />
     <Compile Include="MaterialData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Terrain\TerrainContent.cs" />
     <Compile Include="Terrain\TerrainProcessor.cs" />
+    <Compile Include="Texture\HDRTextureImporter.cs" />
+    <Compile Include="Texture\HDRTextureProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Skelemator\Skelemator.csproj">

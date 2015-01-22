@@ -1,13 +1,13 @@
 #include "Constants.fxh"
 
-float4x4 WorldViewProj;
-int WeightsPerVert;
-float4x3 PosedBones[SKINNED_EFFECT_MAX_BONES];
+float4x4 gWorldViewProj;
+int      gWeightsPerVert;
+float4x3 gPosedBones[SKINNED_EFFECT_MAX_BONES];
 
 void VertexShaderFunction(float3 position  : POSITION,
                           int4   indices   : BLENDINDICES,
                           float4 weights   : BLENDWEIGHT,
-                      out float  depth     : TEXCOORD,
+                      out float  oDepth     : TEXCOORD,
                       out float4 oPosition : POSITION)
 {
     float4x3 skinning = {0.0f, 0.0f, 0.0f,
@@ -15,9 +15,9 @@ void VertexShaderFunction(float3 position  : POSITION,
                          0.0f, 0.0f, 0.0f,
                          0.0f, 0.0f, 0.0f};
 
-    for (int i = 0; i < WeightsPerVert; i++)
+    for (int i = 0; i < gWeightsPerVert; i++)
     {
-        skinning += PosedBones[indices[i]] * weights[i];
+        skinning += gPosedBones[indices[i]] * weights[i];
     }
 
     // Transform position from bind pose to current pose:
@@ -25,8 +25,8 @@ void VertexShaderFunction(float3 position  : POSITION,
     currPosePosition.xyz = mul(float4(position, 1.0f), skinning);
     currPosePosition.w = 1.0f;
 
-    oPosition = mul(currPosePosition, WorldViewProj);
-    depth = oPosition.z / oPosition.w;
+    oPosition = mul(currPosePosition, gWorldViewProj);
+    oDepth = oPosition.z / oPosition.w;
 }
 
 
@@ -37,7 +37,7 @@ void PixelShaderFunction(float  depth     : TEXCOORD,
 }
 
 
-technique Technique1
+technique DepthOnlySkin
 {
     pass Pass1
     {

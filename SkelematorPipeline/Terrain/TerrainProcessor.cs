@@ -1,15 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Xml;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
-using Microsoft.Xna.Framework;
-using System;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
-using Microsoft.Xna.Framework.Graphics;
-using System.IO;
-using System.Xml;
-using System.Collections.Generic;
-using System.Xml.Serialization;
-using System.Linq;
 using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Intermediate;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace SkelematorPipeline
 {
@@ -66,9 +65,9 @@ namespace SkelematorPipeline
         {
             this.context = context;
 
-            if (CroppedXValues < 1 && CroppedXValues % SECTOR_SIZE == 1)
+            if (CroppedXValues < 2 || CroppedXValues % SECTOR_SIZE != 1)
                 throw new InvalidContentException(String.Format("NumXValues property value after cropping must be an integer w = n * {0} + 1 where n: {1, 2, 3...}", SECTOR_SIZE));
-            if (CroppedZValues < 1 && CroppedZValues % SECTOR_SIZE == 1)
+            if (CroppedZValues < 2 || CroppedZValues % SECTOR_SIZE != 1)
                 throw new InvalidContentException(String.Format("NumZValues property value after cropping must be an integer h = n * {0} + 1 where n: {1, 2, 3...}", SECTOR_SIZE));
             if (input.Length != NumXValues * NumZValues)
                 throw new InvalidContentException("The number of bytes in the heightmap is not equal to the product of the Height and Width properties.");
@@ -93,7 +92,7 @@ namespace SkelematorPipeline
             outputTC.VertexBufferContent.VertexDeclaration.VertexElements.Add(vePosition0);
             outputTC.VertexBufferContent.VertexDeclaration.VertexElements.Add(veNormal0);
             outputTC.VertexBufferContent.VertexDeclaration.VertexStride = vertexStride;
-            outputTC.TriangleCount = (CroppedXValues - 1) * (CroppedZValues - 1) * 2;
+            outputTC.TriangleCount = SECTOR_SIZE * SECTOR_SIZE * 2;
             outputTC.VertexCount = CroppedXValues * CroppedZValues;
 
             GeneratePositions(input);
@@ -156,18 +155,19 @@ namespace SkelematorPipeline
                     z = -mapZRadius + row * XZScale;
                     y = YOffset;
 
-                    // Apply smoothing:
-                    for (int i = -pixelRadius; i <= pixelRadius; i++)
-                    {
-                        for (int j = -pixelRadius; j <= pixelRadius; j++)
-                        {
-                            sampleRow = Math.Min(Math.Max(row + i, -CropZTop), CroppedZValues + CropZBottom - 1);
-                            sampleColumn = Math.Min(Math.Max(col + j, -CropXLeft), CroppedXValues + CropXRight - 1);
+                    //// Apply smoothing:
+                    //for (int i = -pixelRadius; i <= pixelRadius; i++)
+                    //{
+                    //    for (int j = -pixelRadius; j <= pixelRadius; j++)
+                    //    {
+                    //        sampleRow = Math.Min(Math.Max(row + i, -CropZTop), CroppedZValues + CropZBottom - 1);
+                    //        sampleColumn = Math.Min(Math.Max(col + j, -CropXLeft), CroppedXValues + CropXRight - 1);
 
-                            pixelDistSq = (float)(i * i + j * j);
-                            y += (float)(Math.Exp(-pixelDistSq / (2.0f * STD_DEV_SQ))) / (MathHelper.TwoPi * STD_DEV_SQ) * (float)(heightData[sampleColumn + CropXLeft + (sampleRow + CropZTop) * NumXValues]) * YScale;
-                        }
-                    }
+                    //        pixelDistSq = (float)(i * i + j * j);
+                    //        y += (float)(Math.Exp(-pixelDistSq / (2.0f * STD_DEV_SQ))) / (MathHelper.TwoPi * STD_DEV_SQ) * (float)(heightData[sampleColumn + CropXLeft + (sampleRow + CropZTop) * NumXValues]) * YScale;
+                    //    }
+                    //}
+                    y += (float)(heightData[col + CropXLeft + (row + CropZTop) * NumXValues]) * YScale;
 
                     position[col, row] = new Vector3(x, y, z);
 
@@ -187,8 +187,73 @@ namespace SkelematorPipeline
             }
         }
 
-
         private void GenerateNormals()
+        {
+            normal = new Vector3[CroppedXValues, CroppedZValues];
+
+            for (int row = 0; row < CroppedZValues; row++)
+            {
+                for (int col = 0; col < CroppedXValues; col++)
+                {
+                    int numTris = 0;
+                    Vector3 normalSum = Vector3.Zero;
+
+                    if (col > 0 && row > 0)
+                    {
+                        Vector3 s1 = position[col, row - 1] - position[col, row];
+                        Vector3 s2 = position[col - 1, row] - position[col, row];
+                        normalSum += Vector3.Normalize(Vector3.Cross(s1, s2));
+                        numTris++;
+                    }
+
+                    if (col > 0 && row < CroppedZValues - 1)
+                    {
+                        Vector3 s1 = position[col - 1, row] - position[col, row];
+                        Vector3 s2 = position[col - 1, row + 1] - position[col, row];
+                        Vector3 s3 = position[col, row + 1] - position[col, row];
+                        normalSum += Vector3.Normalize(Vector3.Cross(s1, s2));
+                        normalSum += Vector3.Normalize(Vector3.Cross(s2, s3));
+                        numTris += 2;
+                    }
+
+                    if (col < CroppedXValues - 1 && row < CroppedZValues - 1)
+                    {
+                        Vector3 s1 = position[col, row + 1] - position[col, row];
+                        Vector3 s2 = position[col + 1, row] - position[col, row];
+                        normalSum += Vector3.Normalize(Vector3.Cross(s1, s2));
+                        numTris++;
+                    }
+
+                    if (col < CroppedXValues - 1 && row > 0)
+                    {
+                        Vector3 s1 = position[col + 1, row] - position[col, row];
+                        Vector3 s2 = position[col + 1, row - 1] - position[col, row];
+                        Vector3 s3 = position[col, row - 1] - position[col, row];
+                        normalSum += Vector3.Normalize(Vector3.Cross(s1, s2));
+                        normalSum += Vector3.Normalize(Vector3.Cross(s2, s3));
+                        numTris += 2;
+                    }
+
+                    normal[col, row] = normalSum / (float)numTris;
+
+                    byte[] xBytes = System.BitConverter.GetBytes(normal[col, row].X);
+                    byte[] yBytes = System.BitConverter.GetBytes(normal[col, row].Y);
+                    byte[] zBytes = System.BitConverter.GetBytes(normal[col, row].Z);
+
+                    int vertStride = (int)(outputTC.VertexBufferContent.VertexDeclaration.VertexStride);
+
+                    for (int i = 0; i < 4; i++)
+                    {
+                        outputTC.VertexBufferContent.VertexData[(col + row * CroppedXValues) * vertStride + 12 + i] = xBytes[i];
+                        outputTC.VertexBufferContent.VertexData[(col + row * CroppedXValues) * vertStride + 16 + i] = yBytes[i];
+                        outputTC.VertexBufferContent.VertexData[(col + row * CroppedXValues) * vertStride + 20 + i] = zBytes[i];
+                    }
+                }
+            }
+        }
+
+
+        private void GenerateNormals2()
         {
             Vector3 right;
             Vector3 down;

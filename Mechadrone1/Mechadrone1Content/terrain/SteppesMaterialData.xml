@@ -6,67 +6,80 @@
       <CustomEffect>shaders\TerrainPhongShadow.fx</CustomEffect>
       <EffectParams>
         <Item>
-          <Name>TextureFlatBlend</Name>
-          <Category>Texture</Category>
-          <ValueTypeFullName>System.String</ValueTypeFullName>
-          <Value Type="string">textures\Terrain Gravel.tga</Value>
-        </Item>
-        <Item>
-          <Name>TextureFlatBase</Name>
+          <Name>gTextureFlatBase</Name>
           <Category>Texture</Category>
           <ValueTypeFullName>System.String</ValueTypeFullName>
           <Value Type="string">textures\Swamp.tga</Value>
         </Item>
         <Item>
-          <Name>TextureSteep</Name>
+          <Name>gTextureFlatBlend</Name>
+          <Category>Texture</Category>
+          <ValueTypeFullName>System.String</ValueTypeFullName>
+          <Value Type="string">textures\Terrain Gravel.tga</Value>
+        </Item>
+        <Item>
+          <Name>gTextureSteep</Name>
           <Category>Texture</Category>
           <ValueTypeFullName>System.String</ValueTypeFullName>
           <Value Type="string">textures\Terrain Boulder.tga</Value>
         </Item>
         <Item>
-          <Name>TextureSteepNormal</Name>
+          <Name>gTextureSteepNormal</Name>
           <Category>Texture</Category>
           <ValueTypeFullName>System.String</ValueTypeFullName>
           <Value Type="string">textures\Terrain Boulder Normal.jpg</Value>
         </Item>
         <Item>
-          <Name>TextureLowFreq</Name>
+          <Name>gTextureLowFreq</Name>
           <Category>Texture</Category>
           <ValueTypeFullName>System.String</ValueTypeFullName>
           <Value Type="string">textures\Terrain Blend 01.tga</Value>
         </Item>
         <Item>
-          <Name>LargeTileLength</Name>
+          <Name>gLargeTileLength</Name>
           <Category>OpaqueData</Category>
           <ValueTypeFullName>System.Single</ValueTypeFullName>
-          <Value Type="float">3072</Value>
+          <Value Type="float">6144</Value>
         </Item>
         <Item>
-          <Name>MedTileLength</Name>
+          <Name>gMedTileLength</Name>
           <Category>OpaqueData</Category>
           <ValueTypeFullName>System.Single</ValueTypeFullName>
           <Value Type="float">93</Value>
         </Item>
         <Item>
-          <Name>SmallTileLength</Name>
+          <Name>gSmallTileLength</Name>
           <Category>OpaqueData</Category>
           <ValueTypeFullName>System.Single</ValueTypeFullName>
           <Value Type="float">32</Value>
         </Item>
         <Item>
-          <Name>MatSpecColor</Name>
-          <Category>OpaqueData</Category>
-          <ValueTypeFullName>Microsoft.Xna.Framework.Vector4, Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553</ValueTypeFullName>
-          <Value Type="Framework:Vector4">0.02 0.02 0.02 20</Value>
-        </Item>
-        <Item>
-          <Name>LargeTexCoordOffset</Name>
+          <Name>gLargeTexCoordOffset</Name>
           <Category>OpaqueData</Category>
           <ValueTypeFullName>Microsoft.Xna.Framework.Vector2, Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553</ValueTypeFullName>
-          <Value Type="Framework:Vector2">1536 1536</Value>
+          <Value Type="Framework:Vector2">3072 3072</Value>
+        </Item>
+        <Item>
+          <Name>gMatSpecColor</Name>
+          <Category>OpaqueData</Category>
+          <ValueTypeFullName>Microsoft.Xna.Framework.Vector4, Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553</ValueTypeFullName>
+          <Value Type="Framework:Vector4">0.002 0.002 0.002 4</Value>
+        </Item>
+        <Item>
+            <Name>gBright</Name>
+            <Category>OpaqueData</Category>
+            <ValueTypeFullName>Microsoft.Xna.Framework.Vector4, Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553</ValueTypeFullName>
+            <Value Type="float">0.17</Value>
+        </Item>
+        <Item>
+            <Name>gContrast</Name>
+            <Category>OpaqueData</Category>
+            <ValueTypeFullName>Microsoft.Xna.Framework.Vector4, Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553</ValueTypeFullName>
+            <Value Type="float">1</Value>
         </Item>
       </EffectParams>
-      <HandlingFlags>RequiresShadowMap</HandlingFlags>
+      <RenderState>Default</RenderState>
+      <HandlingFlags>RequiresShadowMap, RequiresHDRLighting</HandlingFlags>
     </Item>
   </Asset>
 </XnaContent>

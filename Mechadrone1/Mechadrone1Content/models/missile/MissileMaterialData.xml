@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Generic="System.Collections.Generic" xmlns:Framework="Microsoft.Xna.Framework">
+  <Asset Type="Generic:List[SkelematorPipeline.MaterialData]">
+    <Item>
+      <Name>Sinestyle__DiffuseMap_png</Name>
+      <CustomEffect>shaders\Phong.fx</CustomEffect>
+      <EffectParams>
+          <Item>
+              <Name>gMatSpecColor</Name>
+              <Category>OpaqueData</Category>
+              <ValueTypeFullName>Microsoft.Xna.Framework.Vector4, Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553</ValueTypeFullName>
+              <Value Type="Framework:Vector4">0.2 0.2 0.2 280</Value>
+          </Item>
+          <Item>
+              <Name>gBright</Name>
+              <Category>OpaqueData</Category>
+              <ValueTypeFullName>System.Single</ValueTypeFullName>
+              <Value Type="float">.19</Value>
+          </Item>
+          <Item>
+              <Name>gContrast</Name>
+              <Category>OpaqueData</Category>
+              <ValueTypeFullName>System.Single</ValueTypeFullName>
+              <Value Type="float">1.6</Value>
+          </Item>
+      </EffectParams>
+      <RenderState>Default</RenderState>
+      <HandlingFlags>RequiresHDRLighting</HandlingFlags>
+    </Item>
+  </Asset>
+</XnaContent>

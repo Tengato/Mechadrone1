@@ -35,10 +35,10 @@ namespace Skelemator
         }
 
 
-        public override Matrix[] GetSkinTransforms()
+        public override Matrix[] GetBoneTransforms()
         {
-            Matrix[] differencePoseTransforms = differencePose.GetSkinTransforms();
-            Matrix[] targetPoseTransforms = targetPose.GetSkinTransforms();
+            Matrix[] differencePoseTransforms = differencePose.GetBoneTransforms();
+            Matrix[] targetPoseTransforms = targetPose.GetBoneTransforms();
 
             Matrix[] blendedTransforms = new Matrix[differencePoseTransforms.Length];
 
@@ -49,7 +49,6 @@ namespace Skelemator
             }
 
             return blendedTransforms;
-
         }
 
     }

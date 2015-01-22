@@ -12,6 +12,7 @@ namespace SkelematorPipeline
         public string Name;
         public string CustomEffect;
         public List<EffectParam> EffectParams;
+        public RenderStatePresets RenderState;
         public RenderOptions HandlingFlags;
     }
 

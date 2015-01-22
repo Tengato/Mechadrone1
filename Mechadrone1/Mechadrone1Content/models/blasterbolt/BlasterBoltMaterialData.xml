@@ -4,8 +4,8 @@
     <Item>
       <Name>PlasmaFire__BlasterBolt_tga</Name>
       <CustomEffect>shaders\DirectTexture.fx</CustomEffect>
-      <EffectParams>
-      </EffectParams>
+      <EffectParams></EffectParams>
+      <RenderState>AlphaAdd</RenderState>
       <HandlingFlags>None</HandlingFlags>
     </Item>
   </Asset>

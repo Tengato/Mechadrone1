@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<XnaContent xmlns:Generic="System.Collections.Generic">
+  <Asset Type="Generic:List[System.String]">
+      <Item>textures\MonValley_A_LookoutPoint_2k_IrradianceMap.dat</Item>
+  </Asset>
+</XnaContent>

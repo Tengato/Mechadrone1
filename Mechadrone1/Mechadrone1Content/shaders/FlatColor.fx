@@ -33,7 +33,7 @@ void PixelProc(out float4   oColor          : COLOR)
 }
 
 
-technique TheOnlyTechnique
+technique FlatColor
 {
     pass Pass1
     {

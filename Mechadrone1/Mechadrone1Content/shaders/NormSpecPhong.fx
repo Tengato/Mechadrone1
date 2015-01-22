@@ -1,33 +1,31 @@
 #include "Constants.fxh"
 #include "Structures.fxh"
-
-
-float3 EyePosition;
-float4x4 World;
-float4x4 WorldViewProj;
-float4x4 WorldInvTranspose;
-
-DirectionalLight DirLights[MAX_LIGHTS];
-int NumLights;
-
-float FogStart;
-float FogEnd;
-float4 FogColor;
-
 #include "Common.fxh"
 
+float3   gEyePosition;
+float4x4 gWorld;
+float4x4 gWorldViewProj;
+float4x4 gWorldInvTranspose;
+float    gFogStart;
+float    gFogEnd;
+float3   gFogColor;
+float    gSpecExpFactor;
+float    gNumSpecLevels;
+float3   gAmbientLight;
+float    gBright;
+float    gContrast;
 
-texture2D NormalMap;
-sampler2D NormalMapSampler = sampler_state
+texture2D gNormalMap;
+sampler2D gNormalMapSampler = sampler_state
 {
-    Texture = <NormalMap>;
+    Texture = <gNormalMap>;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
     MipFilter = LINEAR;
 };
 
 texture2D Texture;
-sampler2D DiffuseTextureSampler = sampler_state
+sampler2D gDiffuseTextureSampler = sampler_state
 {
     Texture = <Texture>;
     MinFilter = LINEAR;
@@ -35,15 +33,36 @@ sampler2D DiffuseTextureSampler = sampler_state
     MipFilter = LINEAR;
 };
 
-texture2D SpecMap;
-sampler2D SpecMapSampler = sampler_state
+texture2D gSpecMap;
+sampler2D gSpecMapSampler = sampler_state
 {
-    Texture = <SpecMap>;
+    Texture = <gSpecMap>;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
     MipFilter = LINEAR;
 };
 
+texture2D gIrradianceMap;
+sampler2D gIrradianceMapSampler = sampler_state
+{
+    Texture = <gIrradianceMap>;
+    MinFilter = POINT;
+    MagFilter = POINT;
+    MipFilter = POINT;
+    AddressU = WRAP;
+    AddressV = CLAMP;
+};
+
+texture2D gSpecPrefilter;
+sampler2D gSpecPrefilterSampler = sampler_state
+{
+    Texture = <gSpecPrefilter>;
+    MinFilter = POINT;
+    MagFilter = POINT;
+    MipFilter = POINT;
+    AddressU = WRAP;
+    AddressV = CLAMP;
+};
 
 void VertexProc(float3   position        : POSITION,
                 float3   normal          : NORMAL,
@@ -52,27 +71,26 @@ void VertexProc(float3   position        : POSITION,
                 float2   texCoord        : TEXCOORD0,
             out float4   oPosition       : POSITION,
             out float2   oTexCoord       : TEXCOORD0,
-            out float3   eyeDisplacement : TEXCOORD1,
-            out float3x3 tangentToWorld  : TEXCOORD2)    // Includes TEXCOORD3 and TEXCOORD4
+            out float3   oToEye          : TEXCOORD1,
+            out float3x3 oTangentToWorld  : TEXCOORD2)    // Includes TEXCOORD3 and TEXCOORD4
 {
     oTexCoord = texCoord;
 
     // Transform position from object space to world space:
-    float4 wPosition = mul(float4(position, 1.0f), World);
-    eyeDisplacement = EyePosition - wPosition.xyz;
+    float4 wPosition = mul(float4(position, 1.0f), gWorld);
+    oToEye = gEyePosition - wPosition.xyz;
 
     // Transform position from object space to clip space:
-    oPosition = mul(float4(position, 1.0f), WorldViewProj);
+    oPosition = mul(float4(position, 1.0f), gWorldViewProj);
 
     // Construct tangent-space-to-world-space 3x3 matrix
-    tangentToWorld[0] = mul(tangent, (float3x3)WorldInvTranspose);
-    tangentToWorld[1] = mul(binormal, (float3x3)WorldInvTranspose);
-    tangentToWorld[2] = mul(normal, (float3x3)WorldInvTranspose);
+    oTangentToWorld[0] = mul(tangent, (float3x3)gWorldInvTranspose);
+    oTangentToWorld[1] = mul(binormal, (float3x3)gWorldInvTranspose);
+    oTangentToWorld[2] = mul(normal, (float3x3)gWorldInvTranspose);
 }
 
-
 void PixelProc(float2   texCoord        : TEXCOORD0,
-               float3   eyeDisplacement : TEXCOORD1,
+               float3   toEye           : TEXCOORD1,
                float3x3 tangentToWorld  : TEXCOORD2,
            out float4   oColor          : COLOR)
 {
@@ -81,39 +99,53 @@ void PixelProc(float2   texCoord        : TEXCOORD0,
     tangentToWorld[2] = normalize(tangentToWorld[2]);
 
     // Fetch and expand range-compressed normal
-    float3 normalTex = tex2D(NormalMapSampler, texCoord).xyz;
+    float3 normalTex = tex2D(gNormalMapSampler, texCoord).xyz;
     float3 normalTanSpc = expandNormalTex(normalTex);
     float3 normal = mul(normalTanSpc, tangentToWorld);
 
     Material surfaceMat;
-    surfaceMat.Specular = tex2D(SpecMapSampler, texCoord);
-    surfaceMat.Diffuse = tex2D(DiffuseTextureSampler, texCoord);
+    surfaceMat.Specular = tex2D(gSpecMapSampler, texCoord);
+    surfaceMat.Specular.w = pow(1.03678, surfaceMat.Specular.w * 255.0f);
+    surfaceMat.Diffuse = tex2D(gDiffuseTextureSampler, texCoord);
 
-    float eyeDistance = length(eyeDisplacement);
+    float toEyeDist = length(toEye);
+    toEye /= toEyeDist;
 
-    // Start with a sum of zero.
-    oColor = VECTOR4_ZERO;
+    float3 viewReflect = reflect(-toEye, normal);
+    float lDotN = max(dot(toEye, normal), 0.0f);
 
-    // Sum the light contribution from each light source.
-    float4 ambientPiece, diffusePiece, specularPiece;
+    // Convert normal vector into spherical texture coordinates:
+    float4 normalSphere;
+    normalSphere.y = acos(normal.y) / PI;
+    normalSphere.x = -atan2(normal.x, normal.z) / 2.0f / PI;
+    normalSphere.z = 0.0f;     // not used
+    normalSphere.w = 0.0f;     // mipmap level; irradiance map only has one level
 
-    for (int i = 0; i < NumLights; i++)
-    {
-        ComputeDirectionalLight(surfaceMat, DirLights[i], normal, eyeDisplacement / eyeDistance, 
-            ambientPiece, diffusePiece, specularPiece);
+    float4 viewReflectTex;
+    viewReflectTex.y = acos(viewReflect.y) / PI;
+    viewReflectTex.x = -atan2(viewReflect.x, viewReflect.z) / 2.0f / PI;
+    viewReflectTex.z = 0.0f;        // not used
+    viewReflectTex.w = max(gNumSpecLevels - 1.0f - log(surfaceMat.Specular.w) / log(gSpecExpFactor), 0.0f);     // spec level
 
-        oColor += ambientPiece + diffusePiece + specularPiece;
-    }
+    float3 diffuse = tex2Dlod(gIrradianceMapSampler, normalSphere).rgb * surfaceMat.Diffuse.rgb;
+    float3 specF = surfaceMat.Specular.rgb + (float3(1.0f, 1.0f, 1.0f) - surfaceMat.Specular.rgb) * pow(1.0f - lDotN, 5.0f);
+    float3 spec = tex2Dlod(gSpecPrefilterSampler, viewReflectTex).rgb * lDotN * specF;
+
+    // Tone map:
+    oColor.rgb = gBright * pow(diffuse + spec, gContrast);
+
+    // Linear space to sRGB
+    oColor.rgb = pow(oColor.rgb, 1.0f / 2.2f);
 
     // Common to take alpha from diffuse material.
     oColor.a = surfaceMat.Diffuse.a;
 
-    float fogFactor = 1.0f - exp2(1.0f - (FogEnd - FogStart) / max(FogEnd - max(eyeDistance, FogStart), 0.000001f));
-    ApplyFog(oColor, fogFactor);
+    float fogFactor = 1.0f - exp2(1.0f - (gFogEnd - gFogStart) / max(gFogEnd - max(toEyeDist, gFogStart), 0.000001f));
+    oColor.rgb = lerp(oColor.rgb, gFogColor, fogFactor);
 }
 
 
-technique TheOnlyTechnique
+technique NormSpecPhong
 {
     pass Pass1
     {

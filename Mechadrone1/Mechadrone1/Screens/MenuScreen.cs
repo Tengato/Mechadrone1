@@ -7,14 +7,11 @@
 //-----------------------------------------------------------------------------
 #endregion
 
-#region Using Statements
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Mechadrone1.StateManagement;
-#endregion
 
 namespace Mechadrone1.Screens
 {
@@ -57,8 +54,8 @@ namespace Mechadrone1.Screens
         {
             this.menuTitle = menuTitle;
 
-            TransitionOnTime = TimeSpan.FromSeconds(0.5);
-            TransitionOffTime = TimeSpan.FromSeconds(0.5);
+            TransitionOnTime = TimeSpan.FromSeconds(0.5d);
+            TransitionOffTime = TimeSpan.FromSeconds(0.5d);
         }
 
 
@@ -73,6 +70,16 @@ namespace Mechadrone1.Screens
         /// </summary>
         public override void HandleInput(GameTime gameTime, InputManager input)
         {
+            PlayerIndex playerIndex;
+
+            if (input.IsMenuCancel(ControllingPlayer, out playerIndex))
+            {
+                OnCancel(playerIndex);
+                return;
+            }
+
+            menuEntries[selectedEntry].HandleInput(gameTime, input, ControllingPlayer);
+
             // Move to the previous menu entry?
             if (input.IsMenuUp(ControllingPlayer))
             {
@@ -90,33 +97,7 @@ namespace Mechadrone1.Screens
                 if (selectedEntry >= menuEntries.Count)
                     selectedEntry = 0;
             }
-
-            // Accept or cancel the menu? We pass in our ControllingPlayer, which may
-            // either be null (to accept input from any player) or a specific index.
-            // If we pass a null controlling player, the InputState helper returns to
-            // us which player actually provided the input. We pass that through to
-            // OnSelectEntry and OnCancel, so they can tell which player triggered them.
-            PlayerIndex playerIndex;
-
-            if (input.IsMenuSelect(ControllingPlayer, out playerIndex))
-            {
-                OnSelectEntry(selectedEntry, playerIndex);
-            }
-            else if (input.IsMenuCancel(ControllingPlayer, out playerIndex))
-            {
-                OnCancel(playerIndex);
-            }
         }
-
-
-        /// <summary>
-        /// Handler for when the user has chosen a menu entry.
-        /// </summary>
-        protected virtual void OnSelectEntry(int entryIndex, PlayerIndex playerIndex)
-        {
-            menuEntries[entryIndex].OnSelectEntry(playerIndex);
-        }
-
 
         /// <summary>
         /// Handler for when the user has cancelled the menu.
@@ -161,7 +142,7 @@ namespace Mechadrone1.Screens
                 MenuEntry menuEntry = menuEntries[i];
                 
                 // each entry is to be centered horizontally
-                position.X = ScreenManager.GraphicsDevice.Viewport.Width / 2 - menuEntry.GetWidth(this) / 2;
+                position.X = SharedResources.Game.GraphicsDevice.Viewport.Width / 2 - menuEntry.GetWidth() / 2;
 
                 if (ScreenState == ScreenState.TransitionOn)
                     position.X -= transitionOffset * 256;
@@ -172,7 +153,7 @@ namespace Mechadrone1.Screens
                 menuEntry.Position = position;
 
                 // move down for the next entry the size of this entry
-                position.Y += menuEntry.GetHeight(this);
+                position.Y += menuEntry.GetHeight();
             }
         }
 
@@ -203,9 +184,7 @@ namespace Mechadrone1.Screens
             // make sure our entries are in the right place before we draw them
             UpdateMenuEntryLocations();
 
-            GraphicsDevice graphics = ScreenManager.GraphicsDevice;
-
-            ScreenManager.FontManager.BeginText();
+            SharedResources.FontManager.BeginText();
 
             // Draw each menu entry in turn.
             for (int i = 0; i < menuEntries.Count; i++)
@@ -214,7 +193,7 @@ namespace Mechadrone1.Screens
 
                 bool isSelected = IsActive && (i == selectedEntry);
 
-                menuEntry.Draw(this, isSelected, gameTime);
+                menuEntry.Draw(TransitionAlpha, isSelected, gameTime);
             }
 
             // Make the menu slide into place during transitions, using a
@@ -223,17 +202,17 @@ namespace Mechadrone1.Screens
             float transitionOffset = (float)Math.Pow(TransitionPosition, 2);
 
             // Draw the menu title centered on the screen
-            Vector2 titlePosition = new Vector2(graphics.Viewport.Width / 2, 80);
-            Vector2 titleOrigin = ScreenManager.FontManager.MeasureString(FontType.ArialMedium, menuTitle) / 2;
+            Vector2 titlePosition = new Vector2(SharedResources.Game.GraphicsDevice.Viewport.Width / 2, 80);
+            Vector2 titleOrigin = SharedResources.FontManager.MeasureString(FontType.ArialMedium, menuTitle) / 2;
             Color titleColor = Color.OldLace * TransitionAlpha;
             float titleScale = 1.25f;
 
             titlePosition.Y -= transitionOffset * 100;
 
-            ScreenManager.FontManager.DrawText(FontType.ArialMedium, menuTitle, titlePosition, titleColor, true, 0,
+            SharedResources.FontManager.DrawText(FontType.ArialMedium, menuTitle, titlePosition, titleColor, true, 0,
                                    titleOrigin, titleScale, SpriteEffects.None, 0);
 
-            ScreenManager.FontManager.EndText();
+            SharedResources.FontManager.EndText();
         }
 
 

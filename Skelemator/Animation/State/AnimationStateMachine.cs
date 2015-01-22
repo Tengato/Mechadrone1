@@ -16,6 +16,8 @@ namespace Skelemator
         public TransitionInfo ActiveTransition;
         protected bool blendFromCancelledTransitionPose;
         protected Matrix[] cancelledPose;
+        public AnimationControlEvents ActiveControlEvents;
+        private SkinningData mSkinningData;
 
         private Dictionary<AnimationState, Dictionary<AnimationState, TransitionInfo>> transitions;
 
@@ -39,7 +41,7 @@ namespace Skelemator
                 if (angle < 0.0f)
                     angle += MathHelper.TwoPi;
 
-                // TODO: some of these details are specific to bipeds and ought to be refactored out...
+                // TODO: P2: some of these details are specific to bipeds and ought to be refactored out...
                 CurrentState.AdjustBlendParam("2DWalk", angle);
                 CurrentState.AdjustBlendParam("Fast2DWalk", angle);
                 CurrentState.AdjustBlendParam("SpeedBlendedMove", horizMovement.Length());
@@ -100,10 +102,10 @@ namespace Skelemator
             }
         }
 
-
         public AnimationStateMachine(AnimationPackage package)
         {
             horizMovement = Vector2.Zero;
+            mSkinningData = package.SkinningData;
 
             // Use the data in the AnimationPackage structure to create states to fill our list and build
             // a transition matrix.
@@ -141,6 +143,7 @@ namespace Skelemator
             ActiveTransition = null;
             nextState = null;
             blendFromCancelledTransitionPose = false;
+            ActiveControlEvents = AnimationControlEvents.None;
         }
 
 
@@ -150,16 +153,16 @@ namespace Skelemator
         /// </summary>
         /// <param name="gameTime"></param>
         /// <returns></returns>
-        public List<AnimationControlEvents> Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
-            List<AnimationControlEvents> animEvents = new List<AnimationControlEvents>();
+            ActiveControlEvents = AnimationControlEvents.None;
 
             if (ActiveTransition == null ||
                 (transitionTime == TimeSpan.Zero && !CurrentState.CanTransitionOut()))
             {
                 // We're either completely in a given state, or we can't begin the transition just yet.
                 CurrentState.AdvanceTime(gameTime.ElapsedGameTime);
-                animEvents.AddRange(CurrentState.GetActiveControlEvents());
+                ActiveControlEvents |= CurrentState.GetActiveControlEvents();
             }
             else
             {
@@ -167,11 +170,11 @@ namespace Skelemator
                 if (ActiveTransition.Type != TransitionType.Frozen)
                 {
                     CurrentState.AdvanceTime(gameTime.ElapsedGameTime);
-                    animEvents.AddRange(CurrentState.GetActiveControlEvents());
+                    ActiveControlEvents |= CurrentState.GetActiveControlEvents();
                 }
 
                 nextState.AdvanceTime(gameTime.ElapsedGameTime);
-                animEvents.AddRange(nextState.GetActiveControlEvents());
+                ActiveControlEvents |= nextState.GetActiveControlEvents();
 
                 transitionTime += gameTime.ElapsedGameTime;
 
@@ -191,8 +194,6 @@ namespace Skelemator
                     UpdateTransition();
                 }
             }
-
-            return animEvents;
         }
 
 
@@ -232,16 +233,16 @@ namespace Skelemator
             }
             else
             {
-                blendStartPose = CurrentState.GetSkinTransforms();
+                blendStartPose = CurrentState.GetBoneTransforms();
             }
 
             if (ActiveTransition == null)
             {
-                return blendStartPose;
+                return CreateSkinTransforms(blendStartPose);
             }
             else
             {
-                Matrix[] nextStatePose = nextState.GetSkinTransforms();
+                Matrix[] nextStatePose = nextState.GetBoneTransforms();
 
                 float pctComplete = (float)(transitionTime.TotalSeconds / ActiveTransition.DurationInSeconds);
                 float blendFactor = ActiveTransition.UseSmoothStep ? MathHelper.SmoothStep(0.0f, 1.0f, pctComplete) : pctComplete;
@@ -252,17 +253,42 @@ namespace Skelemator
                 if (!blendFromCancelledTransitionPose)
                     cancelledPose = blendedPose;
 
-                return blendedPose;
+                return CreateSkinTransforms(blendedPose);
             }
+        }
+
+        private Matrix[] CreateSkinTransforms(Matrix[] boneTransforms)
+        {
+            Matrix[] skinTransforms = new Matrix[boneTransforms.Length];
+
+            // First compute the local-to-model transforms:
+            skinTransforms[0] = boneTransforms[0];  // Root bone.
+
+            // Child bones.
+            for (int bone = 1; bone < skinTransforms.Length; bone++)
+            {
+                int parentBone = mSkinningData.SkeletonHierarchy[bone];
+                skinTransforms[bone] = boneTransforms[bone] * skinTransforms[parentBone];
+            }
+
+            // Apply the inverse bind pose to get the skinning palette:
+            for (int bone = 0; bone < skinTransforms.Length; bone++)
+            {
+                skinTransforms[bone] = mSkinningData.InverseBindPose[bone] * skinTransforms[bone];
+            }
+
+            return skinTransforms;
         }
 
     }
 
-
+    [Flags]
     public enum AnimationControlEvents
     {
-        Jump,
-        Fire,
-        Reload,
+        None = 0,
+        Jump = 1,
+        Fire = 2,
+        Reload = 4,
+        Boost,
     }
 }

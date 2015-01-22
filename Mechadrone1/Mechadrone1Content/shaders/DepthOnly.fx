@@ -1,12 +1,12 @@
 #include "Constants.fxh"
 
-float4x4 WorldViewProj;
+float4x4 gWorldViewProj;
 
 void VertexShaderFunction(float3 position  : POSITION,
                       out float  depth     : TEXCOORD,
                       out float4 oPosition : POSITION)
 {
-    oPosition = mul(float4(position, 1.0f), WorldViewProj);
+    oPosition = mul(float4(position, 1.0f), gWorldViewProj);
     depth = oPosition.z / oPosition.w;
 }
 
@@ -16,7 +16,7 @@ void PixelShaderFunction(float  depth  : TEXCOORD,
     oColor = float4(depth + SHADOWMAP_BIAS, 0.0f, 0.0f, 0.0f);
 }
 
-technique Technique1
+technique DepthOnly
 {
     pass Pass1
     {

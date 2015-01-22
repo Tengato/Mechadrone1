@@ -1,9 +1,9 @@
 #include "Constants.fxh"
 
-float4x4 WorldViewProj;
+float4x4 gWorldViewProj;
 
 texture2D Texture;
-sampler2D DiffuseTextureSampler = sampler_state
+sampler2D gDiffuseTextureSampler = sampler_state
 {
     Texture = <Texture>;
     MinFilter = LINEAR;
@@ -16,7 +16,7 @@ void VertexShaderFunction(float3 position  : POSITION,
                       out float4 oPosition : POSITION,
                       out float2 oTexCoord : TEXCOORD)
 {
-    oPosition = mul(float4(position, 1.0f), WorldViewProj);
+    oPosition = mul(float4(position, 1.0f), gWorldViewProj);
     oTexCoord = texCoord;
 }
 
@@ -27,7 +27,7 @@ void PixelShaderFunction(out float4 oColor : COLOR)
 }
 
 
-technique Technique1
+technique DepthOnlyAlpha
 {
     pass Pass1
     {

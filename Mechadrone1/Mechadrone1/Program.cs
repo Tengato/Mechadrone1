@@ -13,6 +13,7 @@ namespace Mechadrone1
             using (MechadroneGame game = new MechadroneGame())
             {
                 game.Run();
+                game.Cleanup();
             }
         }
     }

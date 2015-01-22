@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<XnaContent xmlns:Generic="System.Collections.Generic">
+  <Asset Type="Generic:List[System.String]">
+      <Item>textures\MonValley_A_LookoutPoint_2k_SpecPrefilter_0.dat</Item>
+      <Item>textures\MonValley_A_LookoutPoint_2k_SpecPrefilter_1.dat</Item>
+      <Item>textures\MonValley_A_LookoutPoint_2k_SpecPrefilter_2.dat</Item>
+      <Item>textures\MonValley_A_LookoutPoint_2k_SpecPrefilter_3.dat</Item>
+      <Item>textures\MonValley_A_LookoutPoint_2k_SpecPrefilter_4.dat</Item>
+      <Item>textures\MonValley_A_LookoutPoint_2k_SpecPrefilter_5.dat</Item>
+      <Item>textures\MonValley_A_LookoutPoint_2k_SpecPrefilter_6.dat</Item>
+  </Asset>
+</XnaContent>

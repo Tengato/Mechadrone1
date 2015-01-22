@@ -211,6 +211,11 @@
                 <MinDurationInSeconds>0.0</MinDurationInSeconds>
                 <BlendTreeNodeName>CrouchWalkClip</BlendTreeNodeName>
             </Item>
+            <Item>
+                <Name>KnockedDown</Name>
+                <MinDurationInSeconds>3.0</MinDurationInSeconds>
+                <BlendTreeNodeName>KnockedDownClip</BlendTreeNodeName>
+            </Item>
         </AnimationStateDescriptions>
         <AnimationNodeDescriptions>
             <Item Type="Skelemator.ClipNodeDescription">
@@ -319,7 +324,7 @@
                 <ChildNodeNames>
                     <Item>SlowWalk</Item>
                     <Item>Quicken2DWalk</Item>
-                    <Item>RunClip</Item>
+                    <Item>WalkRun</Item>
                 </ChildNodeNames>
                 <ChildRangesByName>
                     <Item>
@@ -331,7 +336,7 @@
                         <Value>0.5 0.75</Value>
                     </Item>
                     <Item>
-                        <Key>RunClip</Key> <!-- Walk to run is a difficult transition because the animations don't lerp together very well...-->
+                        <Key>WalkRun</Key>
                         <Value>0.75 1</Value>
                     </Item>
                 </ChildRangesByName>
@@ -351,6 +356,19 @@
                 <ChildNodeName>2DWalk</ChildNodeName>
                 <Rate1>1</Rate1>
                 <Rate2>1.1746031746031746031746031746032</Rate2> <!-- 24.666667 / 21 -->
+                <BlendFactor>0</BlendFactor>
+            </Item>
+            <Item Type="Skelemator.ClipNodeDescription">
+                <Name>FastWalkClip</Name>
+                <PlaybackRate>1.952380952380952380952380952381</PlaybackRate>
+                <!-- 24.666667 * 41 * 1.5 / 37 / 21-->
+                <ClipName>Walk</ClipName>
+            </Item>
+            <Item Type="Skelemator.BinaryLerpBlendNodeDescription">
+                <Name>WalkRun</Name>
+                <PlaybackRate>1</PlaybackRate>
+                <Child1NodeName>FastWalkClip</Child1NodeName>
+                <Child2NodeName>RunClip</Child2NodeName>
                 <BlendFactor>0</BlendFactor>
             </Item>
             <Item Type="Skelemator.Continuous1DLerpBlendNodeDescription">

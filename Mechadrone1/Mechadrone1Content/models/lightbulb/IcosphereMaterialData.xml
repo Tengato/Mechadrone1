@@ -12,6 +12,7 @@
           <Value Type="Framework:Vector4">1 1 1 1</Value>
         </Item>
       </EffectParams>
+      <RenderState>Default</RenderState>
       <HandlingFlags>None</HandlingFlags>
     </Item>
   </Asset>

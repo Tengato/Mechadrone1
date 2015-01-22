@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<XnaContent xmlns:Framework="Microsoft.Xna.Framework" xmlns:Generic="System.Collections.Generic">
+    <Asset Type="Manifracture.ComponentManifest">
+        <TypeFullName>Mechadrone1.HealthPotion, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+        <Properties>
+            <Item>
+                <Key>Power</Key>
+                <Value Type="int">25</Value>
+            </Item>
+            <Item>
+                <Key>Value</Key>
+                <Value Type="int">10</Value>
+            </Item>
+            <Item>
+                <Key>Name</Key>
+                <Value Type="string">Recovery Kit</Value>
+            </Item>
+        </Properties>
+    </Asset>
+</XnaContent>

@@ -1,24 +1,25 @@
-float4x4 worldViewProj;
-textureCUBE skybox;
+float4x4    gWorldViewProj;
 
-sampler envMap = sampler_state {
-    Texture = <skybox>;
+textureCUBE gEnvironmentMap;
+samplerCUBE gEnvironmentMapSampler = sampler_state
+{
+    Texture = <gEnvironmentMap>;
 };
 
-void VertexShaderFunction(float3 position  : POSITION,
-                       out float4 oPosition : POSITION,
-                       out float3 mapLookup : TEXCOORD)
+void VertexShaderFunction(float3 position   : POSITION,
+                      out float4 oPosition  : POSITION,
+                      out float3 oMapLookup : TEXCOORD)
 {
-    oPosition = mul(float4(position, 1.0f), worldViewProj).xyww;
-    mapLookup = position;
+    oPosition = mul(float4(position, 1.0f), gWorldViewProj).xyww;
+    oMapLookup = position;
 }
 
 float4 PixelShaderFunction(float3 mapLookup : TEXCOORD) : COLOR
 {
-    return texCUBE(envMap, mapLookup);
+    return texCUBE(gEnvironmentMapSampler, mapLookup);
 }
 
-technique Technique1
+technique Skymap
 {
     pass Pass1
     {

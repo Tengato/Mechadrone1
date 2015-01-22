@@ -21,6 +21,14 @@ namespace Skelemator
         public Effect Effect;
         public object Tag;
 
+        public int SectorVertexSpan
+        {
+            get
+            {
+                return SectorSize * (VertexCountAlongXAxis + 1) + 1;
+            }
+        }   // We assume the heightmap vertices are sliced parallel to the x-axis.
+
 
         public Vector3 TransformForGeometry
         {

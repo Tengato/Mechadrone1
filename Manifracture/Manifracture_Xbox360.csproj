@@ -48,14 +48,20 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActorManifest.cs" />
+    <Compile Include="AssetInfo.cs" />
+    <Compile Include="ComponentManifest.cs" />
+    <Compile Include="ControlActions.cs" />
+    <Compile Include="Controls.cs" />
+    <Compile Include="ControlSpecification.cs" />
     <Compile Include="DirectionalLight.cs" />
-    <Compile Include="NotInitializable.cs" />
-    <Compile Include="FogDesc.cs" />
-    <Compile Include="Game1Manifest.cs" />
-    <Compile Include="GameObjectLoadInfo.cs" />
-    <Compile Include="LoadedAsset.cs" />
+    <Compile Include="InputMap.cs" />
+    <Compile Include="LevelManifest.cs" />
+    <Compile Include="ManifestKeys.cs" />
+    <Compile Include="ParticleSystemSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TerrainChunkLoadInfo.cs" />
+    <Compile Include="Shape.cs" />
+    <Compile Include="TemplateManifest.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup />

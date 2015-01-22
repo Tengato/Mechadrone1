@@ -1,28 +1,25 @@
 #include "Constants.fxh"
 #include "Structures.fxh"
-
-
-float3 EyePosition;
-float4x4 World;
-float4x4 WorldViewProj;
-float4x4 WorldInvTranspose;
-float4x4 ShadowTransform;
-float InvShadowMapSize;
-
-float4 MatSpecColor;
-
-DirectionalLight DirLights[MAX_LIGHTS];
-int NumLights;
-int ShadowLightIndex;
-
-float FogStart;
-float FogEnd;
-float4 FogColor;
-
 #include "Common.fxh"
 
+float3   gEyePosition;
+float4x4 gWorld;
+float4x4 gWorldViewProj;
+float4x4 gWorldInvTranspose;
+float    gFogStart;
+float    gFogEnd;
+float3   gFogColor;
+float4x4 gShadowTransform;
+float    gInvShadowMapSize;
+float    gSpecExpFactor;
+float    gNumSpecLevels;
+float3   gAmbientLight;
+float4   gMatSpecColor;
+float    gBright;
+float    gContrast;
+
 texture2D Texture;
-sampler2D DiffuseTextureSampler = sampler_state
+sampler2D gTextureSampler = sampler_state
 {
     Texture = <Texture>;
     MinFilter = LINEAR;
@@ -30,10 +27,10 @@ sampler2D DiffuseTextureSampler = sampler_state
     MipFilter = LINEAR;
 };
 
-texture2D ShadowMap;
-sampler2D ShadowMapSampler = sampler_state 
+texture2D gShadowMap;
+sampler2D gShadowMapSampler = sampler_state 
 {
-    Texture = <ShadowMap>;
+    Texture = <gShadowMap>;
     MinFilter = POINT;
     MagFilter = POINT;
     MipFilter = POINT;
@@ -41,51 +38,27 @@ sampler2D ShadowMapSampler = sampler_state
     AddressV = CLAMP;
 };
 
-
-float CalculateShadowFactor(float4 smapTexCoord)
+texture2D gIrradianceMap;
+sampler2D gIrradianceMapSampler = sampler_state
 {
-    const float2 offset[9] =
-    {
-        float2(-InvShadowMapSize, InvShadowMapSize),
-        float2(0.0f, InvShadowMapSize),
-        float2(InvShadowMapSize, InvShadowMapSize),
-        float2(-InvShadowMapSize, 0.0f),
-        float2(0.0f, 0.0f),
-        float2(InvShadowMapSize, 0.0f),
-        float2(-InvShadowMapSize, -InvShadowMapSize),
-        float2(0.0f, -InvShadowMapSize),
-        float2(InvShadowMapSize, -InvShadowMapSize)
-    };
+    Texture = <gIrradianceMap>;
+    MinFilter = POINT;
+    MagFilter = POINT;
+    MipFilter = POINT;
+    AddressU = WRAP;
+    AddressV = CLAMP;
+};
 
-    smapTexCoord.xyz /= smapTexCoord.w;
-
-    float smapInfluence = smoothstep(0.0f, 0.1f, smapTexCoord.x) *
-                      smoothstep(1.0f, 0.9f, smapTexCoord.x) *
-                      smoothstep(0.0f, 0.1f, smapTexCoord.y) *
-                      smoothstep(1.0f, 0.9f, smapTexCoord.y);
-
-    float shadowFactor = 1.0;
-
-    if (smapInfluence >= 0.005f)
-    {
-        float percentLit = 0.0f;
-
-        for (int i = 0; i < 9; i++)
-        {
-            float smapDepth = tex2D(ShadowMapSampler, smapTexCoord.xy + offset[i]);
-
-            if (smapTexCoord.z <= smapDepth)
-                percentLit += 1.0f;
-        }
-
-        percentLit /= 9.0f;
-
-        shadowFactor = lerp(1.0f, percentLit, smapInfluence);
-    }
-
-    return shadowFactor;
-}
-
+texture2D gSpecPrefilter;
+sampler2D gSpecPrefilterSampler = sampler_state
+{
+    Texture = <gSpecPrefilter>;
+    MinFilter = POINT;
+    MagFilter = POINT;
+    MipFilter = POINT;
+    AddressU = WRAP;
+    AddressV = CLAMP;
+};
 
 void VertexProc(float3   position        : POSITION,
                 float3   normal          : NORMAL,
@@ -93,67 +66,76 @@ void VertexProc(float3   position        : POSITION,
             out float4   oPosition       : POSITION,
             out float3   oNormal         : NORMAL,
             out float2   oTexCoord       : TEXCOORD0,
-            out float3   eyeDisplacement : TEXCOORD1,
-            out float4   shadowMapPos    : TEXCOORD2)
+            out float3   oToEye          : TEXCOORD1,
+            out float4   oShadowMapPos   : TEXCOORD2)
 {
     oTexCoord = texCoord;
 
     // Transform position from object space to world space:
-    float4 wPosition = mul(float4(position, 1.0f), World);
-    eyeDisplacement = EyePosition - wPosition.xyz;
+    float4 wPosition = mul(float4(position, 1.0f), gWorld);
+    oToEye = gEyePosition - wPosition.xyz;
 
     // Transform position from object space to clip space:
-    oPosition = mul(float4(position, 1.0f), WorldViewProj);
+    oPosition = mul(float4(position, 1.0f), gWorldViewProj);
 
-    oNormal = mul(normal, (float3x3)WorldInvTranspose);
+    oNormal = mul(normal, (float3x3)gWorldInvTranspose);
 
-    shadowMapPos = mul(float4(position, 1.0f), ShadowTransform);
+    oShadowMapPos = mul(float4(position, 1.0f), gShadowTransform);
 }
-
 
 void PixelProc(float3   normal          : NORMAL,
                float2   texCoord        : TEXCOORD0,
-               float3   eyeDisplacement : TEXCOORD1,
+               float3   toEye           : TEXCOORD1,
                float4   shadowMapPos    : TEXCOORD2,
            out float4   oColor          : COLOR)
 {
+    normal = normalize(normal);
+
     Material surfaceMat;
-    surfaceMat.Specular = MatSpecColor;
-    surfaceMat.Diffuse = tex2D(DiffuseTextureSampler, texCoord);
+    surfaceMat.Specular = gMatSpecColor;
+    surfaceMat.Diffuse = tex2D(gTextureSampler, texCoord);
 
-    float eyeDistance = length(eyeDisplacement);
+    float distToEye = length(toEye);
+    toEye /= distToEye;
 
-    // Start with a sum of zero.
-    oColor = VECTOR4_ZERO;
+    float shadowFactor = CalculateShadowFactor(shadowMapPos, gInvShadowMapSize, gShadowMapSampler);
 
-    float shadowFactor = CalculateShadowFactor(shadowMapPos);
+    float3 viewReflect = reflect(-toEye, normal);
+    float lDotN = max(dot(toEye, normal), 0.0f);
 
-    // Sum the light contribution from each light source.
-    float4 ambientPiece, diffusePiece, specularPiece;
+    // Convert normal vector into spherical texture coordinates:
+    float4 normalTex;
+    normalTex.y = acos(normal.y) / PI;
+    normalTex.x = (atan2(normal.x, -normal.z) + PI) / 2.0f / PI;
+    normalTex.z = 0.0f;     // not used
+    normalTex.w = 0.0f;     // mipmap level; irradiance map only has one level
 
-    for (int i = 0; i < NumLights; i++)
-    {
-        ComputeDirectionalLight(surfaceMat, DirLights[i], normalize(normal), eyeDisplacement / eyeDistance, 
-            ambientPiece, diffusePiece, specularPiece);
+    float4 viewReflectTex;
+    viewReflectTex.y = acos(viewReflect.y) / PI;
+    viewReflectTex.x = (atan2(viewReflect.x, -viewReflect.z) + PI) / 2.0f / PI;
+    viewReflectTex.z = 0.0f;        // not used
+    viewReflectTex.w = max(gNumSpecLevels - 1.0f - log(surfaceMat.Specular.w) / log(gSpecExpFactor), 0.0f);     // spec level
 
-        // Add shade for the shadow mapped light.
-        if (i == ShadowLightIndex)
-        {
-            diffusePiece *= shadowFactor;
-            specularPiece *= shadowFactor;
-        }
-        oColor += ambientPiece + diffusePiece + specularPiece;
-    }
+    float3 diffuse = tex2Dlod(gIrradianceMapSampler, normalTex).rgb * surfaceMat.Diffuse.rgb * shadowFactor;
+    float3 specF = surfaceMat.Specular.rgb + (float3(1.0f, 1.0f, 1.0f) - surfaceMat.Specular.rgb) * pow(1.0f - lDotN, 5.0f);
+    float3 spec = tex2Dlod(gSpecPrefilterSampler, viewReflectTex).rgb * lDotN * 0.2f * specF * shadowFactor;
+    float3 ambient = surfaceMat.Diffuse.rgb * gAmbientLight * (1.0f - shadowFactor);
+
+    // Tone map:
+    oColor.rgb = gBright * pow(diffuse + spec + ambient, gContrast);
+
+    // Linear space to sRGB
+    oColor.rgb = pow(oColor.rgb, 1.0f / 1.6f);
 
     // Common to take alpha from diffuse material.
     oColor.a = surfaceMat.Diffuse.a;
 
-    float fogFactor = 1.0f - exp2(1.0f - (FogEnd - FogStart) / max(FogEnd - max(eyeDistance, FogStart), 0.000001f));
-    ApplyFog(oColor, fogFactor);
+    float fogFactor = 1.0f - exp2(1.0f - (gFogEnd - gFogStart) / max(gFogEnd - max(distToEye, gFogStart), 0.000001f));
+    oColor.rgb = lerp(oColor.rgb, gFogColor, fogFactor);
 }
 
 
-technique TheOnlyTechnique
+technique PhongShadow
 {
     pass Pass1
     {

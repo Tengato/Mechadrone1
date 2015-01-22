@@ -1,86 +1,89 @@
-#region File Description
-//-----------------------------------------------------------------------------
-// MainMenuScreen.cs
-//
-// Microsoft XNA Community Game Platform
-// Copyright (C) Microsoft Corporation. All rights reserved.
-//-----------------------------------------------------------------------------
-#endregion
-
-#region Using Statements
 using Microsoft.Xna.Framework;
-#endregion
 
 namespace Mechadrone1.Screens
 {
-    /// <summary>
-    /// The main menu screen is the first thing displayed when the game starts up.
-    /// </summary>
     class MainMenuScreen : MenuScreen
     {
-        #region Initialization
-
-
-        /// <summary>
-        /// Constructor fills in the menu contents.
-        /// </summary>
         public MainMenuScreen()
             : base("Main Menu")
         {
             // Create our menu entries.
-            MenuEntry playGameMenuEntry = new MenuEntry("Play Game");
-            MenuEntry helpMenuEntry = new MenuEntry("Help");
+            MenuEntry newGameMenuEntry = new MenuEntry("New Game");
+            MenuEntry loadGameMenuEntry = new MenuEntry("Load Game");
             MenuEntry optionsMenuEntry = new MenuEntry("Options");
+            MenuEntry creditsMenuEntry = new MenuEntry("Credits");
             MenuEntry exitMenuEntry = new MenuEntry("Exit");
 
             // Hook up menu event handlers.
-            playGameMenuEntry.Selected += PlayGameMenuEntrySelected;
-            helpMenuEntry.Selected += HelpMenuEntrySelected;
+            newGameMenuEntry.Selected += NewGameMenuEntrySelected;
+            loadGameMenuEntry.Selected += LoadGameMenuEntrySelected;
             optionsMenuEntry.Selected += OptionsMenuEntrySelected;
+            creditsMenuEntry.Selected += CreditsMenuEntrySelected;
             exitMenuEntry.Selected += OnCancel;
 
             // Add entries to the menu.
-            MenuEntries.Add(playGameMenuEntry);
-            MenuEntries.Add(helpMenuEntry);
+            MenuEntries.Add(newGameMenuEntry);
+            MenuEntries.Add(loadGameMenuEntry);
             MenuEntries.Add(optionsMenuEntry);
+            MenuEntries.Add(creditsMenuEntry);
             MenuEntries.Add(exitMenuEntry);
         }
 
-
-        #endregion
-
-        #region Handle Input
-
-
-        /// <summary>
-        /// Event handler for when the Play Game menu entry is selected.
-        /// </summary>
-        void PlayGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        private void NewGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
-            LoadingScreen.Load(ScreenManager, true, e.PlayerIndex,
-                               new GameplayScreen("levels\\steppes"));
+            GameResources.GameDossier = GameDossier.CreateNewGame();
+
+            StartGame(e.PlayerIndex);
         }
 
-        /// <summary>
-        /// Event handler for when the Help menu entry is selected.
-        /// </summary>
-        void HelpMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        private void LoadGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
-            ScreenManager.AddScreen(new HelpScreen(), e.PlayerIndex);
+            SaveLoadScreen slScreen = new SaveLoadScreen(SaveLoadScreen.SaveLoadScreenMode.Load);
+            slScreen.LoadingSaveGame += FileToLoadChosenHandler;
+            ScreenManager.AddScreen(slScreen, e.PlayerIndex);
         }
 
-        /// <summary>
-        /// Event handler for when the Options menu entry is selected.
-        /// </summary>
-        void OptionsMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        private void FileToLoadChosenHandler(SaveGameDescription saveGameDescription, PlayerIndex playerIndex)
+        {
+            ControllingPlayer = playerIndex;
+            StorageManager.LoadFromSaveFile(saveGameDescription, DossierLoadedCallback);
+        }
+
+        private void DossierLoadedCallback(GameDossier loadedDossier)
+        {
+            GameResources.GameDossier = loadedDossier; // Depend on the screen manager to clean this up.
+            StartGame(ControllingPlayer.Value);
+        }
+
+        private void StartGame(PlayerIndex inputIndex)
+        {
+            GameResources.PlaySession = new PlaySession(); // Depend on the screen manager to clean this up.
+
+            PlayerInfo playerOne = new PlayerInfo(0, PlayerInfo.PlayerType.Local);
+            GameResources.PlaySession.Players.Add(playerOne);
+            GameResources.PlaySession.LocalPlayers.Add(playerOne.PlayerId, inputIndex);
+
+            // TODO: P2: Go through character selection screen first.
+
+            PlayRequest testPlay = new PlayRequest();
+            testPlay.LevelName = "levels\\Hub";
+            CharacterInfo testChar = new CharacterInfo();
+            testChar.TemplateName = "Mechadrone";
+            testPlay.CharacterSelections.Add(playerOne.PlayerId, testChar);
+
+            LoadingScreen.Load(ScreenManager, true, inputIndex, new GameplayScreen(testPlay));
+        }
+
+        private void OptionsMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
             ScreenManager.AddScreen(new OptionsMenuScreen(), e.PlayerIndex);
         }
 
+        private void CreditsMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        {
+            ScreenManager.AddScreen(new CreditsScreen(), e.PlayerIndex);
+        }
 
-        /// <summary>
-        /// When the user cancels the main menu, ask if they want to exit the sample.
-        /// </summary>
         protected override void OnCancel(PlayerIndex playerIndex)
         {
             const string message = "Are you sure you want to exit this sample?";
@@ -92,17 +95,9 @@ namespace Mechadrone1.Screens
             ScreenManager.AddScreen(confirmExitMessageBox, playerIndex);
         }
 
-
-        /// <summary>
-        /// Event handler for when the user selects ok on the "are you sure
-        /// you want to exit" message box.
-        /// </summary>
-        void ConfirmExitMessageBoxAccepted(object sender, PlayerIndexEventArgs e)
+        private void ConfirmExitMessageBoxAccepted(object sender, PlayerIndexEventArgs e)
         {
-            ScreenManager.Game.Exit();
+            SharedResources.Game.Exit();
         }
-
-
-        #endregion
     }
 }

@@ -2,14 +2,14 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Mechadrone1.Rendering
+namespace Mechadrone1
 {
     class FringeMap
     {
-        public static Texture2D CreateFringeMap(GraphicsDevice gd)
+        public static Texture2D Initialize()
         {
             const int FRINGE_MAP_SIZE = 1024;
-            Texture2D fringeMap = new Texture2D(gd, FRINGE_MAP_SIZE, 1, false, SurfaceFormat.Vector4);
+            Texture2D fringeMap = new Texture2D(SharedResources.Game.GraphicsDevice, FRINGE_MAP_SIZE, 1, false, SurfaceFormat.Vector4);
 
             Vector4[] proceduralTexData = new Vector4[FRINGE_MAP_SIZE];
 

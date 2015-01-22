@@ -52,7 +52,7 @@ namespace Skelemator
         }
 
 
-        public override Matrix[] GetSkinTransforms()
+        public override Matrix[] GetBoneTransforms()
         {
             AnimationNode activeNode = GetActiveChild();
 
@@ -63,7 +63,7 @@ namespace Skelemator
                 binaryNode.BlendFactor = (BlendPosition - range.X) / (range.Y - range.X);
             }
 
-            return activeNode.GetSkinTransforms();
+            return activeNode.GetBoneTransforms();
         }
 
 

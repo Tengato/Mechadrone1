@@ -42,5 +42,11 @@ namespace SlagformCommon
         {
             return new Quaternion(q.X, q.Y, q.Z, q.W);
         }
+
+
+        public static BEPUutilities.Vector2 Convert(Vector2 v)
+        {
+            return new BEPUutilities.Vector2(v.X, v.Y);
+        }
     }
 }

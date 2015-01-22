@@ -42,13 +42,13 @@ namespace Skelemator
         }
 
 
-        public override Matrix[] GetSkinTransforms()
+        public override Matrix[] GetBoneTransforms()
         {
             foreach (TernaryLerpBlendNode tri in Triangulation)
             {
                 Vector3 bc = SpaceUtils.GetBarycentricCoords(tri.Child1Position, tri.Child2Position, tri.Child3Position, BlendPosition);
                 if (bc.X >= 0.0f && bc.Y >= 0.0f && bc.Z >= 0.0f)
-                    return tri.GetSkinTransforms();
+                    return tri.GetBoneTransforms();
             }
 
             throw new InvalidOperationException("The triangulation does not contain the BlendPosition point");

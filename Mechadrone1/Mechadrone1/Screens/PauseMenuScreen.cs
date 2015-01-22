@@ -7,10 +7,7 @@
 //-----------------------------------------------------------------------------
 #endregion
 
-#region Using Statements
 using Microsoft.Xna.Framework;
-using Mechadrone1.StateManagement;
-#endregion
 
 namespace Mechadrone1.Screens
 {
@@ -30,14 +27,17 @@ namespace Mechadrone1.Screens
             : base("Paused")
         {
             // Create our menu entries.
-            MenuEntry resumeGameMenuEntry = new MenuEntry("Resume Game");
-            MenuEntry quitGameMenuEntry = new MenuEntry("Quit Game");
+            MenuEntry saveGameMenuEntry = new MenuEntry("Save");
+            MenuEntry resumeGameMenuEntry = new MenuEntry("Resume");
+            MenuEntry quitGameMenuEntry = new MenuEntry("Quit");
             
             // Hook up menu event handlers.
+            saveGameMenuEntry.Selected += SaveGameMenuEntrySelected;
             resumeGameMenuEntry.Selected += OnCancel;
             quitGameMenuEntry.Selected += QuitGameMenuEntrySelected;
 
             // Add entries to the menu.
+            MenuEntries.Add(saveGameMenuEntry);
             MenuEntries.Add(resumeGameMenuEntry);
             MenuEntries.Add(quitGameMenuEntry);
         }
@@ -47,6 +47,10 @@ namespace Mechadrone1.Screens
 
         #region Handle Input
 
+        private void SaveGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        {
+            ScreenManager.AddScreen(new SaveLoadScreen(SaveLoadScreen.SaveLoadScreenMode.Save), e.PlayerIndex);
+        }
 
         /// <summary>
         /// Event handler for when the Quit Game menu entry is selected.
@@ -70,8 +74,7 @@ namespace Mechadrone1.Screens
         /// </summary>
         void ConfirmQuitMessageBoxAccepted(object sender, PlayerIndexEventArgs e)
         {
-            LoadingScreen.Load(ScreenManager, false, null, new BackgroundScreen(),
-                                                           new MainMenuScreen());
+            LoadingScreen.Load(ScreenManager, false, null, new BackgroundScreen(), new MainMenuScreen());
         }
 
 

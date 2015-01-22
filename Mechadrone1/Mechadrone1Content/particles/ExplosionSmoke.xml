@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent>
+    <Asset Type="Manifracture.ParticleSystemSettings">
+        <TextureName>textures\smoke</TextureName>
+        <MaxParticles>200</MaxParticles>
+        <Duration>PT2S</Duration>
+        <DurationRandomness>0</DurationRandomness>
+        <EmitterVelocitySensitivity>0.05</EmitterVelocitySensitivity>
+        <MinHorizontalVelocity>0</MinHorizontalVelocity>
+        <MaxHorizontalVelocity>12</MaxHorizontalVelocity>
+        <MinVerticalVelocity>-10</MinVerticalVelocity>
+        <MaxVerticalVelocity>16</MaxVerticalVelocity>
+        <Gravity>0 -6 0</Gravity>
+        <EndVelocity>0.2</EndVelocity>
+        <MinColor>DDDDCC99</MinColor>
+        <MaxColor>DDFFEEDD</MaxColor>
+        <MinRotateSpeed>-2</MinRotateSpeed>
+        <MaxRotateSpeed>2</MaxRotateSpeed>
+        <MinStartSize>3</MinStartSize>
+        <MaxStartSize>7</MaxStartSize>
+        <MinEndSize>15</MinEndSize>
+        <MaxEndSize>20</MaxEndSize>
+        <RenderState>AlphaBlendNPM</RenderState>
+    </Asset>
+</XnaContent>

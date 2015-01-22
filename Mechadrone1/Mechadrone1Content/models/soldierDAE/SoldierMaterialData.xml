@@ -6,55 +6,82 @@
       <CustomEffect>shaders\NormSpecSkinPhong.fx</CustomEffect>
       <EffectParams>
         <Item>
-          <Name>SpecMap</Name>
+          <Name>gSpecMap</Name>
           <Category>Texture</Category>
           <ValueTypeFullName>System.String</ValueTypeFullName>
           <Value Type="string">models\soldierDAE\soldier_s3.tga</Value>
         </Item>
         <Item>
-          <Name>NormalMap</Name>
+          <Name>gNormalMap</Name>
           <Category>Texture</Category>
           <ValueTypeFullName>System.String</ValueTypeFullName>
           <Value Type="string">models\soldierDAE\soldier_n.tga</Value>
         </Item>
         <Item>
-          <Name>WeightsPerVert</Name>
+          <Name>gWeightsPerVert</Name>
           <Category>OpaqueData</Category>
           <ValueTypeFullName>System.Int32</ValueTypeFullName>
           <Value Type="int">4</Value>
         </Item>
+        <Item>
+            <Name>gBright</Name>
+            <Category>OpaqueData</Category>
+            <ValueTypeFullName>System.Single</ValueTypeFullName>
+            <Value Type="float">0.09</Value>
+        </Item>
+        <Item>
+            <Name>gContrast</Name>
+            <Category>OpaqueData</Category>
+            <ValueTypeFullName>System.Single</ValueTypeFullName>
+            <Value Type="float">1.6</Value>
+        </Item>
       </EffectParams>
-      <HandlingFlags>RequiresSkeletalPose</HandlingFlags>
+      <RenderState>Default</RenderState>
+      <HandlingFlags>RequiresSkeletalPose, RequiresHDRLighting</HandlingFlags>
     </Item>
     <Item>
       <Name>VisualMaterial1</Name>
       <CustomEffect>shaders\NormSpecSkinPhong.fx</CustomEffect>
       <EffectParams>
         <Item>
-          <Name>SpecMap</Name>
+          <Name>gSpecMap</Name>
           <Category>Texture</Category>
           <ValueTypeFullName>System.String</ValueTypeFullName>
           <Value Type="string">models\soldierDAE\gun_s2.tga</Value>
         </Item>
         <Item>
-          <Name>NormalMap</Name>
+          <Name>gNormalMap</Name>
           <Category>Texture</Category>
           <ValueTypeFullName>System.String</ValueTypeFullName>
           <Value Type="string">models\soldierDAE\gun_n.tga</Value>
         </Item>
         <Item>
-          <Name>WeightsPerVert</Name>
+          <Name>gWeightsPerVert</Name>
           <Category>OpaqueData</Category>
           <ValueTypeFullName>System.Int32</ValueTypeFullName>
           <Value Type="int">4</Value>
         </Item>
+        <Item>
+            <Name>gBright</Name>
+            <Category>OpaqueData</Category>
+            <ValueTypeFullName>System.Single</ValueTypeFullName>
+            <Value Type="float">0.09</Value>
+        </Item>
+        <Item>
+            <Name>gContrast</Name>
+            <Category>OpaqueData</Category>
+            <ValueTypeFullName>System.Single</ValueTypeFullName>
+            <Value Type="float">1.6</Value>
+        </Item>
       </EffectParams>
-      <HandlingFlags>RequiresSkeletalPose</HandlingFlags>
+      <RenderState>Default</RenderState>
+      <HandlingFlags>RequiresSkeletalPose, RequiresHDRLighting</HandlingFlags>
     </Item>
     <Item>
       <Name>VisualMaterial2</Name>
       <CustomEffect>shaders\Null.fx</CustomEffect>
       <EffectParams />
+      <RenderState>Default</RenderState>
       <HandlingFlags>None</HandlingFlags>
     </Item>
   </Asset>

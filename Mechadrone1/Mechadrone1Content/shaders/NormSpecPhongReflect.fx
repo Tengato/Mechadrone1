@@ -128,7 +128,7 @@ void PixelProc(float2   texCoord        : TEXCOORD0,
 }
 
 
-technique TheOnlyTechnique
+technique NormSpecPhongReflect
 {
     pass Pass1
     {

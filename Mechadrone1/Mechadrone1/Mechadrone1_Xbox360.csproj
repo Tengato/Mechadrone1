@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{ED697E71-0779-4811-BEC4-3524F029138F}</ProjectGuid>
+    <ProjectGuid>{0F612EDB-8A2D-4295-A216-76FBE4DA3CBD}</ProjectGuid>
     <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">Xbox 360</Platform>
@@ -29,7 +29,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>7</ApplicationRevision>
+    <ApplicationRevision>9</ApplicationRevision>
     <ApplicationVersion>0.1.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -78,67 +78,146 @@
   </PropertyGroup>
   <ItemGroup />
   <ItemGroup>
-    <Compile Include="ArcBallCamera.cs" />
-    <Compile Include="Gameplay\Helpers\CharacterController.cs" />
-    <Compile Include="Gameplay\Helpers\HorizontalMotionConstraint.cs" />
-    <Compile Include="Gameplay\Helpers\ICharacterTag.cs" />
-    <Compile Include="Gameplay\Helpers\QueryManager.cs" />
-    <Compile Include="Gameplay\Helpers\StanceManager.cs" />
-    <Compile Include="Gameplay\Helpers\StepManager.cs" />
-    <Compile Include="Gameplay\Helpers\SupportFinder.cs" />
-    <Compile Include="Gameplay\Helpers\VerticalMotionConstraint.cs" />
-    <Compile Include="Gameplay\IGameManager.cs" />
-    <Compile Include="Gameplay\Prefabs\Axes.cs" />
-    <Compile Include="Gameplay\Prefabs\Bouncer.cs" />
-    <Compile Include="Gameplay\Decorators\IAudible.cs" />
-    <Compile Include="Gameplay\Prefabs\FreeFlyer.cs" />
-    <Compile Include="Gameplay\GameObject.cs" />
-    <Compile Include="Gameplay\Helpers\FloatMovement.cs" />
-    <Compile Include="Gameplay\Prefabs\Grid.cs" />
-    <Compile Include="Gameplay\Prefabs\OrbitingLightbulb.cs" />
-    <Compile Include="Gameplay\Prefabs\QuadWheel.cs" />
-    <Compile Include="Gameplay\Prefabs\Roller.cs" />
-    <Compile Include="Gameplay\Prefabs\SimpleBot.cs" />
-    <Compile Include="Gameplay\Prefabs\TPPedestrian.cs" />
-    <Compile Include="Gameplay\Prefabs\WireBox.cs" />
-    <Compile Include="Gameplay\SimulatedGameObject.cs" />
-    <Compile Include="Gameplay\Skydome.cs" />
-    <Compile Include="Gameplay\TerrainChunk.cs" />
-    <Compile Include="Gameplay\Subsystems\AnimSprite.cs" />
-    <Compile Include="Gameplay\Subsystems\AnimSpriteManager.cs" />
-    <Compile Include="BlurManager.cs" />
-    <Compile Include="ChaseCamera.cs" />
-    <Compile Include="Gameplay\TerrainSector.cs" />
-    <Compile Include="Gameplay\UpdateStepEventHandler.cs" />
-    <Compile Include="InputManager.cs" />
-    <Compile Include="InputState.cs" />
+    <Compile Include="ActorComponents\Behavior\BipedWeaponTrooper.cs" />
+    <Compile Include="ActorComponents\Behavior\BoxTriggerLevelLoader.cs" />
+    <Compile Include="ActorComponents\Behavior\EnergyProjectile.cs" />
+    <Compile Include="ActorComponents\Behavior\HiredSecurity.cs" />
+    <Compile Include="ActorComponents\Behavior\IDamagable.cs" />
+    <Compile Include="ActorComponents\Behavior\ParticleSpray.cs" />
+    <Compile Include="ActorComponents\ParticleSystemRenderComponent.cs" />
+    <Compile Include="ActorComponents\SphereCollisionComponent.cs" />
+    <Compile Include="ActorComponents\Behavior\IBipedWeaponEquippable.cs" />
+    <Compile Include="AssetFormatException.cs" />
+    <Compile Include="ActorComponents\AvatarSpawnComponent.cs" />
+    <Compile Include="ActorComponents\BoxCollisionComponent.cs" />
+    <Compile Include="ActorComponents\BipedCollisionComponent.cs" />
+    <Compile Include="ActorComponents\CameraComponent.cs" />
+    <Compile Include="ActorComponents\ClipAnimationComponent.cs" />
+    <Compile Include="ActorComponents\DynamicCollisionComponent.cs" />
+    <Compile Include="ActorComponents\FlyerControllerComponent.cs" />
+    <Compile Include="ActorComponents\HDRLightComponent.cs" />
+    <Compile Include="ActorComponents\ShadowCasterComponent.cs" />
+    <Compile Include="ActorComponents\DirectionalLightComponent.cs" />
+    <Compile Include="ActorComponents\ShapeRenderComponent.cs" />
+    <Compile Include="ActorComponents\StatefulAnimationComponent.cs" />
+    <Compile Include="Gameplay\Actor.cs" />
+    <Compile Include="ActorComponents\ActorComponent.cs" />
+    <Compile Include="ActorComponents\AnimationComponent.cs" />
+    <Compile Include="ActorComponents\BVCullableRenderComponent.cs" />
+    <Compile Include="ActorComponents\CollisionComponent.cs" />
+    <Compile Include="ActorComponents\ModelRenderComponent.cs" />
+    <Compile Include="ActorComponents\RenderComponent.cs" />
+    <Compile Include="ActorComponents\SkyboxRenderComponent.cs" />
+    <Compile Include="ActorComponents\TerrainCollisionComponent.cs" />
+    <Compile Include="ActorComponents\TerrainRenderComponent.cs" />
+    <Compile Include="ActorComponents\TransformComponent.cs" />
+    <Compile Include="Gameplay\ActorEventArgs.cs" />
+    <Compile Include="Gameplay\BipedWeapon.cs" />
+    <Compile Include="Gameplay\BlasterRifle.cs" />
+    <Compile Include="Gameplay\GameDossier.cs" />
+    <Compile Include="Rendering\ParticleData.cs" />
+    <Compile Include="StorageManager.cs" />
+    <Compile Include="Gameplay\GameResources.cs" />
+    <Compile Include="Gameplay\AvatarSpawnedEventHandler.cs" />
+    <Compile Include="Gameplay\SaveGameDescription.cs" />
+    <Compile Include="Gameplay\WeaponState.cs" />
+    <Compile Include="Player\ActionScreenHoncho.cs" />
+    <Compile Include="Player\HubScreenHoncho.cs" />
+    <Compile Include="Player\HubScreenHumanView.cs" />
+    <Compile Include="Gameplay\PlayerInfo.cs" />
+    <Compile Include="Gameplay\PlaySession.cs" />
+    <Compile Include="Player\ICameraProvider.cs" />
+    <Compile Include="Player\Input\TPBipedWeaponInputProcessor.cs" />
+    <Compile Include="Player\ScreenHoncho.cs" />
+    <Compile Include="Player\Cameras\StaticOrthoCamera.cs" />
+    <Compile Include="Player\ActionScreenHumanView.cs" />
+    <Compile Include="Player\Input\TPBipedInputProcessor.cs" />
+    <Compile Include="Player\Input\FlyerInputProcessor.cs" />
+    <Compile Include="Player\Input\MmoBipedInputProcessor.cs" />
+    <Compile Include="Player\Input\TPCameraInputProcessor.cs" />
+    <Compile Include="Rendering\BVHInsertion.cs" />
+    <Compile Include="Player\Cameras\StaticCamera.cs" />
+    <Compile Include="Rendering\DirLight.cs" />
+    <Compile Include="Rendering\DrawSegment.cs" />
+    <Compile Include="Rendering\EffectApplication.cs" />
     <Compile Include="Rendering\EffectRegistry.cs" />
+    <Compile Include="Player\BepuControl\CharacterController.cs" />
+    <Compile Include="Player\BepuControl\HorizontalMotionConstraint.cs" />
+    <Compile Include="Player\BepuControl\ICharacterTag.cs" />
+    <Compile Include="Player\BepuControl\QueryManager.cs" />
+    <Compile Include="Player\BepuControl\StanceManager.cs" />
+    <Compile Include="Player\BepuControl\StepManager.cs" />
+    <Compile Include="Player\BepuControl\SupportFinder.cs" />
+    <Compile Include="Player\BepuControl\VerticalMotionConstraint.cs" />
+    <Compile Include="Player\Input\LevitiationMovementController.cs" />
+    <Compile Include="Rendering\BlurManager.cs" />
+    <Compile Include="Player\Cameras\ChaseCamera.cs" />
+    <Compile Include="Gameplay\UpdateStepEventHandler.cs" />
+    <Compile Include="ActorComponents\FogComponent.cs" />
+    <Compile Include="Rendering\GeneratedGeometry.cs" />
+    <Compile Include="Player\Input\InputManager.cs" />
+    <Compile Include="Player\Input\InputState.cs" />
+    <Compile Include="Rendering\ParticleVertex.cs" />
+    <Compile Include="Rendering\SceneNodes\ParticleSystemGeometryNode.cs" />
+    <Compile Include="Rendering\UI\BugWidget.cs" />
+    <Compile Include="Screens\CreditsScreen.cs" />
+    <Compile Include="LevelManifestException.cs" />
+    <Compile Include="Screens\SaveLoadScreen.cs" />
+    <Compile Include="SharedResources.cs" />
+    <Compile Include="Rendering\MatrixStack.cs" />
+    <Compile Include="Rendering\MeshPart.cs" />
+    <Compile Include="Rendering\ParamSetter.cs" />
+    <Compile Include="Rendering\RenderContext.cs" />
     <Compile Include="Rendering\FringeMap.cs" />
-    <Compile Include="Rendering\ICamera.cs" />
-    <Compile Include="Rendering\ILight.cs" />
-    <Compile Include="Rendering\IRenderableScene.cs" />
-    <Compile Include="Rendering\ISceneObject.cs" />
-    <Compile Include="Rendering\QuadTree.cs" />
-    <Compile Include="Rendering\QuadTreeNode.cs" />
-    <Compile Include="Rendering\QuadTreeRect.cs" />
+    <Compile Include="Player\Cameras\ICamera.cs" />
+    <Compile Include="Player\Cameras\ArcBallCamera.cs" />
     <Compile Include="Rendering\RenderEntry.cs" />
-    <Compile Include="Rendering\RenderQueue.cs" />
+    <Compile Include="Rendering\Scene.cs" />
+    <Compile Include="Rendering\SceneGraphRoot.cs" />
+    <Compile Include="Rendering\SceneNodes\ActorTransformNode.cs" />
+    <Compile Include="Rendering\SceneNodes\BoundingBoxNode.cs" />
+    <Compile Include="Rendering\SceneNodes\BoundingVolumeNode.cs" />
+    <Compile Include="Rendering\SceneNodes\ExplicitBoundingBoxNode.cs" />
+    <Compile Include="Rendering\SceneNodes\ExplicitBoundingSphereNode.cs" />
+    <Compile Include="Rendering\SceneNodes\GeometryNode.cs" />
+    <Compile Include="Rendering\SceneNodes\IExplicitBoxableVolume.cs" />
+    <Compile Include="Rendering\SceneNodes\ImplicitBoundingBoxNode.cs" />
+    <Compile Include="Rendering\SceneNodes\ModelGeometryNode.cs" />
+    <Compile Include="Rendering\SceneNodes\RawGeometryNode.cs" />
+    <Compile Include="Rendering\SceneNodes\SceneNode.cs" />
+    <Compile Include="Rendering\SceneNodes\StaticTransformNode.cs" />
+    <Compile Include="Rendering\SceneNodes\TerrainGeometryNode.cs" />
+    <Compile Include="Rendering\SceneNodes\TransformNode.cs" />
+    <Compile Include="Rendering\SceneNodes\TranslucencyNode.cs" />
+    <Compile Include="Rendering\TraversalContext.cs" />
+    <Compile Include="Rendering\SceneResources.cs" />
+    <Compile Include="ActorComponents\BipedControllerComponent.cs" />
+    <Compile Include="Player\BotView.cs" />
+    <Compile Include="Gameplay\CharacterInfo.cs" />
+    <Compile Include="Rendering\UI\BlasterRifleWidget.cs" />
+    <Compile Include="Rendering\UI\PositionWidget.cs" />
+    <Compile Include="Rendering\UI\ShadowMapVisual.cs" />
+    <Compile Include="Rendering\UI\InventoryPanel.cs" />
+    <Compile Include="Rendering\UI\OverheadMap.cs" />
+    <Compile Include="Rendering\UI\Standard3dPerspective.cs" />
     <Compile Include="Screens\HelpScreen.cs" />
-    <Compile Include="StateManagement\FontManager.cs" />
-    <Compile Include="Gameplay\Game1Manager.cs" />
-    <Compile Include="Rendering\SceneManager.cs" />
+    <Compile Include="Player\HumanView.cs" />
+    <Compile Include="Player\Input\InputProcessor.cs" />
+    <Compile Include="Player\Cameras\MmoCameraDesc.cs" />
+    <Compile Include="Player\PlayerView.cs" />
+    <Compile Include="Player\PlayerViewFactory.cs" />
+    <Compile Include="Gameplay\PlayRequest.cs" />
+    <Compile Include="Rendering\UI\GameUIElement.cs" />
+    <Compile Include="Player\RemoteView.cs" />
+    <Compile Include="Rendering\FontManager.cs" />
+    <Compile Include="Gameplay\ActorManager.cs" />
     <Compile Include="GameOptions.cs" />
-    <Compile Include="Gameplay\Subsystems\ParticleManager.cs" />
-    <Compile Include="Gameplay\Subsystems\ParticleSystem.cs" />
-    <Compile Include="Gameplay\Subsystems\Powerup.cs" />
-    <Compile Include="Gameplay\Subsystems\PowerupManager.cs" />
-    <Compile Include="Gameplay\Subsystems\Projectile.cs" />
-    <Compile Include="Gameplay\Subsystems\ProjectileManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="MechadroneGame.cs" />
-    <Compile Include="StateManagement\GameScreen.cs" />
-    <Compile Include="StateManagement\ScreenManager.cs" />
+    <Compile Include="Screens\Screen.cs" />
+    <Compile Include="Screens\IScreenManager.cs" />
+    <Compile Include="Screens\ScreenManager.cs" />
     <Compile Include="Screens\BackgroundScreen.cs" />
     <Compile Include="Screens\GameplayScreen.cs" />
     <Compile Include="Screens\LoadingScreen.cs" />
@@ -152,18 +231,19 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
+    <Content Include="SampleSaveGame.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Manifracture\Manifracture_Xbox360.csproj">
-      <Project>{dc797127-ca22-4418-9498-285369afa55a}</Project>
+      <Project>{DC797127-CA22-4418-9498-285369AFA55A}</Project>
       <Name>Manifracture_Xbox360</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Skelemator\Skelemator_Xbox360.csproj">
-      <Project>{74bb1be3-8bc8-4d28-929e-ea660510b625}</Project>
+      <Project>{74BB1BE3-8BC8-4D28-929E-EA660510B625}</Project>
       <Name>Skelemator_Xbox360</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\SlagformCommon\SlagformCommon_Xbox360.csproj">
-      <Project>{c2d25a8a-a14b-4f95-b722-fd3ab5a4a985}</Project>
+      <Project>{C2D25A8A-A14B-4F95-B722-FD3AB5A4A985}</Project>
       <Name>SlagformCommon_Xbox360</Name>
     </ProjectReference>
     <ProjectReference Include="..\Mechadrone1Content\Mechadrone1Content.contentproj">
@@ -206,18 +286,15 @@
     <None Include="Mechadrone1_TemporaryKey.pfx" />
     <None Include="Properties\app.manifest" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Reference Include="BEPUphysics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\BEPU\BEPUphysics\bin\Xbox 360\Release\BEPUphysics.dll</HintPath>
-    </Reference>
-    <Reference Include="BEPUutilities">
-      <HintPath>..\..\..\BEPU\BEPUphysics\bin\Xbox 360\Release\BEPUutilities.dll</HintPath>
-    </Reference>
+    <Reference Include="BEPUphysics" />
+    <Reference Include="BEPUutilities" />
     <Reference Include="Microsoft.Xna.Framework" />
     <Reference Include="Microsoft.Xna.Framework.Game" />
     <Reference Include="Microsoft.Xna.Framework.GamerServices" />
     <Reference Include="Microsoft.Xna.Framework.Graphics" />
+    <Reference Include="Microsoft.Xna.Framework.Storage" />
     <Reference Include="Microsoft.Xna.Framework.Xact" />
     <Reference Include="mscorlib" />
     <Reference Include="System" />

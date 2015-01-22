@@ -11,7 +11,6 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Mechadrone1.StateManagement;
 #endregion
 
 namespace Mechadrone1.Screens
@@ -48,8 +47,7 @@ namespace Mechadrone1.Screens
         /// The constructor is private: loading screens should
         /// be activated via the static Load method instead.
         /// </summary>
-        private LoadingScreen(ScreenManager screenManager, bool loadingIsSlow,
-                              Screen[] screensToLoad)
+        private LoadingScreen(bool loadingIsSlow, Screen[] screensToLoad)
         {
             this.loadingIsSlow = loadingIsSlow;
             this.screensToLoad = screensToLoad;
@@ -61,7 +59,7 @@ namespace Mechadrone1.Screens
         /// <summary>
         /// Activates the loading screen.
         /// </summary>
-        public static void Load(ScreenManager screenManager, bool loadingIsSlow,
+        public static void Load(IScreenManager screenManager, bool loadingIsSlow,
                                 PlayerIndex? controllingPlayer,
                                 params Screen[] screensToLoad)
         {
@@ -70,9 +68,7 @@ namespace Mechadrone1.Screens
                 screen.ExitScreen();
 
             // Create and activate the loading screen.
-            LoadingScreen loadingScreen = new LoadingScreen(screenManager,
-                                                            loadingIsSlow,
-                                                            screensToLoad);
+            LoadingScreen loadingScreen = new LoadingScreen(loadingIsSlow, screensToLoad);
 
             screenManager.AddScreen(loadingScreen, controllingPlayer);
         }
@@ -108,7 +104,7 @@ namespace Mechadrone1.Screens
                 // Once the load has finished, we use ResetElapsedTime to tell
                 // the  game timing mechanism that we have just finished a very
                 // long frame, and that it should not try to catch up.
-                ScreenManager.Game.ResetElapsedTime();
+                SharedResources.Game.ResetElapsedTime();
             }
         }
 
@@ -140,17 +136,17 @@ namespace Mechadrone1.Screens
                 const string message = "Loading...";
 
                 // Center the text in the viewport.
-                Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
+                Viewport viewport = SharedResources.Game.GraphicsDevice.Viewport;
                 Vector2 viewportSize = new Vector2(viewport.Width, viewport.Height);
-                Vector2 textSize = ScreenManager.FontManager.MeasureString(FontType.ArialLarge, message);
+                Vector2 textSize = SharedResources.FontManager.MeasureString(FontType.ArialLarge, message);
                 Vector2 textPosition = (viewportSize - textSize) / 2;
 
                 Color color = Color.White * TransitionAlpha;
 
                 // Draw the text.
-                ScreenManager.FontManager.BeginText();
-                ScreenManager.FontManager.DrawText(FontType.ArialLarge, message, textPosition, color, false);
-                ScreenManager.FontManager.EndText();
+                SharedResources.FontManager.BeginText();
+                SharedResources.FontManager.DrawText(FontType.ArialLarge, message, textPosition, color, false);
+                SharedResources.FontManager.EndText();
             }
         }
 

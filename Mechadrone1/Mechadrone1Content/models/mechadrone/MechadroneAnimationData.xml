@@ -11,12 +11,59 @@
                 <Loopable>true</Loopable>
                 <Events/>
             </Item>
+            <Item>
+                <SourceTake>Walk2</SourceTake>
+                <Alias>IdleReady</Alias>
+                <FirstFrame>350</FirstFrame>
+                <LastFrame>353</LastFrame>
+                <SyncFrameOffset>0</SyncFrameOffset>
+                <Loopable>true</Loopable>
+                <Events/>
+            </Item>
+            <Item>
+                <SourceTake>Walk2</SourceTake>
+                <Alias>Falling</Alias>
+                <FirstFrame>386</FirstFrame>
+                <LastFrame>392</LastFrame>
+                <SyncFrameOffset>0</SyncFrameOffset>
+                <Loopable>false</Loopable>
+                <Events/>
+            </Item>
+            <Item>
+                <SourceTake>Walk2</SourceTake>
+                <Alias>Jump</Alias>
+                <FirstFrame>354</FirstFrame>
+                <LastFrame>382</LastFrame>
+                <SyncFrameOffset>0</SyncFrameOffset>
+                <Loopable>false</Loopable>
+                <Events>
+                    <Item>
+                        <Key>370</Key>
+                        <Value>Jump</Value>
+                    </Item>
+                </Events>
+            </Item>
         </Clips>
         <AnimationStateDescriptions>
             <Item>
                 <Name>Moving</Name>
                 <MinDurationInSeconds>0.4</MinDurationInSeconds>
-                <BlendTreeNodeName>WalkClip</BlendTreeNodeName>
+                <BlendTreeNodeName>SpeedBlendedMove</BlendTreeNodeName>
+            </Item>
+            <Item>
+                <Name>Standing</Name>
+                <MinDurationInSeconds>0.0</MinDurationInSeconds>
+                <BlendTreeNodeName>IdleReadyClip</BlendTreeNodeName>
+            </Item>
+            <Item>
+                <Name>Falling</Name>
+                <MinDurationInSeconds>0.1</MinDurationInSeconds>
+                <BlendTreeNodeName>FallingClip</BlendTreeNodeName>
+            </Item>
+            <Item>
+                <Name>Jumping</Name>
+                <MinDurationInSeconds>0.4667</MinDurationInSeconds>
+                <BlendTreeNodeName>JumpClip</BlendTreeNodeName>
             </Item>
         </AnimationStateDescriptions>
         <AnimationNodeDescriptions>
@@ -25,17 +72,52 @@
                 <PlaybackRate>1</PlaybackRate>
                 <ClipName>Walk</ClipName>
             </Item>
+            <Item Type="Skelemator.ClipNodeDescription">
+                <Name>IdleReadyClip</Name>
+                <PlaybackRate>1</PlaybackRate>
+                <ClipName>IdleReady</ClipName>
+            </Item>
+            <Item Type="Skelemator.ClipNodeDescription">
+                <Name>FallingClip</Name>
+                <PlaybackRate>1</PlaybackRate>
+                <ClipName>Falling</ClipName>
+            </Item>
+            <Item Type="Skelemator.ClipNodeDescription">
+                <Name>JumpClip</Name>
+                <PlaybackRate>1</PlaybackRate>
+                <ClipName>Jump</ClipName>
+            </Item>
+            <Item Type="Skelemator.BinaryLerpBlendNodeDescription">
+                <Name>SpeedBlendedMove</Name>
+                <PlaybackRate>1</PlaybackRate>
+                <Child1NodeName>IdleReadyClip</Child1NodeName>
+                <Child2NodeName>WalkClip</Child2NodeName>
+                <BlendFactor>0</BlendFactor>
+            </Item>
         </AnimationNodeDescriptions>
-        <InitialStateName>Moving</InitialStateName>
+        <InitialStateName>Standing</InitialStateName>
         <Transitions>
             <Item>
                 <SourceStateFilter>.*</SourceStateFilter>
                 <DestinationStateFilter>.*</DestinationStateFilter>
                 <Type>Frozen</Type>
                 <DurationInSeconds>0.2</DurationInSeconds>
+                <UseSmoothStep>false</UseSmoothStep>
+            </Item>
+            <Item>
+                <SourceStateFilter>Falling.*</SourceStateFilter>
+                <DestinationStateFilter>.*</DestinationStateFilter>
+                <Type>Smooth</Type>
+                <DurationInSeconds>0.08</DurationInSeconds>
+                <UseSmoothStep>false</UseSmoothStep>
+            </Item>
+            <Item>
+                <SourceStateFilter>Jumping</SourceStateFilter>
+                <DestinationStateFilter>Falling</DestinationStateFilter>
+                <Type>Frozen</Type>
+                <DurationInSeconds>0.5</DurationInSeconds>
                 <UseSmoothStep>true</UseSmoothStep>
             </Item>
         </Transitions>
     </Asset>
 </XnaContent>
-        

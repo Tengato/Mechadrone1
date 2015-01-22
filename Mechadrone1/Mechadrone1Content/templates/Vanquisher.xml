@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Framework="Microsoft.Xna.Framework" xmlns:Generic="System.Collections.Generic">
+    <Asset Type="Manifracture.TemplateManifest">
+        <Actor>
+            <Name>Vanquisher</Name>
+            <Components>
+                <Item>
+                    <TypeFullName>Mechadrone1.ModelRenderComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                    <Properties>
+                        <Item>
+                            <Key>VisualModel</Key>
+                            <Value Type="string">models\shipgame2\ship2</Value>
+                        </Item>
+                        <Item>
+                            <Key>ModelAdjustment</Key>
+                            <Value Type="Framework:Matrix">0.25 0 0 0 0 0 -0.25 0 0 0.25 0 0 0 4 0 1</Value>
+                        </Item>
+                    </Properties>
+                </Item>
+                <Item>
+                    <TypeFullName>Mechadrone1.TransformComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                    <Properties>
+                        <Item>
+                            <Key>Position</Key>
+                            <Value Type="Framework:Vector3">14 293 32</Value>
+                        </Item>
+                    </Properties>
+                </Item>
+                <Item>
+                    <TypeFullName>Mechadrone1.BipedControllerComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                    <Properties/>
+                </Item>
+                <Item>
+                    <TypeFullName>Mechadrone1.BipedCollisionComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                    <Properties>
+                        <Item>
+                            <Key>Height</Key>
+                            <Value Type="float">9.3</Value>
+                        </Item>
+                        <Item>
+                            <Key>TransformOffset</Key>
+                            <Value Type="Framework:Vector3">0 4.65 0</Value>
+                        </Item>
+                        <Item>
+                            <Key>Radius</Key>
+                            <Value Type="float">2.4</Value>
+                        </Item>
+                    </Properties>
+                </Item>
+                <Item>
+                    <TypeFullName>Mechadrone1.BehaviorComponent, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                    <Properties>
+                        <Item>
+                            <Key>Behaviors</Key>
+                            <Value Type ="Generic:List[Manifracture.ComponentManifest]">
+                                <Item>
+                                    <TypeFullName>Mechadrone1.BipedSkillPalette, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                                    <Properties/>
+                                </Item>
+                                <Item>
+                                    <TypeFullName>Mechadrone1.Booster, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                                    <Properties/>
+                                </Item>
+                                <Item>
+                                    <TypeFullName>Mechadrone1.WeaponResource, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                                    <Properties/>
+                                </Item>
+                                <Item>
+                                    <TypeFullName>Mechadrone1.InventoryItemDropper, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                                    <Properties/>
+                                </Item>
+                            </Value>
+                        </Item>
+                    </Properties>
+                </Item>
+            </Components>
+        </Actor>
+        <AssetsToPreload/>
+    </Asset>
+</XnaContent>

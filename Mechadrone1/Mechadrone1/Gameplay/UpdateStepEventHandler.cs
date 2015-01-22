@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
 
-namespace Mechadrone1.Gameplay
+namespace Mechadrone1
 {
-
     delegate void UpdateStepEventHandler(object sender, UpdateStepEventArgs e);
 
     class UpdateStepEventArgs : EventArgs
     {
         public GameTime GameTime { get; set; }
 
-        public UpdateStepEventArgs(GameTime gameTime) : base()
+        public UpdateStepEventArgs(GameTime gameTime)
+            : base()
         {
             this.GameTime = gameTime;
         }

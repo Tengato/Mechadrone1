@@ -31,6 +31,40 @@ float3x3 invert3x3(float3x3 a)
 }
 
 
+float CalculateShadowFactor(float4 smapTexCoord, float invShadowMapSize, sampler2D smapSampler)
+{
+    if (smapTexCoord.z >= 1.0)
+        return 1.0f;
+
+    const float2 offset[9] =
+    {
+        float2(-invShadowMapSize, invShadowMapSize),
+        float2(0.0f, invShadowMapSize),
+        float2(invShadowMapSize, invShadowMapSize),
+        float2(-invShadowMapSize, 0.0f),
+        float2(0.0f, 0.0f),
+        float2(invShadowMapSize, 0.0f),
+        float2(-invShadowMapSize, -invShadowMapSize),
+        float2(0.0f, -invShadowMapSize),
+        float2(invShadowMapSize, -invShadowMapSize)
+    };
+
+    smapTexCoord.xyz /= smapTexCoord.w;
+    float percentLit = 0.0f;
+
+    for (int i = 0; i < 9; ++i)
+    {
+        float smapDepth = tex2D(smapSampler, smapTexCoord.xy + offset[i]);
+
+        if (smapTexCoord.z <= smapDepth)
+            percentLit += 1.0f;
+    }
+
+    percentLit /= 9.0f;
+    return percentLit;
+}
+
+
 //---------------------------------------------------------------------------------------
 // Computes the ambient, diffuse, and specular terms in the lighting equation
 // from a directional light.  We need to output the terms separately because
@@ -62,7 +96,7 @@ void ComputeDirectionalLight(Material mat,
     {
         float3 specRay = reflect(-toLight, normal);
         float alignment = max(dot(specRay, toEye), 0.0f);
-        float specFactor = alignment > 0.0f ? pow(alignment, 2.0f) : 0.0f;
+        float specFactor = alignment > 0.0f ? pow(alignment, mat.Specular.w) : 0.0f;
 
         diffuse = diffuseFactor * mat.Diffuse * dirLight.Diffuse * dirLight.Energy;
         spec = specFactor * mat.Specular * dirLight.Specular * dirLight.Energy;
@@ -106,10 +140,4 @@ void ComputeDirectionalLightBlinn(Material mat,
         diffuse = diffuseFactor * mat.Diffuse * dirLight.Diffuse * dirLight.Energy;
         spec = specFactor * mat.Specular * dirLight.Specular * dirLight.Energy;
     }
-}
-
-
-void ApplyFog(inout float4 color, float fogFactor)
-{
-    color.rgb = lerp(color.rgb, FogColor * color.a, fogFactor);
 }

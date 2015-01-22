@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
-using Skelemator;
-using System.Threading;
 
 namespace Skelemator
 {
@@ -18,7 +14,6 @@ namespace Skelemator
             get { return new AnimationNode[] { }; }
         }
 
-
         public ClipNode(ClipNodeDescription nodeDesc, AnimationPackage package)
         {
             Name = nodeDesc.Name;
@@ -27,40 +22,34 @@ namespace Skelemator
             clipPlayer.StartClip(package.SkinningData.AnimationClips[nodeDesc.ClipName]);
         }
 
-
         public override void AdvanceTime(TimeSpan elapsedTime)
         {
             TimeSpan elapsedLocalTime = TimeSpan.FromTicks((long)(elapsedTime.Ticks * PlaybackRate));
-            clipPlayer.Update(elapsedLocalTime, true, Matrix.Identity);
+            clipPlayer.Update(elapsedLocalTime, true);
         }
-
 
         public override void SetTime(TimeSpan time)
         {
-            clipPlayer.Update(time, false, Matrix.Identity);
+            clipPlayer.Update(time, false);
         }
-
 
         public override void Synchronize(float normalizedTime)
         {
             TimeSpan localTime = TimeSpan.FromTicks((long)(normalizedTime * (float)(clipPlayer.CurrentClip.Duration.Ticks)))
                 + clipPlayer.CurrentClip.SyncTime;
 
-            clipPlayer.Update(localTime, false, Matrix.Identity);
+            clipPlayer.Update(localTime, false);
         }
 
-
-        public override Matrix[] GetSkinTransforms()
+        public override Matrix[] GetBoneTransforms()
         {
-            return clipPlayer.GetSkinTransforms();
+            return clipPlayer.GetBoneTransforms();
         }
 
-
-        public override List<AnimationControlEvents> GetActiveControlEvents()
+        public override AnimationControlEvents GetActiveControlEvents()
         {
             return clipPlayer.ActiveControlEvents;
         }
-
 
         public override float GetNormalizedTime(string nodeName, out bool nodeFound)
         {

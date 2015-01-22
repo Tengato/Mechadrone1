@@ -33,30 +33,19 @@
     <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.VideoImporters, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="levels\Steppes.xml">
-      <Name>Steppes</Name>
-      <Importer>XmlImporter</Importer>
-      <Processor>PassThroughProcessor</Processor>
-      <SubType>Designer</SubType>
-    </Compile>
-    <Compile Include="screens\intro_bg.tga">
-      <Name>intro_bg</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
     <Compile Include="models\blasterbolt\BlasterBolt.fbx">
       <Name>BlasterBolt</Name>
       <Importer>FbxImporter</Importer>
-      <Processor>StaticModelProcessor</Processor>
+      <Processor>SimpleModelProcessor</Processor>
       <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
       <ProcessorParameters_MaterialDataFilePath>models\blasterbolt\BlasterBoltMaterialData.xml</ProcessorParameters_MaterialDataFilePath>
       <ProcessorParameters_PremultiplyTextureAlpha>False</ProcessorParameters_PremultiplyTextureAlpha>
     </Compile>
-    <None Include="shaders\PhongShadow.fx">
-      <Name>PhongShadow</Name>
+    <Compile Include="shaders\DirectTexture.fx">
+      <Name>DirectTexture</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
-    </None>
+    </Compile>
     <Compile Include="textures\blank.png">
       <Name>blank</Name>
       <Importer>TextureImporter</Importer>
@@ -67,81 +56,68 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
+    <Compile Include="terrain\CoarseHeightmap 01.raw">
+      <Name>CoarseHeightmap 01</Name>
+      <Importer>RawTerrainImporter</Importer>
+      <Processor>TerrainProcessor2</Processor>
+      <ProcessorParameters_CropXLeft>0</ProcessorParameters_CropXLeft>
+      <ProcessorParameters_CropXRight>0</ProcessorParameters_CropXRight>
+      <ProcessorParameters_CropZBottom>0</ProcessorParameters_CropZBottom>
+      <ProcessorParameters_CropZTop>0</ProcessorParameters_CropZTop>
+      <ProcessorParameters_NumXValues>257</ProcessorParameters_NumXValues>
+      <ProcessorParameters_NumZValues>257</ProcessorParameters_NumZValues>
+      <ProcessorParameters_XZScale>24</ProcessorParameters_XZScale>
+      <ProcessorParameters_YScale>3</ProcessorParameters_YScale>
+      <ProcessorParameters_YOffset>0</ProcessorParameters_YOffset>
+      <ProcessorParameters_MaterialDataFilePath>terrain\SteppesMaterialData.xml</ProcessorParameters_MaterialDataFilePath>
+      <ProcessorParameters_NumSubdivisions>2</ProcessorParameters_NumSubdivisions>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="models\missile\Missile.fbx">
+      <Name>Missile</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>SimpleModelProcessor</Processor>
+      <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
+      <ProcessorParameters_MaterialDataFilePath>models\missile\MissileMaterialData.xml</ProcessorParameters_MaterialDataFilePath>
+      <ProcessorParameters_PremultiplyTextureAlpha>False</ProcessorParameters_PremultiplyTextureAlpha>
+      <SubType>Designer</SubType>
+    </Compile>
+    <Compile Include="models\shipgame2\ship2.fbx">
+      <Name>ship2</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>SimpleModelProcessor</Processor>
+      <SubType>Designer</SubType>
+      <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
+      <ProcessorParameters_GenerateTangentFrames>True</ProcessorParameters_GenerateTangentFrames>
+      <ProcessorParameters_PremultiplyTextureAlpha>False</ProcessorParameters_PremultiplyTextureAlpha>
+      <ProcessorParameters_TextureFormat>NoChange</ProcessorParameters_TextureFormat>
+      <ProcessorParameters_MaterialDataFilePath>models\shipgame2\Ship2MaterialData.xml</ProcessorParameters_MaterialDataFilePath>
+    </Compile>
+    <Compile Include="models\shipgame1\ship1.fbx">
+      <Name>ship1</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>SimpleModelProcessor</Processor>
+      <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
+      <ProcessorParameters_GenerateTangentFrames>True</ProcessorParameters_GenerateTangentFrames>
+      <ProcessorParameters_TextureFormat>NoChange</ProcessorParameters_TextureFormat>
+      <ProcessorParameters_PremultiplyTextureAlpha>False</ProcessorParameters_PremultiplyTextureAlpha>
+      <ProcessorParameters_MaterialDataFilePath>models\shipgame1\Ship1MaterialData.xml</ProcessorParameters_MaterialDataFilePath>
+      <SubType>Designer</SubType>
+    </Compile>
     <None Include="shaders\Blur.fx">
       <Name>Blur</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="screens\cursor_anim.tga">
-      <Name>cursor_anim</Name>
+    <Compile Include="textures\Giftbox.tga">
+      <Name>Giftbox</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="screens\cursor_arrow.tga">
-      <Name>cursor_arrow</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="screens\cursor_bullet.tga">
-      <Name>cursor_bullet</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="screens\intro_lens.tga">
-      <Name>intro_lens</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="screens\intro_logo.tga">
-      <Name>intro_logo</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="screens\menu_hp.tga">
-      <Name>menu_hp</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="screens\menu_hp_hover.tga">
-      <Name>menu_hp_hover</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="screens\menu_mp.tga">
-      <Name>menu_mp</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="screens\menu_mp_hover.tga">
-      <Name>menu_mp_hover</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="screens\menu_qg.tga">
-      <Name>menu_qg</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="screens\menu_qg_hover.tga">
-      <Name>menu_qg_hover</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="screens\menu_sp.tga">
-      <Name>menu_sp</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="screens\menu_sp_hover.tga">
-      <Name>menu_sp_hover</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
+      <ProcessorParameters_GenerateMipmaps>True</ProcessorParameters_GenerateMipmaps>
+      <ProcessorParameters_PremultiplyAlpha>False</ProcessorParameters_PremultiplyAlpha>
+      <ProcessorParameters_TextureFormat>DxtCompressed</ProcessorParameters_TextureFormat>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -162,64 +138,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="explosions\BlasterGrid_16.tga">
-      <Name>BlasterGrid_16</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="explosions\MissileGrid_16.tga">
-      <Name>MissileGrid_16</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="explosions\ShieldGrid_32.tga">
-      <Name>ShieldGrid_32</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="explosions\ShipGrid_32.tga">
-      <Name>ShipGrid_32</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="explosions\SpawnGrid_16.tga">
-      <Name>SpawnGrid_16</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="particles\Point1.tga">
-      <Name>Point1</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="particles\Point2.tga">
-      <Name>Point2</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="particles\Spark1.tga">
-      <Name>Spark1</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="particles\Spark2.tga">
-      <Name>Spark2</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="shaders\AnimSprite.fx">
       <Name>AnimSprite</Name>
-      <Importer>EffectImporter</Importer>
-      <Processor>EffectProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="shaders\Particle.fx">
-      <Name>Particle</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
@@ -245,7 +165,7 @@
     <Compile Include="models\lightbulb\Icosphere.fbx">
       <Name>Icosphere</Name>
       <Importer>FbxImporter</Importer>
-      <Processor>StaticModelProcessor</Processor>
+      <Processor>SimpleModelProcessor</Processor>
       <ProcessorParameters_MaterialDataFilePath>models\lightbulb\IcosphereMaterialData.xml</ProcessorParameters_MaterialDataFilePath>
       <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
       <ProcessorParameters_PremultiplyTextureAlpha>False</ProcessorParameters_PremultiplyTextureAlpha>
@@ -253,7 +173,7 @@
     <Compile Include="models\suzanne\Suzanne.fbx">
       <Name>Suzanne</Name>
       <Importer>FbxImporter</Importer>
-      <Processor>StaticModelProcessor</Processor>
+      <Processor>SimpleModelProcessor</Processor>
       <SubType>Designer</SubType>
       <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
       <ProcessorParameters_MaterialDataFilePath>models\suzanne\SuzanneMaterialData.xml</ProcessorParameters_MaterialDataFilePath>
@@ -262,22 +182,16 @@
     <Compile Include="models\ball\Ball.fbx">
       <Name>Ball</Name>
       <Importer>FbxImporter</Importer>
-      <Processor>StaticModelProcessor</Processor>
+      <Processor>SimpleModelProcessor</Processor>
       <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
       <ProcessorParameters_PremultiplyTextureAlpha>False</ProcessorParameters_PremultiplyTextureAlpha>
       <ProcessorParameters_MaterialDataFilePath>models\ball\BallMaterialData.xml</ProcessorParameters_MaterialDataFilePath>
       <SubType>Designer</SubType>
     </Compile>
-    <Compile Include="models\system\SkyEllipsoid.fbx">
-      <Name>SkyEllipsoid</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </Compile>
     <Compile Include="models\mechadrone\Mechadrone.fbx">
       <Name>Mechadrone</Name>
       <Importer>FbxImporter</Importer>
-      <Processor>ActorModelProcessor</Processor>
-      <ProcessorParameters_ClipDataFilePath>models\mechadrone\MechadroneClipData.xml</ProcessorParameters_ClipDataFilePath>
+      <Processor>SkinnedModelProcessor</Processor>
       <ProcessorParameters_MaterialDataFilePath>models\mechadrone\MechadroneMaterialData.xml</ProcessorParameters_MaterialDataFilePath>
       <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
       <ProcessorParameters_GenerateTangentFrames>True</ProcessorParameters_GenerateTangentFrames>
@@ -289,8 +203,7 @@
     <Compile Include="models\soldierDAE\soldier_LOD0.dae">
       <Name>soldierDAE_LOD0</Name>
       <Importer>AssimpColladaImporter</Importer>
-      <Processor>ActorModelProcessor</Processor>
-      <ProcessorParameters_ClipDataFilePath>models\soldierDAE\SoldierClipData.xml</ProcessorParameters_ClipDataFilePath>
+      <Processor>SkinnedModelProcessor</Processor>
       <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
       <ProcessorParameters_GenerateTangentFrames>True</ProcessorParameters_GenerateTangentFrames>
       <ProcessorParameters_MaterialDataFilePath>models\soldierDAE\SoldierMaterialData.xml</ProcessorParameters_MaterialDataFilePath>
@@ -489,11 +402,339 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\DirectTexture.fx">
-      <Name>DirectTexture</Name>
+    <Compile Include="levels\Spaceport.xml">
+      <SubType>Designer</SubType>
+      <Name>Spaceport</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="config\DefaultInputMap.xml">
+      <Name>DefaultInputMap</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+      <SubType>Designer</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="textures\MonValleyIrradianceMap.xml">
+      <Name>MonValleyIrradianceMap</Name>
+      <Importer>HDRTextureImporter</Importer>
+      <Processor>HDRTextureProcessor</Processor>
+      <ProcessorParameters_Height>128</ProcessorParameters_Height>
+      <ProcessorParameters_Width>256</ProcessorParameters_Width>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="textures\MonValleySpecPrefilter.xml">
+      <Name>MonValleySpecPrefilter</Name>
+      <Importer>HDRTextureImporter</Importer>
+      <Processor>HDRTextureProcessor</Processor>
+      <ProcessorParameters_Height>832</ProcessorParameters_Height>
+      <ProcessorParameters_Width>1664</ProcessorParameters_Width>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="textures\testpattern.png">
+      <Name>testpattern</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
+      <ProcessorParameters_GenerateMipmaps>True</ProcessorParameters_GenerateMipmaps>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="shaders\PhongShadow.fx">
+      <Name>PhongShadow</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
-    </None>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="levels\Hub.xml">
+      <SubType>Designer</SubType>
+      <Name>Hub</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="textures\sci fi by chamoth143.jpg">
+      <Name>sci fi by chamoth143</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="textures\buttons\back.png">
+      <Name>back</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="textures\buttons\d-pad.png">
+      <Name>d-pad</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="textures\buttons\facebutton_a.png">
+      <Name>facebutton_a</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="textures\buttons\facebutton_b.png">
+      <Name>facebutton_b</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="textures\buttons\facebutton_x.png">
+      <Name>facebutton_x</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="textures\buttons\facebutton_y.png">
+      <Name>facebutton_y</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="textures\buttons\left_bumper.png">
+      <Name>left_bumper</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="textures\buttons\left_thumbstick.png">
+      <Name>left_thumbstick</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="textures\buttons\left_trigger.png">
+      <Name>left_trigger</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="textures\buttons\right_bumper.png">
+      <Name>right_bumper</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="textures\buttons\right_thumbstick.png">
+      <Name>right_thumbstick</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="textures\buttons\right_trigger.png">
+      <Name>right_trigger</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="textures\buttons\start.png">
+      <Name>start</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="textures\HighlightBar.png">
+      <Name>HighlightBar</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="shaders\Particles.fx">
+      <Name>Particles</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="particles\SmokeTrail.xml">
+      <Name>SmokeTrail</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="textures\smoke.png">
+      <Name>smoke</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_GenerateMipmaps>True</ProcessorParameters_GenerateMipmaps>
+      <ProcessorParameters_TextureFormat>DxtCompressed</ProcessorParameters_TextureFormat>
+      <ProcessorParameters_PremultiplyAlpha>False</ProcessorParameters_PremultiplyAlpha>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="textures\Test.png">
+      <Name>Test</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_GenerateMipmaps>True</ProcessorParameters_GenerateMipmaps>
+      <ProcessorParameters_TextureFormat>DxtCompressed</ProcessorParameters_TextureFormat>
+      <ProcessorParameters_PremultiplyAlpha>False</ProcessorParameters_PremultiplyAlpha>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="particles\SmokePlume.xml">
+      <Name>SmokePlume</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="textures\explosion.png">
+      <Name>explosion</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_GenerateMipmaps>True</ProcessorParameters_GenerateMipmaps>
+      <ProcessorParameters_PremultiplyAlpha>False</ProcessorParameters_PremultiplyAlpha>
+      <ProcessorParameters_TextureFormat>DxtCompressed</ProcessorParameters_TextureFormat>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="particles\ExplosionFire.xml">
+      <Name>ExplosionFire</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="particles\ExplosionSmoke.xml">
+      <Name>ExplosionSmoke</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="shaders\NormSpecPhongEmit.fx">
+      <Name>NormSpecPhongEmit</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="textures\Crosshairs.png">
+      <Name>crosshairs</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_GenerateMipmaps>True</ProcessorParameters_GenerateMipmaps>
+      <ProcessorParameters_TextureFormat>DxtCompressed</ProcessorParameters_TextureFormat>
+      <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="particles\Sparks.xml">
+      <Name>Sparks</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="textures\Spark.png">
+      <Name>spark</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
+      <ProcessorParameters_GenerateMipmaps>True</ProcessorParameters_GenerateMipmaps>
+      <ProcessorParameters_PremultiplyAlpha>False</ProcessorParameters_PremultiplyAlpha>
+      <ProcessorParameters_TextureFormat>DxtCompressed</ProcessorParameters_TextureFormat>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="skills\BlasterRifle.xml">
+      <Name>BlasterRifle</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
+    <Compile Include="skills\BoostSkill.xml">
+      <Name>BoostSkill</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
+    <Compile Include="skills\MachineGun.xml">
+      <Name>MachineGun</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
+    <Compile Include="skills\RocketLauncher.xml">
+      <Name>RocketLauncher</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="templates\BlasterBolt.xml">
+      <Name>BlasterBolt</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
+    <Compile Include="templates\Contrail.xml">
+      <Name>Contrail</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
+    <Compile Include="templates\ExplosionFire.xml">
+      <Name>ExplosionFire</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
+    <Compile Include="templates\ExplosionSmoke.xml">
+      <Name>ExplosionSmoke</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
+    <Compile Include="templates\Flyer.xml">
+      <Name>Flyer</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
+    <Compile Include="templates\Mechadrone.xml">
+      <Name>Mechadrone</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
+    <Compile Include="templates\Rocket.xml">
+      <Name>Rocket</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
+    <Compile Include="templates\Soldier.xml">
+      <Name>Soldier</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
+    <Compile Include="templates\Sparks.xml">
+      <Name>Sparks</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
+    <Compile Include="templates\Vanquisher.xml">
+      <Name>Vanquisher</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="shaders\Billboard.fx">
+      <Name>Billboard</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="templates\GenericPickup.xml">
+      <Name>GenericPickup</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="items\HealthPotion1.xml">
+      <Name>HealthPotion1</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!--  To modify your build process, add your task inside one of the targets below and uncomment it. 

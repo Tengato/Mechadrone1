@@ -43,11 +43,11 @@ namespace Skelemator
         }
 
 
-        public override Matrix[] GetSkinTransforms()
+        public override Matrix[] GetBoneTransforms()
         {
-            Matrix[] child1Transforms = child1.GetSkinTransforms();
-            Matrix[] child2Transforms = child2.GetSkinTransforms();
-            Matrix[] child3Transforms = child2.GetSkinTransforms();
+            Matrix[] child1Transforms = child1.GetBoneTransforms();
+            Matrix[] child2Transforms = child2.GetBoneTransforms();
+            Matrix[] child3Transforms = child2.GetBoneTransforms();
 
             Matrix[] blendedTransforms = new Matrix[child1Transforms.Length];
 
