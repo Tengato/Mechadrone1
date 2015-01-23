@@ -85,13 +85,17 @@ namespace Mechadrone1
         public void Fade(GameTime gameTime)
         {
             float enmityDecrease = AggroRecord.ENMITY_FADE_PER_SEC * (float)(gameTime.ElapsedGameTime.TotalSeconds);
+            // Limit one entry to get pardoned per step for simplicity.
+            int? removal = null;
             foreach (KeyValuePair<int, AggroRecord> foe in mFoes)
             {
                 foe.Value.Enmity -= Math.Min(enmityDecrease, foe.Value.Enmity);
-                if (GameResources.ActorManager.CurrentTime > foe.Value.TimeLastSensed &&
-                    foe.Value.Enmity <= 0.0f)
-                    mFoes.Remove(foe.Key);
+                if (foe.Value.Enmity <= 0.0f)
+                    removal = foe.Key;
             }
+
+            if (removal.HasValue)
+                mFoes.Remove(removal.Value);
         }
     }
 }

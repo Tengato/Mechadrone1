@@ -107,7 +107,7 @@ namespace Mechadrone1
             RigidTransform tipOverCone = new RigidTransform(BepuVec3.Forward * VisionDistance * 0.75f,
                 BepuQuaternion.CreateFromAxisAngle(BepuVec3.Right, MathHelper.PiOver2));
             RigidTransform eyeLevelAndFacing = new RigidTransform(bcc.Controller.Body.Position - bcc.Controller.Down * bcc.Controller.Body.Height * 0.45f,
-                bcc.Controller.Body.Orientation);
+                BepuConverter.Convert(SpaceUtils.GetOrientation(BepuConverter.Convert(bcc.Controller.ViewDirection), Vector3.Up)));
             RigidTransform visionConeTransform;
             RigidTransform.Transform(ref tipOverCone, ref eyeLevelAndFacing, out visionConeTransform);
             BepuVec3 sweep = BepuVec3.Zero;
@@ -173,6 +173,11 @@ namespace Mechadrone1
                 {
                     mAgentProperties.Add(AgentPropertyName.ActiveOpponent, enemyId);
                 }
+            }
+            else
+            {
+                if (mAgentProperties.ContainsKey(AgentPropertyName.ActiveOpponent))
+                    mAgentProperties.Remove(AgentPropertyName.ActiveOpponent);
             }
 
             TimeInState += e.GameTime.ElapsedGameTime;
@@ -307,6 +312,8 @@ namespace Mechadrone1
 
         public override void Update(/* inout */ SteeringBlender steering, Actor owner, IAgentStateManager agent)
         {
+            steering.ForceScale = (float)(agent.TimeInState.Ticks) / (float)mDurationTicks;
+
             if (agent.HasProperty(AgentPropertyName.ActiveOpponent))
             {
                 ZombieCombatState zcs = new ZombieCombatState();
@@ -317,8 +324,6 @@ namespace Mechadrone1
                 ZombieWanderState zws = new ZombieWanderState(8.0f);
                 agent.CurrentState = zws;
             }
-
-            steering.ForceScale = (float)(agent.TimeInState.Ticks) / (float)mDurationTicks;
         }
     }
 
@@ -348,11 +353,13 @@ namespace Mechadrone1
             {
                 ZombieCombatState zcs = new ZombieCombatState();
                 agent.CurrentState = zcs;
+                return;
             }
             else if (agent.TimeInState.Ticks >= mDurationTicks)
             {
                 ZombieWaitState zws = new ZombieWaitState(8.0f);
                 agent.CurrentState = zws;
+                return;
             }
 
             BipedControllerComponent bcc = owner.GetComponent<BipedControllerComponent>(ActorComponent.ComponentType.Control);
@@ -415,6 +422,8 @@ namespace Mechadrone1
 
             Actor opponent = GameResources.ActorManager.GetActorById(agent.GetProperty<int>(AgentPropertyName.ActiveOpponent));
             BipedControllerComponent opponentBcc = opponent.GetComponent<BipedControllerComponent>(ActorComponent.ComponentType.Control);
+            // TODO: P1: the target is getting messed up....
+
             steering.Target = BepuConverter.Convert(opponentBcc.Controller.Body.Position);
 
             BipedControllerComponent bcc = owner.GetComponent<BipedControllerComponent>(ActorComponent.ComponentType.Control);
@@ -451,8 +460,10 @@ namespace Mechadrone1
                     otherEntityCollidable.Entity.Tag != null &&
                     (int)(otherEntityCollidable.Entity.Tag) == opponent.Id)
                 {
-                    // TODO: P1: Something wrong with this angle check calculation:
-                    float aimTheta = (float)(Math.Acos(BepuVec3.Dot(bulletPath, bcc.Controller.ViewDirection) / distance));
+                    BepuVec3 toOpponent = opponentBcc.Controller.Body.Position - bcc.Controller.Body.Position;
+                    toOpponent.Y = 0.0f;
+                    toOpponent.Normalize();
+                    float aimTheta = (float)(Math.Acos(MathHelper.Clamp(BepuVec3.Dot(toOpponent, bcc.Controller.ViewDirection), 0.0f, 1.0f)));
                     const float AIM_CONE_RADIANS = MathHelper.Pi / 12.0f;
                     if (aimTheta <= AIM_CONE_RADIANS)
                     {
@@ -523,12 +534,12 @@ namespace Mechadrone1
                     break;
 
                 case MovementType.Close:
-                    steering.Target = BepuConverter.Convert(towardOpponent * 100.0f);
+                    steering.Target = BepuConverter.Convert(opponentBcc.Controller.Body.Position + towardOpponent * 100.0f);
                     mDurationTicks = (long)(TimeSpan.TicksPerSecond * (moveRand * (MOVE_SECS_MAX - MOVE_SECS_MIN) + MOVE_SECS_MIN));
                     break;
 
                 case MovementType.Retreat:
-                    steering.Target = BepuConverter.Convert(-towardOpponent * 100.0f);
+                    steering.Target = BepuConverter.Convert(opponentBcc.Controller.Body.Position - towardOpponent * 100.0f);
                     mDurationTicks = (long)(TimeSpan.TicksPerSecond * (moveRand * (MOVE_SECS_MAX - MOVE_SECS_MIN) + MOVE_SECS_MIN));
                     break;
 

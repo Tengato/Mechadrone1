@@ -194,7 +194,7 @@ namespace Mechadrone1
 
         public void Update(GameTime gameTime)
         {
-            CurrentTime.Add(gameTime.ElapsedGameTime);
+            CurrentTime += gameTime.ElapsedGameTime;
             float elapsedTime = (float)(gameTime.ElapsedGameTime.TotalSeconds);
 
             // Update code is broken into several steps, because there are lots of dependencies between them.

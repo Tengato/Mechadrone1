@@ -52,8 +52,8 @@ namespace Mechadrone1
             FirePoint = Matrix.Identity;
             ResourceCostToUse = 0.01f;
             mReturnAttention = null;
-            EffectiveRangeMax = 300.0f;
-            EffectiveRangeMin = 0.0f;
+            EffectiveRangeMax = 120.0f;
+            EffectiveRangeMin = 5.0f;
         }
 
         public virtual void Initialize(ContentManager contentLoader, ComponentManifest manifest)
