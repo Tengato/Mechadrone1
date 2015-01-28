@@ -17,8 +17,8 @@ Global Settings
     Header File = C:\Users\Patrick\Documents\Visual Studio 2010\Projects\Mechadrone1\Mechadrone1\Mechadrone1Content\sounds\Mechadrone1.h;
     Exclude Category Names = 0;
     Exclude Variable Names = 0;
-    Last Modified Low = 30307673;
-    Last Modified High = 717239252;
+    Last Modified Low = 717239252;
+    Last Modified High = 30307673;
 
     Category
     {
@@ -226,14 +226,31 @@ Wave Bank
     Windows Bank Path Edited = 0;
     Seek Tables = 1;
     Compression Preset Name = <none>;
-    Xbox Bank Last Modified Low = 0;
-    Xbox Bank Last Modified High = 0;
-    PC Bank Last Modified Low = 717269253;
-    PC Bank Last Modified High = 30307673;
-    Header Last Modified Low = 0;
-    Header Last Modified High = 0;
-    Bank Last Revised Low = 2776775941;
-    Bank Last Revised High = 30423725;
+    Bank Last Revised Low = 4256488599;
+    Bank Last Revised High = 30423741;
+
+    Wave
+    {
+        Name = SwapWeapon;
+        File = Audio\SwapWeapon.wav;
+        Build Settings Last Modified Low = 4256488599;
+        Build Settings Last Modified High = 30423741;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 1;
+            Sampling Rate = 44100;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 65808;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 3019758786;
+            Last Modified High = 30278198;
+        }
+    }
 }
 
 Sound Bank
@@ -243,6 +260,17 @@ Sound Bank
     Windows File = Win\SoBaUno.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
-    Header Last Modified High = 0;
-    Header Last Modified Low = 0;
+
+    Sound
+    {
+        Name = New Sound;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+    }
 }
