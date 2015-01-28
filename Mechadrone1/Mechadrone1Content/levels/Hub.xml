@@ -251,7 +251,7 @@
                             </Item>
                             <Item>
                                 <Key>Texture</Key>
-                                <Value Type="string">textures\testpattern</Value>
+                                <Value Type="string">textures\PortalTag</Value>
                             </Item>
                             <Item>
                                 <Key>MaterialSpecularColor</Key>

@@ -2,9 +2,20 @@ This repository contains a WIP of my attempt to build a 3D game engine in C#
 for the XNA 4.0 platform. My goal is to explore game engine problems and add
 support for features common to a first- or third–person 3D ‘outdoor’ game,
 eventually making small games using the engine. Since it’s built on the XNA
-platform, I start out with a lot of data types created for me and a simplified
-interface to the graphics library. I also get a framework for the asset
-conditioning pipeline and runtime content resource manager.
+platform, I start out with a lot of game domain data types created for me and
+a simplified interface to the graphics library. I also get a framework for the
+asset conditioning pipeline and runtime content resource manager.
+
+To build and run the project:
+•	Install Visual Studio 2010 with XNA Game Studio 4.0
+•	Clone the repo.
+•	Open Mechadrone1.sln and build/run from VS.
+•	Xbox 360 style controller recommended to control the characters.
+•	The controls change frequently, but you can inspect
+\Mechadrone1\Mechadrone1Content\config\DefaultInputMap.xml for the definitive
+map if you get stuck.
+•	Please be aware that not all systems are in place and existing systems
+aren't 100% complete and/or don't have adequate demo content!
 
 Some notable files to look out for:
 •	\Mechadrone1\Mechadrone1\Rendering\SceneNodes\ImplicitBoundingBoxNode.cs
@@ -17,7 +28,7 @@ Some of the main features I’ve developed:
 asset type describing a level, the engine will instantiate a game object model
 consisting of componentized Actor objects.
 •	A basic rendering engine (\Mechadrone1\Mechadrone1\Rendering).  Uses a
-scene graph to cull objects outside of the camera frustum.  Binds object
+BVH scene graph to cull objects outside of the camera frustum.  Binds object
 material data to shader parameters. Also uses a simple implementation of shadow
 maps.
 •	An assortment of common shaders (\Mechadrone1\Mechadrone1Content\shaders).
@@ -33,12 +44,14 @@ types.
 I added a subdivision surface step to smooth the heightmap data since an 8 bpp
 heightmap can be blocky.
 
-Some other parts that I did not create or deserve credit were:
+Some other parts that I did not create were:
 •	The background art for some of the screens was created by rich4rt and
-chamoth143 and used without permission from deviantart.com. (This art would not
-go into a final product that would be distributed.)
+chamoth143 and used without permission from deviantart.com. (This art will not
+be distributed in a final product.)
 •	The BEPU 3D physics library (http://bepuphysics.codeplex.com/)
-•	Designs for numerous systems were adapted from Microsoft's XNA sample projects
-(http://xbox.create.msdn.com/en-US/education/catalog)
+•	Rough designs for numerous systems were adapted from Microsoft's XNA
+sample projects (http://xbox.create.msdn.com/en-US/education/catalog)
+•	Spaceship models were obtained from the Microsoft XNA education
+catalog as well.
 •	Soldier model was purchased from http://www.dexsoft-games.com/
-
+•	Collada model importer provided by AssimpNet
