@@ -1,6 +1,8 @@
 Futuristic Soldier model and textures are copyright Dexsoft-Games.
 "sci fi thing" image is copyright Rich4rt.
-XNA Education Catalog code copyright Microsoft Corp.
+"sci fi" image is copyright chamoth143.
+XNA Education Catalog code and assets copyright Microsoft Corp.
+BEPUphysics license: https://bepuphysics.codeplex.com/license
 
 For the rest of the code that I wrote:
 
