@@ -57,15 +57,6 @@
                       <Item>
                           <Key>Behaviors</Key>
                           <Value Type ="Generic:List[Manifracture.ComponentManifest]">
-                              <Item>
-                                  <TypeFullName>Mechadrone1.ArmedSingleWeapon, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
-                                  <Properties>
-                                      <Item>
-                                          <Key>SkillAssetName</Key>
-                                          <Value Type="string">MachineGun</Value>
-                                      </Item>
-                                  </Properties>
-                              </Item>
                           </Value>
                       </Item>
                   </Properties>

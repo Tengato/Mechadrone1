@@ -28,7 +28,7 @@ namespace Mechadrone1
             CurrentState = ReadyState;
             ProjectileTemplateName = String.Empty;
             // TODO: P2: This matrix should come from a component that knows about the biped's model?
-            FirePoint = Matrix.CreateTranslation(5.0f, 3.0f, -3.0f);
+            MuzzleOffset = new Vector3(5.0f, 3.0f, -3.0f);
         }
 
         public override void Initialize(ContentManager contentLoader, ComponentManifest manifest)
@@ -53,8 +53,10 @@ namespace Mechadrone1
             Actor owner = GameResources.ActorManager.GetActorById(OwnerActorId);
             BipedControllerComponent bipedControl = owner.GetComponent<BipedControllerComponent>(ActorComponent.ComponentType.Control);
             TransformComponent rocketXform = rocket.GetComponent<TransformComponent>(ActorComponent.ComponentType.Transform);
-            rocketXform.Transform = FirePoint * Matrix.CreateWorld(BepuConverter.Convert(bipedControl.Controller.Body.Position),
-                BepuConverter.Convert(bipedControl.Controller.ViewDirection), Vector3.Up);
+            Vector3 aim = (bipedControl.WorldAim.HasValue ? bipedControl.WorldAim.Value :
+                BepuConverter.Convert(bipedControl.Controller.ViewDirection));
+            rocketXform.Transform = Matrix.CreateTranslation(MuzzleOffset) * Matrix.CreateWorld(BepuConverter.Convert(
+                bipedControl.Controller.Body.Position), aim, Vector3.Up);
             Rocket boltProj = rocket.GetBehavior<Rocket>();
             boltProj.Propel();
         }

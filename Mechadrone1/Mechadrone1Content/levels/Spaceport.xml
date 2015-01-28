@@ -129,11 +129,15 @@
                                         <Properties/>
                                     </Item>
                                     <Item>
-                                        <TypeFullName>Mechadrone1.ArmedSingleWeapon, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
+                                        <TypeFullName>Mechadrone1.ZombieSkillSet, Mechadrone1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeFullName>
                                         <Properties>
                                             <Item>
-                                                <Key>SkillAssetName</Key>
+                                                <Key>RangedSkillAssetName</Key>
                                                 <Value Type="string">BlasterRifle</Value>
+                                            </Item>
+                                            <Item>
+                                                <Key>MeleeSkillAssetName</Key>
+                                                <Value Type="string">Bash</Value>
                                             </Item>
                                         </Properties>
                                     </Item>
@@ -597,6 +601,7 @@
             <Item>Sparks</Item>
             <Item>BlasterBolt</Item>
             <Item>GenericPickup</Item>
+            <Item>Dust</Item>
         </Templates>
     </Asset>
 </XnaContent>

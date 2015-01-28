@@ -31,7 +31,7 @@ namespace Mechadrone1
             // TODO: P2: Activation and weapon switching is not quite clear...
             CurrentState = ReadyState;
             // TODO: P2: This matrix should come from a component that knows about the biped's model?
-            FirePoint = Matrix.CreateTranslation(5.0f, 3.0f, -3.0f);
+            MuzzleOffset = new Vector3(5.0f, 3.0f, -3.0f);
             Damage = 1;
         }
 
@@ -57,8 +57,10 @@ namespace Mechadrone1
             WeaponResource wr = owner.GetBehavior<WeaponResource>();
             wr.Value -= ResourceCostToUse;
             BipedControllerComponent bipedControl = owner.GetComponent<BipedControllerComponent>(ActorComponent.ComponentType.Control);
-            Matrix muzzleTransform = FirePoint * Matrix.CreateWorld(BepuConverter.Convert(bipedControl.Controller.Body.Position),
-                BepuConverter.Convert(bipedControl.Controller.ViewDirection), Vector3.Up);
+            Vector3 aim = (bipedControl.WorldAim.HasValue ? bipedControl.WorldAim.Value :
+                BepuConverter.Convert(bipedControl.Controller.ViewDirection));
+            Matrix muzzleTransform = Matrix.CreateTranslation(MuzzleOffset) * Matrix.CreateWorld(BepuConverter.Convert(
+                bipedControl.Controller.Body.Position), aim, Vector3.Up);
             BepuRay shootRay = new BepuRay(BepuConverter.Convert(muzzleTransform.Translation), BepuConverter.Convert(muzzleTransform.Forward));
             RayCastResult result;
 

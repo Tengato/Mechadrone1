@@ -16,9 +16,8 @@ namespace SkelematorPipeline
     [ContentProcessor(DisplayName = "Skelemator FX Processor")]
     public class FXProcessor : ContentProcessor<EffectContent, CompiledEffectContent>
     {
-        const string defaultFXCPath = @"C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Utilities\bin\x86\fxc.exe";
+        const string defaultFXCPath = @"..\..\External\Windows\DirectXUtils\fxc.exe";
 
-        [DefaultValue(defaultFXCPath)]
         public string PathToFXCompiler { get; set; }
 
         public override CompiledEffectContent Process(EffectContent input, ContentProcessorContext context)
@@ -38,7 +37,7 @@ namespace SkelematorPipeline
                 ProcessStartInfo startInfo = new ProcessStartInfo();
 
                 if (String.IsNullOrEmpty(PathToFXCompiler))
-                    PathToFXCompiler = defaultFXCPath;
+                    PathToFXCompiler = Path.Combine(Environment.CurrentDirectory, defaultFXCPath);
 
                 startInfo.FileName = PathToFXCompiler;
                 startInfo.Arguments = String.Join(" ", args);

@@ -13,11 +13,14 @@ namespace Mechadrone1
         Activating,
     }
 
+    /// <summary>
+    /// An attack skill whose usage can be modeled with a push button (such as a firearm with a trigger)
+    /// </summary>
     abstract class BipedWeapon : ISkill
     {
         public WeaponFunctions CurrentOperation { get; set; }
         public TimeSpan TimeInState { get; set; }
-        public Matrix FirePoint { get; set; }
+        public Vector3 MuzzleOffset { get; set; }
         public int OwnerActorId { get; private set; }
         public float ResourceCostToUse { get; set; }
         private EventHandler mReturnAttention;
@@ -49,11 +52,11 @@ namespace Mechadrone1
             OwnerActorId = ownerActorId;
             CurrentOperation = WeaponFunctions.Neutral;
             TimeInState = TimeSpan.Zero;
-            FirePoint = Matrix.Identity;
+            MuzzleOffset = Vector3.Zero;
             ResourceCostToUse = 0.01f;
             mReturnAttention = null;
             EffectiveRangeMax = 120.0f;
-            EffectiveRangeMin = 5.0f;
+            EffectiveRangeMin = 6.0f;
         }
 
         public virtual void Initialize(ContentManager contentLoader, ComponentManifest manifest)

@@ -2,7 +2,8 @@
 {
     public static class ManifestKeys
     {
-        public const string SKILL_ASSET_NAME = "SkillAssetName";                    // Skill asset name
+        public const string RANGED_SKILL_ASSET_NAME = "RangedSkillAssetName";       // Skill asset name
+        public const string MELEE_SKILL_ASSET_NAME = "MeleeSkillAssetName";         // Skill asset name
         public const string DAMAGE = "Damage";                                      // int
         public const string BEHAVIORS = "Behaviors";                                // List<ComponentManifest> - the collection of IBehaviors.
         public const string LEVEL_NAME = "LevelName";                               // Level asset name

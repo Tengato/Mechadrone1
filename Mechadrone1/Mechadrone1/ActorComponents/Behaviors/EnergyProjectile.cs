@@ -14,6 +14,7 @@ namespace Mechadrone1
         private int mDamage;
         private float mTimeAlive;
         private float mOrigScale;
+        private int mOwnerActorId;
 
         public EnergyProjectile(Actor owner)
             : base(owner)
@@ -22,6 +23,7 @@ namespace Mechadrone1
             mTimeAlive = 0.0f;
             mOrigScale = 1.0f;
             mDamage = 10;
+            mOwnerActorId = Actor.INVALID_ACTOR_ID;
         }
 
         public override void Initialize(ContentManager contentLoader, ComponentManifest manifest)
@@ -77,7 +79,10 @@ namespace Mechadrone1
                 otherEntityCollidable.Entity != null &&
                 otherEntityCollidable.Entity.Tag != null)
             {
-                Actor actorHit = GameResources.ActorManager.GetActorById((int)(otherEntityCollidable.Entity.Tag));
+                int actorId = (int)(otherEntityCollidable.Entity.Tag);
+                if (actorId == mOwnerActorId)
+                    return;
+                Actor actorHit = GameResources.ActorManager.GetActorById(actorId);
                 IDamagable damage = actorHit.GetBehaviorThatImplementsType<IDamagable>();
                 if (damage != null)
                 {
@@ -92,8 +97,9 @@ namespace Mechadrone1
             }
         }
 
-        public void Propel()
+        public void Propel(int ownerActorId)
         {
+            mOwnerActorId = ownerActorId;
             DynamicCollisionComponent collisionComponent = Owner.GetComponent<DynamicCollisionComponent>(ActorComponent.ComponentType.Physics);
             BEPUutilities.Vector3 forward = collisionComponent.Entity.OrientationMatrix.Forward * mSpeed;
             collisionComponent.Entity.ApplyLinearImpulse(ref forward);

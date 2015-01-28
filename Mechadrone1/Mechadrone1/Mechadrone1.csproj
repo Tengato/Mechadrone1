@@ -79,12 +79,13 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BEPUphysics, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31f6a8732a21de19, processorArchitecture=x86">
+    <Reference Include="BEPUphysics, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\BEPU\BEPUphysics\bin\x86\Release\BEPUphysics.dll</HintPath>
+      <HintPath>..\..\External\Windows\BEPU\BEPUphysics\BEPUphysics.dll</HintPath>
     </Reference>
-    <Reference Include="BEPUutilities">
-      <HintPath>..\..\..\BEPU\BEPUphysics\bin\x86\Release\BEPUutilities.dll</HintPath>
+    <Reference Include="BEPUutilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\External\Windows\BEPU\BEPUutilities\BEPUutilities.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
@@ -108,7 +109,7 @@
     <Compile Include="ActorComponents\Behaviors\AI\AgentState.cs" />
     <Compile Include="ActorComponents\Behaviors\AI\Memory.cs" />
     <Compile Include="ActorComponents\Behaviors\AI\AggroRecord.cs" />
-    <Compile Include="ActorComponents\Behaviors\ArmedSingleWeapon.cs" />
+    <Compile Include="ActorComponents\Behaviors\ZombieSkillSet.cs" />
     <Compile Include="ActorComponents\Behaviors\BipedSkillPalette.cs" />
     <Compile Include="ActorComponents\Behaviors\Booster.cs" />
     <Compile Include="ActorComponents\Behaviors\BoxTriggerLevelLoader.cs" />
@@ -130,7 +131,6 @@
     <Compile Include="ActorComponents\ICustomizable.cs" />
     <Compile Include="ActorComponents\ParticleSystemRenderComponent.cs" />
     <Compile Include="ActorComponents\SphereCollisionComponent.cs" />
-    <Compile Include="ActorComponents\Behaviors\IBipedWeaponEquippable.cs" />
     <Compile Include="AssetFormatException.cs" />
     <Compile Include="ActorComponents\AvatarSpawnComponent.cs" />
     <Compile Include="ActorComponents\BoxCollisionComponent.cs" />
@@ -165,6 +165,7 @@
     <Compile Include="Gameplay\Items\Item.cs" />
     <Compile Include="Gameplay\GameDossier.cs" />
     <Compile Include="Gameplay\Items\ItemEventArgs.cs" />
+    <Compile Include="Gameplay\Skills\BashSkill.cs" />
     <Compile Include="Gameplay\Skills\BipedWeapon.cs" />
     <Compile Include="Gameplay\Skills\BlasterRifleSkill.cs" />
     <Compile Include="Gameplay\Skills\BoostSkill.cs" />

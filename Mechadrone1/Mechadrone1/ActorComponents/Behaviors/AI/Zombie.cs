@@ -86,7 +86,6 @@ namespace Mechadrone1
                     ec.Entity.Tag != null)
                 {
                     int viewedActorId = (int)(ec.Entity.Tag);
-                    Actor viewedActor = GameResources.ActorManager.GetActorById(viewedActorId);
                     isPlayer = GameResources.ActorManager.IsPlayer(viewedActorId);
                     isMob = GameResources.ActorManager.IsMob(viewedActorId);
                 }
@@ -110,9 +109,9 @@ namespace Mechadrone1
                 BepuConverter.Convert(SpaceUtils.GetOrientation(BepuConverter.Convert(bcc.Controller.ViewDirection), Vector3.Up)));
             RigidTransform visionConeTransform;
             RigidTransform.Transform(ref tipOverCone, ref eyeLevelAndFacing, out visionConeTransform);
-            BepuVec3 sweep = BepuVec3.Zero;
+            BepuVec3 noSweep = BepuVec3.Zero;
             ViewInterestFilter filter = new ViewInterestFilter(bcc.Controller.Body.CollisionInformation);
-            GameResources.ActorManager.SimSpace.ConvexCast(visionCone, ref visionConeTransform, ref sweep, filter.Test, actorsInView);
+            GameResources.ActorManager.SimSpace.ConvexCast(visionCone, ref visionConeTransform, ref noSweep, filter.Test, actorsInView);
 
             for (int a = 0; a < actorsInView.Count; ++a)
             {
@@ -270,8 +269,11 @@ namespace Mechadrone1
             steering.Weights[(int)SteeringBlender.WeightType.Wander] = 0.0f;
             steering.Weights[(int)SteeringBlender.WeightType.Wait] = 1.0f;
             steering.Urgency = 1.0f;
-            IBipedWeaponEquippable asw = owner.GetBehaviorThatImplementsType<IBipedWeaponEquippable>();
-            asw.Weapon.CurrentOperation = WeaponFunctions.Neutral;
+            ZombieSkillSet zss = owner.GetBehaviorThatImplementsType<ZombieSkillSet>();
+            //zss.RangedSkill.CurrentOperation = WeaponFunctions.Neutral;
+            BipedControllerComponent bcc = owner.GetComponent<BipedControllerComponent>(ActorComponent.ComponentType.Control);
+            zss.RangedSkill.UpdateInputState(false, bcc);
+            zss.MeleeSkill.UpdateInputState(false, bcc);
         }
 
         public override void Update(/* inout */ SteeringBlender steering, Actor owner, IAgentStateManager agent)
@@ -422,37 +424,38 @@ namespace Mechadrone1
 
             Actor opponent = GameResources.ActorManager.GetActorById(agent.GetProperty<int>(AgentPropertyName.ActiveOpponent));
             BipedControllerComponent opponentBcc = opponent.GetComponent<BipedControllerComponent>(ActorComponent.ComponentType.Control);
-            // TODO: P1: the target is getting messed up....
 
             steering.Target = BepuConverter.Convert(opponentBcc.Controller.Body.Position);
 
             BipedControllerComponent bcc = owner.GetComponent<BipedControllerComponent>(ActorComponent.ComponentType.Control);
 
-            IBipedWeaponEquippable attackBehavior = owner.GetBehaviorThatImplementsType<IBipedWeaponEquippable>();
-            Matrix firePoint = attackBehavior.Weapon.FirePoint * Matrix.CreateWorld(BepuConverter.Convert(bcc.Controller.Body.Position),
-                BepuConverter.Convert(bcc.Controller.ViewDirection), Vector3.Up);
+            BepuVec3 toOpponent = opponentBcc.Controller.Body.Position - bcc.Controller.Body.Position;
+            float distance = toOpponent.Length();
+            ZombieSkillSet zss = owner.GetBehaviorThatImplementsType<ZombieSkillSet>();
+            BipedWeapon chosenAttack = distance <= zss.MeleeSkill.EffectiveRangeMax ? zss.MeleeSkill : zss.RangedSkill;
 
-            BepuVec3 bulletPath = opponentBcc.Controller.Body.Position - BepuConverter.Convert(firePoint.Translation);
-            float distance = bulletPath.Length();
+            Matrix attackTransform = Matrix.CreateTranslation(chosenAttack.MuzzleOffset) * Matrix.CreateWorld(
+                BepuConverter.Convert(bcc.Controller.Body.Position), BepuConverter.Convert(bcc.Controller.ViewDirection), Vector3.Up);
+
+            BepuVec3 bulletPath = opponentBcc.Controller.Body.Position - BepuConverter.Convert(attackTransform.Translation);
 
             // If we don't have a shot, we need to specify what kind of movement we need to remedy that.
             ZombieTacticalMovementState.MovementType movement = ZombieTacticalMovementState.MovementType.None;
 
-            if (distance < attackBehavior.Weapon.EffectiveRangeMin)
+            if (distance < chosenAttack.EffectiveRangeMin)
             {
                 movement = ZombieTacticalMovementState.MovementType.Retreat;
             }
-            else if (distance > attackBehavior.Weapon.EffectiveRangeMax)
+            else if (distance > chosenAttack.EffectiveRangeMax)
             {
                 movement = ZombieTacticalMovementState.MovementType.Close;
             }
             else
             {
-                BepuRay loeRay = new BepuRay(BepuConverter.Convert(firePoint.Translation), bulletPath);
+                BepuRay loeRay = new BepuRay(BepuConverter.Convert(attackTransform.Translation), bulletPath);
                 LOSFilter filter = new LOSFilter(bcc.Controller.Body.CollisionInformation, opponentBcc.Controller.Body.CollisionInformation);
                 RayCastResult loeResult;
-                GameResources.ActorManager.SimSpace.RayCast(loeRay, attackBehavior.Weapon.EffectiveRangeMax * 1.5f,
-                    filter.Test, out loeResult);
+                GameResources.ActorManager.SimSpace.RayCast(loeRay, chosenAttack.EffectiveRangeMax * 1.5f, filter.Test, out loeResult);
 
                 EntityCollidable otherEntityCollidable = loeResult.HitObject as EntityCollidable;
                 if (otherEntityCollidable != null &&
@@ -460,15 +463,18 @@ namespace Mechadrone1
                     otherEntityCollidable.Entity.Tag != null &&
                     (int)(otherEntityCollidable.Entity.Tag) == opponent.Id)
                 {
-                    BepuVec3 toOpponent = opponentBcc.Controller.Body.Position - bcc.Controller.Body.Position;
                     toOpponent.Y = 0.0f;
                     toOpponent.Normalize();
                     float aimTheta = (float)(Math.Acos(MathHelper.Clamp(BepuVec3.Dot(toOpponent, bcc.Controller.ViewDirection), 0.0f, 1.0f)));
                     const float AIM_CONE_RADIANS = MathHelper.Pi / 12.0f;
                     if (aimTheta <= AIM_CONE_RADIANS)
                     {
+                        // TODO: P2: Add some wander to this value:
                         bcc.WorldAim = BepuConverter.Convert(bulletPath);
-                        attackBehavior.Weapon.CurrentOperation = WeaponFunctions.TriggerPulled;
+                        //chosenAttack.CurrentOperation = WeaponFunctions.TriggerPulled;
+                        BipedWeapon otherAttack = chosenAttack == zss.MeleeSkill ? zss.RangedSkill : zss.MeleeSkill;
+                        otherAttack.UpdateInputState(false, bcc);
+                        chosenAttack.UpdateInputState(true, bcc);
                         return;
                     }
                 }
@@ -506,10 +512,12 @@ namespace Mechadrone1
 
         public override void Enter(SteeringBlender steering, Actor owner, IAgentStateManager agent)
         {
-            IBipedWeaponEquippable attackBehavior = owner.GetBehaviorThatImplementsType<IBipedWeaponEquippable>();
-            attackBehavior.Weapon.CurrentOperation = WeaponFunctions.Neutral;
-
+            ZombieSkillSet zss = owner.GetBehaviorThatImplementsType<ZombieSkillSet>();
+            //zss.RangedSkill.CurrentOperation = WeaponFunctions.Neutral;
             BipedControllerComponent bcc = owner.GetComponent<BipedControllerComponent>(ActorComponent.ComponentType.Control);
+            zss.RangedSkill.UpdateInputState(false, bcc);
+            zss.MeleeSkill.UpdateInputState(false, bcc);
+
             int opponentId = agent.GetProperty<int>(AgentPropertyName.ActiveOpponent);
             Actor opponent = GameResources.ActorManager.GetActorById(opponentId);
             BipedControllerComponent opponentBcc = opponent.GetComponent<BipedControllerComponent>(ActorComponent.ComponentType.Control);
